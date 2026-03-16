@@ -1,0 +1,71 @@
+aid: etcd
+name: etcd
+description: >-
+  etcd is a CNCF graduated distributed, reliable key-value store used as
+  the backing store for all Kubernetes cluster data. It provides strong
+  consistency guarantees using the Raft consensus algorithm, supporting
+  watch operations, lease-based TTLs, and atomic compare-and-swap
+  transactions. etcd is designed for high availability and stores critical
+  configuration data for distributed systems.
+url: https://etcd.io
+image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+- Key-Value Store
+- Distributed Systems
+- Kubernetes
+- Consensus
+- Cloud Native
+- Graduated
+created: '2026-03-16'
+modified: '2026-03-16'
+specificationVersion: '0.19'
+type: Index
+apis:
+- aid: etcd:etcd-grpc-api
+  name: etcd gRPC API
+  description: >-
+    The etcd v3 API is a gRPC-based interface providing key-value operations
+    (put, get, delete, range), watch streams for change notifications,
+    lease management for TTL-based keys, cluster membership management,
+    maintenance operations including snapshots and defragmentation, and
+    authentication and authorization controls.
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - gRPC
+  - Key-Value
+  - Watch
+- aid: etcd:etcd-http-api
+  name: etcd HTTP Gateway API
+  description: >-
+    etcd provides an HTTP/JSON gateway that translates HTTP requests into
+    gRPC calls, allowing clients without gRPC support to interact with etcd.
+    The gateway supports the same operations as the gRPC API including
+    key-value operations, watches, and cluster management through a RESTful
+    interface.
+  humanURL: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  tags:
+  - HTTP
+  - REST
+  - Gateway
+common:
+- type: Documentation
+  name: etcd Documentation
+  description: Official etcd documentation.
+  url: https://etcd.io/docs/
+- type: GitHubOrg
+  name: etcd GitHub
+  description: Source code repository.
+  url: https://github.com/etcd-io/etcd
+- type: Blog
+  name: etcd Blog
+  description: Project blog and announcements.
+  url: https://etcd.io/blog/
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
