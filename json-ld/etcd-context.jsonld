@@ -1,0 +1,179 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "etcd": "https://etcd.io/vocab/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+
+    "KeyValue": {
+      "@id": "etcd:KeyValue",
+      "@context": {
+        "key": {
+          "@id": "etcd:key",
+          "@type": "xsd:base64Binary"
+        },
+        "value": {
+          "@id": "etcd:value",
+          "@type": "xsd:base64Binary"
+        },
+        "version": {
+          "@id": "etcd:version",
+          "@type": "xsd:integer"
+        },
+        "create_revision": {
+          "@id": "etcd:createRevision",
+          "@type": "xsd:integer"
+        },
+        "mod_revision": {
+          "@id": "etcd:modRevision",
+          "@type": "xsd:integer"
+        },
+        "lease": {
+          "@id": "etcd:lease",
+          "@type": "@id"
+        }
+      }
+    },
+
+    "Lease": {
+      "@id": "etcd:Lease",
+      "@context": {
+        "ID": {
+          "@id": "schema:identifier"
+        },
+        "TTL": {
+          "@id": "etcd:timeToLive",
+          "@type": "xsd:integer"
+        },
+        "grantedTTL": {
+          "@id": "etcd:grantedTTL",
+          "@type": "xsd:integer"
+        },
+        "keys": {
+          "@id": "etcd:attachedKeys",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Member": {
+      "@id": "etcd:Member",
+      "@context": {
+        "ID": {
+          "@id": "schema:identifier"
+        },
+        "name": {
+          "@id": "schema:name"
+        },
+        "peerURLs": {
+          "@id": "etcd:peerURL",
+          "@type": "@id",
+          "@container": "@set"
+        },
+        "clientURLs": {
+          "@id": "etcd:clientURL",
+          "@type": "@id",
+          "@container": "@set"
+        },
+        "isLearner": {
+          "@id": "etcd:isLearner",
+          "@type": "xsd:boolean"
+        }
+      }
+    },
+
+    "WatchEvent": {
+      "@id": "etcd:WatchEvent",
+      "@context": {
+        "type": {
+          "@id": "etcd:eventType"
+        },
+        "kv": {
+          "@id": "etcd:keyValue",
+          "@type": "@id"
+        },
+        "prev_kv": {
+          "@id": "etcd:previousKeyValue",
+          "@type": "@id"
+        }
+      }
+    },
+
+    "Permission": {
+      "@id": "etcd:Permission",
+      "@context": {
+        "permType": {
+          "@id": "etcd:permissionType"
+        },
+        "key": {
+          "@id": "etcd:key",
+          "@type": "xsd:base64Binary"
+        },
+        "range_end": {
+          "@id": "etcd:rangeEnd",
+          "@type": "xsd:base64Binary"
+        }
+      }
+    },
+
+    "Role": {
+      "@id": "etcd:Role",
+      "@context": {
+        "name": {
+          "@id": "schema:name"
+        },
+        "keyPermission": {
+          "@id": "etcd:keyPermission",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "User": {
+      "@id": "etcd:User",
+      "@context": {
+        "name": {
+          "@id": "schema:name"
+        },
+        "roles": {
+          "@id": "etcd:role",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Alarm": {
+      "@id": "etcd:Alarm",
+      "@context": {
+        "memberID": {
+          "@id": "etcd:memberID"
+        },
+        "alarm": {
+          "@id": "etcd:alarmType"
+        }
+      }
+    },
+
+    "ResponseHeader": {
+      "@id": "etcd:ResponseHeader",
+      "@context": {
+        "cluster_id": {
+          "@id": "etcd:clusterID"
+        },
+        "member_id": {
+          "@id": "etcd:memberID"
+        },
+        "revision": {
+          "@id": "etcd:revision",
+          "@type": "xsd:integer"
+        },
+        "raft_term": {
+          "@id": "etcd:raftTerm",
+          "@type": "xsd:integer"
+        }
+      }
+    }
+  }
+}

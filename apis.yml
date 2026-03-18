@@ -17,7 +17,8 @@ tags:
 - Cloud Native
 - Graduated
 created: '2026-03-16'
-modified: '2026-03-16'
+modified: '2026-03-18'
+
 specificationVersion: '0.19'
 type: Index
 apis:
@@ -33,10 +34,20 @@ apis:
   properties:
   - type: Documentation
     url: https://etcd.io/docs/v3.5/learning/api/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/learning/api_guarantees/
+  - type: Authentication
+    url: https://etcd.io/docs/v3.5/op-guide/authentication/
+  - type: Getting Started
+    url: https://etcd.io/docs/v3.5/dev-guide/interacting_v3/
+  - type: Client Libraries
+    url: https://etcd.io/docs/v3.5/integrations/
   tags:
   - gRPC
   - Key-Value
   - Watch
+  - Lease
+  - Cluster Management
 - aid: etcd:etcd-http-api
   name: etcd HTTP Gateway API
   description: >-
@@ -49,23 +60,122 @@ apis:
   properties:
   - type: Documentation
     url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: OpenAPI
+    url: openapi/etcd-http-gateway-openapi.yml
   tags:
   - HTTP
   - REST
   - Gateway
+  - gRPC
+- aid: etcd:etcd-concurrency-api
+  name: etcd Concurrency API
+  description: >-
+    The etcd concurrency API provides distributed primitives built on top of
+    the core key-value store, including distributed mutexes (locks), leader
+    election, and software transactional memory (STM). These primitives are
+    used to coordinate between distributed processes and implement consensus
+    patterns in clustered applications.
+  humanURL: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
+  tags:
+  - Concurrency
+  - Distributed Locking
+  - Leader Election
+  - Coordination
+- aid: etcd:etcd-metrics-api
+  name: etcd Metrics API
+  description: >-
+    etcd exposes a Prometheus-compatible metrics endpoint that provides
+    operational insights into the etcd cluster, including request rates,
+    latency histograms, disk I/O statistics, Raft state, and cluster health
+    indicators. This endpoint is used for monitoring and alerting in
+    production etcd deployments.
+  humanURL: https://etcd.io/docs/v3.5/op-guide/monitoring/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/op-guide/monitoring/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/metrics/
+  tags:
+  - Metrics
+  - Monitoring
+  - Prometheus
+  - Observability
+- aid: etcd:etcd-v2-api
+  name: etcd v2 HTTP API
+  description: >-
+    The original etcd v2 API exposed a RESTful HTTP interface for key-value
+    operations using a hierarchical directory structure. This API has been
+    deprecated in favor of the v3 gRPC API and was removed from the default
+    etcd build in later versions. Existing users should migrate to the v3 API.
+  humanURL: https://etcd.io/docs/v2.3/api/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v2.3/api/
+  - type: Deprecation Notice
+    url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
+  - type: Migration Guide
+    url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
+  tags:
+  - HTTP
+  - REST
+  - Key-Value
+  - Deprecated
 common:
+- type: JSONSchema
+  url: json-schema/etcd-key-value-schema.json
+- type: JSON-LD
+  url: json-ld/etcd-context.jsonld
+- type: Website
+  name: etcd Website
+  description: Official etcd project website.
+  url: https://etcd.io
 - type: Documentation
   name: etcd Documentation
   description: Official etcd documentation.
   url: https://etcd.io/docs/
-- type: GitHubOrg
-  name: etcd GitHub
-  description: Source code repository.
+- type: Getting Started
+  name: etcd Getting Started
+  description: Guide to installing and using etcd for the first time.
+  url: https://etcd.io/docs/v3.5/quickstart/
+- type: GitHub Organization
+  name: etcd GitHub Organization
+  description: Source code and related repositories for the etcd project.
+  url: https://github.com/etcd-io
+- type: GitHubRepository
+  name: etcd GitHub Repository
+  description: Main etcd source code repository.
   url: https://github.com/etcd-io/etcd
 - type: Blog
   name: etcd Blog
   description: Project blog and announcements.
   url: https://etcd.io/blog/
+- type: Community
+  name: etcd Community
+  description: Community resources and contribution guidelines for the etcd project.
+  url: https://etcd.io/community/
+- type: Change Log
+  name: etcd Changelog
+  description: Release notes and version history for etcd.
+  url: https://github.com/etcd-io/etcd/blob/main/CHANGELOG/
+- type: Security
+  name: etcd Security
+  description: Security disclosure policy and advisories for etcd.
+  url: https://github.com/etcd-io/etcd/blob/main/security/SECURITY.md
+- type: Support
+  name: etcd Support
+  description: Community support channels including mailing lists and Slack.
+  url: https://etcd.io/community/
+- type: Stack Overflow
+  name: etcd Stack Overflow
+  description: etcd-tagged questions and answers on Stack Overflow.
+  url: https://stackoverflow.com/questions/tagged/etcd
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

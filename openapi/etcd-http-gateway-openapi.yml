@@ -1,0 +1,2145 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway API
+  description: >-
+    The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling
+    clients without gRPC support to interact with the etcd v3 key-value store. The
+    gateway exposes the full etcd v3 API surface including key-value operations
+    (put, get, delete, range queries), watch streams for change notifications,
+    lease management for TTL-based key expiration, cluster membership management,
+    maintenance operations such as snapshots and defragmentation, and authentication
+    and authorization controls. The gateway is served on port 2379 by default and
+    accepts JSON-encoded request bodies that mirror the protobuf message structures
+    of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+servers:
+  - url: http://{host}:{port}/v3
+    description: etcd gRPC Gateway
+    variables:
+      host:
+        default: localhost
+      port:
+        default: '2379'
+tags:
+  - name: KV
+    description: Key-value store operations including put, get, delete, and range queries
+  - name: Watch
+    description: Watch operations for streaming key change notifications
+  - name: Lease
+    description: Lease management for TTL-based key expiration
+  - name: Cluster
+    description: Cluster membership management including member add, remove, and list
+  - name: Maintenance
+    description: Maintenance operations including snapshots, defragmentation, and status
+  - name: Auth
+    description: Authentication and authorization management for users and roles
+security:
+  - bearerAuth: []
+paths:
+  /kv/put:
+    post:
+      operationId: kvPut
+      summary: Put a key-value pair
+      description: >-
+        Stores a key-value pair in the etcd cluster. If the key already exists,
+        the value is updated. Supports setting a lease ID to associate the key
+        with a TTL-based lease that will delete the key when it expires. The
+        prev_kv option returns the previous key-value pair before the update.
+      tags:
+        - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutRequest'
+      responses:
+        '200':
+          description: Key-value pair stored successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PutResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/range:
+    post:
+      operationId: kvRange
+      summary: Get a range of key-value pairs
+      description: >-
+        Retrieves key-value pairs from the etcd cluster. A single key can be
+        fetched by specifying only the key field. A range of keys can be fetched
+        by specifying both key and range_end. Setting range_end to the key plus
+        one byte fetches all keys with the given prefix. The limit parameter
+        controls the maximum number of results returned, and the revision
+        parameter enables point-in-time queries against a specific store revision.
+      tags:
+        - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RangeRequest'
+      responses:
+        '200':
+          description: Key-value pairs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RangeResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/deleterange:
+    post:
+      operationId: kvDeleteRange
+      summary: Delete a range of key-value pairs
+      description: >-
+        Deletes one or more key-value pairs from the etcd cluster. A single key
+        can be deleted by specifying only the key field. A range of keys is deleted
+        by specifying both key and range_end. The prev_kv option returns the deleted
+        key-value pairs before deletion. The count-only option returns only the count
+        of deleted keys without performing the actual deletion.
+      tags:
+        - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteRangeRequest'
+      responses:
+        '200':
+          description: Key-value pairs deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteRangeResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/txn:
+    post:
+      operationId: kvTxn
+      summary: Execute a transaction
+      description: >-
+        Executes an atomic compare-and-swap transaction against the etcd key-value
+        store. A transaction consists of a set of compare conditions, a success
+        branch of operations executed if all conditions are true, and a failure
+        branch executed if any condition is false. Transactions are atomic and
+        isolated, providing strong consistency guarantees within the etcd cluster.
+      tags:
+        - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TxnRequest'
+      responses:
+        '200':
+          description: Transaction executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxnResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/compaction:
+    post:
+      operationId: kvCompact
+      summary: Compact the event history
+      description: >-
+        Compacts the etcd event history up to the given revision. All superseded
+        keys with revisions less than the compaction revision are removed from the
+        store, and watch operations cannot be made against compacted revisions. The
+        physical option triggers a physical deletion of compacted keys immediately
+        rather than deferring to the next compaction cycle.
+      tags:
+        - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompactionRequest'
+      responses:
+        '200':
+          description: Compaction completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompactionResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /watch:
+    post:
+      operationId: watchEvents
+      summary: Watch for key change events
+      description: >-
+        Opens a streaming watch connection to receive notifications of key-value
+        changes in the etcd cluster. Clients send WatchCreateRequest messages to
+        subscribe to key ranges and WatchCancelRequest messages to unsubscribe.
+        The server streams WatchResponse messages containing events that describe
+        each key change including the event type (PUT or DELETE) and the updated
+        key-value pair. Watches can be started from a specific revision to receive
+        historical events.
+      tags:
+        - Watch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchRequest'
+      responses:
+        '200':
+          description: Watch stream established
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/grant:
+    post:
+      operationId: leaseGrant
+      summary: Grant a lease
+      description: >-
+        Creates a new lease with the specified TTL in seconds. The returned lease
+        ID can be attached to key-value pairs so they are automatically deleted
+        when the lease expires. Clients must periodically renew the lease using
+        the keepalive endpoint to prevent expiration. The ID field can be set to
+        0 to allow etcd to assign a lease ID automatically.
+      tags:
+        - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseGrantRequest'
+      responses:
+        '200':
+          description: Lease granted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseGrantResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/revoke:
+    post:
+      operationId: leaseRevoke
+      summary: Revoke a lease
+      description: >-
+        Revokes an existing lease identified by its lease ID. When a lease is
+        revoked, all keys attached to that lease are automatically deleted from
+        the etcd cluster. This is useful for releasing distributed locks or
+        invalidating all session-scoped keys at once.
+      tags:
+        - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseRevokeRequest'
+      responses:
+        '200':
+          description: Lease revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseRevokeResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/keepalive:
+    post:
+      operationId: leaseKeepAlive
+      summary: Renew a lease
+      description: >-
+        Renews an existing lease to prevent it from expiring. Clients must call
+        this endpoint periodically with an interval shorter than the lease TTL to
+        maintain the lease. The response returns the remaining TTL of the lease
+        after the renewal. If the lease has already expired, an error is returned
+        and a new lease must be granted.
+      tags:
+        - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseKeepAliveRequest'
+      responses:
+        '200':
+          description: Lease renewed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseKeepAliveResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/timetolive:
+    post:
+      operationId: leaseTimeToLive
+      summary: Get lease time to live
+      description: >-
+        Returns the remaining time-to-live and other information about a lease
+        identified by its lease ID. When the keys option is set to true, the
+        response also includes all keys attached to the lease. This endpoint is
+        useful for monitoring lease health and understanding which keys will be
+        deleted when the lease expires.
+      tags:
+        - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseTimeToLiveRequest'
+      responses:
+        '200':
+          description: Lease TTL information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseTimeToLiveResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/leases:
+    post:
+      operationId: leaseLeases
+      summary: List all leases
+      description: >-
+        Returns a list of all active leases in the etcd cluster. The response
+        includes the lease IDs of all leases but does not include detailed
+        information such as TTL or attached keys. Use the timetolive endpoint
+        to retrieve detailed information about a specific lease.
+      tags:
+        - Lease
+      responses:
+        '200':
+          description: Lease list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseLeasesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/add:
+    post:
+      operationId: clusterMemberAdd
+      summary: Add a member to the cluster
+      description: >-
+        Adds a new member to the etcd cluster. The peer URLs of the new member
+        must be provided. The new member starts in an unstarted state and is
+        considered a learner until it catches up with the cluster's Raft log.
+        The isLearner field can be set to true to explicitly add the member as
+        a non-voting learner member.
+      tags:
+        - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberAddRequest'
+      responses:
+        '200':
+          description: Member added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberAddResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/remove:
+    post:
+      operationId: clusterMemberRemove
+      summary: Remove a member from the cluster
+      description: >-
+        Removes an existing member from the etcd cluster identified by its member
+        ID. The removed member is immediately excluded from the cluster's Raft
+        quorum. Removing a member that holds the leadership will trigger a new
+        leader election. Care must be taken to maintain quorum when removing
+        members from small clusters.
+      tags:
+        - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberRemoveRequest'
+      responses:
+        '200':
+          description: Member removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberRemoveResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/update:
+    post:
+      operationId: clusterMemberUpdate
+      summary: Update a cluster member
+      description: >-
+        Updates the peer URLs of an existing cluster member identified by its
+        member ID. This is used when a cluster member's network address changes.
+        The member must be reachable at the new URLs for the update to succeed.
+        All other member properties are read-only and cannot be updated through
+        this endpoint.
+      tags:
+        - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberUpdateRequest'
+      responses:
+        '200':
+          description: Member updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberUpdateResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/list:
+    post:
+      operationId: clusterMemberList
+      summary: List cluster members
+      description: >-
+        Returns a list of all members in the etcd cluster including their member
+        IDs, names, peer URLs, client URLs, and whether they are learner members.
+        The linearizable option controls whether the response is read from the
+        cluster leader for the most up-to-date view of membership.
+      tags:
+        - Cluster
+      responses:
+        '200':
+          description: Cluster member list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberListResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/promote:
+    post:
+      operationId: clusterMemberPromote
+      summary: Promote a learner member
+      description: >-
+        Promotes a learner (non-voting) member to a full voting member of the
+        etcd cluster. The learner must be caught up with the cluster's Raft log
+        before it can be promoted. This two-phase approach (add as learner, then
+        promote) provides a safer way to grow clusters without temporarily
+        reducing quorum availability.
+      tags:
+        - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberPromoteRequest'
+      responses:
+        '200':
+          description: Learner member promoted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberPromoteResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/snapshot:
+    post:
+      operationId: maintenanceSnapshot
+      summary: Stream a database snapshot
+      description: >-
+        Streams a point-in-time snapshot of the etcd database as a binary blob.
+        The snapshot can be used to create a backup of the etcd data or to
+        restore a cluster to a previous state. The snapshot is streamed in
+        chunks to support large database sizes. This operation should be performed
+        on a healthy cluster member to ensure consistency.
+      tags:
+        - Maintenance
+      responses:
+        '200':
+          description: Database snapshot stream
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/defragment:
+    post:
+      operationId: maintenanceDefragment
+      summary: Defragment a member's backend
+      description: >-
+        Defragments the storage backend of the etcd member that receives the
+        request, reclaiming disk space from deleted keys. Defragmentation is an
+        expensive operation that blocks the member from serving requests during
+        the process. It should be performed during maintenance windows on
+        individual members rather than on all cluster members simultaneously.
+      tags:
+        - Maintenance
+      responses:
+        '200':
+          description: Defragmentation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefragmentResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/status:
+    post:
+      operationId: maintenanceStatus
+      summary: Get member status
+      description: >-
+        Returns the status of the etcd member that receives the request, including
+        the cluster ID, member ID, Raft index, Raft term, Raft applied index, and
+        whether the member is a learner. The leader field contains the member ID
+        of the current cluster leader. This endpoint is useful for monitoring the
+        health and state of individual cluster members.
+      tags:
+        - Maintenance
+      responses:
+        '200':
+          description: Member status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/alarm:
+    post:
+      operationId: maintenanceAlarm
+      summary: Manage cluster alarms
+      description: >-
+        Manages cluster-level alarms that indicate error conditions such as
+        insufficient storage space (NOSPACE). Supports activating alarms,
+        deactivating (disarming) alarms, and listing all active alarms. When
+        a NOSPACE alarm is active, the cluster becomes read-only to prevent
+        data loss. After addressing the underlying issue, the alarm must be
+        explicitly deactivated to restore write access.
+      tags:
+        - Maintenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlarmRequest'
+      responses:
+        '200':
+          description: Alarm operation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlarmResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/hash:
+    post:
+      operationId: maintenanceHash
+      summary: Get member backend hash
+      description: >-
+        Returns a hash of the etcd member's backend database. This hash can be
+        used to verify data consistency across cluster members. If members report
+        different hashes, it may indicate a data corruption issue. This endpoint
+        is primarily used for debugging and consistency verification.
+      tags:
+        - Maintenance
+      responses:
+        '200':
+          description: Backend hash retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HashResponse'
+  /maintenance/transfer-leadership:
+    post:
+      operationId: maintenanceTransferLeadership
+      summary: Transfer cluster leadership
+      description: >-
+        Transfers the Raft leadership from the current leader to the specified
+        target member. This operation is useful during maintenance to gracefully
+        move leadership away from a member that needs to be taken offline. The
+        target member must be a healthy voting member of the cluster for the
+        transfer to succeed.
+      tags:
+        - Maintenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveLeaderRequest'
+      responses:
+        '200':
+          description: Leadership transfer initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoveLeaderResponse'
+  /auth/enable:
+    post:
+      operationId: authEnable
+      summary: Enable authentication
+      description: >-
+        Enables authentication on the etcd cluster. Before enabling authentication,
+        a root user with root role must be created. Once authentication is enabled,
+        all requests must include valid credentials. The root user has full access
+        to all resources and can manage users and roles.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Authentication enabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEnableResponse'
+  /auth/disable:
+    post:
+      operationId: authDisable
+      summary: Disable authentication
+      description: >-
+        Disables authentication on the etcd cluster, allowing all clients to
+        access the cluster without credentials. This operation requires root
+        user authentication when auth is currently enabled. Disabling authentication
+        removes all access controls and should only be performed in trusted
+        network environments.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Authentication disabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthDisableResponse'
+  /auth/authenticate:
+    post:
+      operationId: authAuthenticate
+      summary: Authenticate a user
+      description: >-
+        Authenticates a user with their username and password and returns a JWT
+        token that can be used for subsequent authenticated requests. The token
+        must be included in the Authorization header as a Bearer token. Tokens
+        expire based on the cluster's configured token TTL and must be refreshed
+        by calling this endpoint again.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/add:
+    post:
+      operationId: authUserAdd
+      summary: Add a user
+      description: >-
+        Creates a new user in the etcd authentication system with the specified
+        username and password. Users can be assigned to roles which grant them
+        permissions to access specific key ranges. The hashedPassword field can
+        be used to provide a pre-hashed bcrypt password instead of a plaintext
+        password.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserAddRequest'
+      responses:
+        '200':
+          description: User added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserAddResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/get:
+    post:
+      operationId: authUserGet
+      summary: Get user details
+      description: >-
+        Returns details about a specific user including their assigned roles.
+        This endpoint requires root or appropriate administrative privileges.
+        The password hash is not returned for security reasons.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserGetRequest'
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserGetResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/delete:
+    post:
+      operationId: authUserDelete
+      summary: Delete a user
+      description: >-
+        Deletes a user from the etcd authentication system. Deleting a user
+        removes all of their role assignments. The root user cannot be deleted
+        while authentication is enabled.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserDeleteRequest'
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserDeleteResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/list:
+    post:
+      operationId: authUserList
+      summary: List all users
+      description: >-
+        Returns a list of all usernames registered in the etcd authentication
+        system. This endpoint requires root or administrative privileges. Use
+        the user/get endpoint to retrieve detailed information including role
+        assignments for a specific user.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: User list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserListResponse'
+  /auth/user/changepw:
+    post:
+      operationId: authUserChangePassword
+      summary: Change a user's password
+      description: >-
+        Changes the password of an existing user in the etcd authentication
+        system. Non-root users can change their own password. Root or administrative
+        users can change the password of any user. The hashedPassword field can
+        be used to provide a pre-hashed bcrypt password.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserChangePasswordRequest'
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserChangePasswordResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/grant:
+    post:
+      operationId: authUserGrantRole
+      summary: Grant a role to a user
+      description: >-
+        Assigns a role to a user in the etcd authentication system. The user
+        inherits all key-range permissions defined on the granted role. A user
+        can be assigned multiple roles. The role must exist before it can be
+        granted to a user.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserGrantRoleRequest'
+      responses:
+        '200':
+          description: Role granted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserGrantRoleResponse'
+        '404':
+          description: User or role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/revoke:
+    post:
+      operationId: authUserRevokeRole
+      summary: Revoke a role from a user
+      description: >-
+        Removes a role assignment from a user in the etcd authentication system.
+        After revocation, the user loses all permissions granted by that role.
+        Other role assignments remain intact.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserRevokeRoleRequest'
+      responses:
+        '200':
+          description: Role revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserRevokeRoleResponse'
+        '404':
+          description: User or role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/add:
+    post:
+      operationId: authRoleAdd
+      summary: Add a role
+      description: >-
+        Creates a new role in the etcd authentication system. Roles define sets
+        of permissions over key ranges. Each permission specifies a key range
+        (single key or range using key and range_end) and the allowed operations
+        (read, write, or readwrite). Roles are assigned to users to grant them
+        access.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleAddRequest'
+      responses:
+        '200':
+          description: Role added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleAddResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/get:
+    post:
+      operationId: authRoleGet
+      summary: Get role details
+      description: >-
+        Returns details about a specific role including all key-range permissions
+        assigned to the role. This endpoint is used to inspect role configurations
+        for auditing and debugging purposes.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleGetRequest'
+      responses:
+        '200':
+          description: Role details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleGetResponse'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/delete:
+    post:
+      operationId: authRoleDelete
+      summary: Delete a role
+      description: >-
+        Deletes a role from the etcd authentication system. When a role is deleted,
+        it is automatically revoked from all users that had been assigned the role.
+        The root role cannot be deleted while authentication is enabled.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleDeleteRequest'
+      responses:
+        '200':
+          description: Role deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleDeleteResponse'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/list:
+    post:
+      operationId: authRoleList
+      summary: List all roles
+      description: >-
+        Returns a list of all role names defined in the etcd authentication system.
+        Use the role/get endpoint to retrieve detailed information including
+        permissions for a specific role.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Role list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleListResponse'
+  /auth/role/grant:
+    post:
+      operationId: authRoleGrantPermission
+      summary: Grant a permission to a role
+      description: >-
+        Assigns a key-range permission to a role. The permission specifies a
+        key range (single key or range using key and range_end) and the allowed
+        operations (read, write, or readwrite). All users assigned the role
+        will gain the new permission immediately.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleGrantPermissionRequest'
+      responses:
+        '200':
+          description: Permission granted to role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleGrantPermissionResponse'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/revoke:
+    post:
+      operationId: authRoleRevokePermission
+      summary: Revoke a permission from a role
+      description: >-
+        Removes a key-range permission from a role. All users assigned the role
+        will immediately lose the revoked permission. The key and range_end fields
+        must match an existing permission on the role exactly.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleRevokePermissionRequest'
+      responses:
+        '200':
+          description: Permission revoked from role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleRevokePermissionResponse'
+        '404':
+          description: Role or permission not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        JWT token obtained from the /auth/authenticate endpoint. Include in
+        the Authorization header as "Bearer {token}".
+  schemas:
+    KeyValue:
+      type: object
+      description: >-
+        A key-value pair stored in the etcd cluster. Keys and values are
+        base64-encoded byte strings. The version field is the version of the
+        key, the create_revision is the cluster revision when the key was created,
+        and the mod_revision is the cluster revision when the key was last modified.
+      properties:
+        key:
+          type: string
+          description: The key in base64-encoded format
+        create_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was created
+        mod_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was last modified
+        version:
+          type: string
+          description: Version of the key, monotonically increasing for each put on the key
+        value:
+          type: string
+          description: The value in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID attached to the key, or 0 if no lease is attached
+    ResponseHeader:
+      type: object
+      description: >-
+        Header included in every etcd response containing cluster metadata and
+        the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    PutRequest:
+      type: object
+      description: Request to store a key-value pair in the etcd cluster
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          description: The key to store in base64-encoded format
+        value:
+          type: string
+          description: The value to store in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID to associate with the key for TTL-based expiration
+        prev_kv:
+          type: boolean
+          description: When true, returns the previous key-value pair before the update
+        ignore_value:
+          type: boolean
+          description: When true, updates the key without changing the value (only updates lease)
+        ignore_lease:
+          type: boolean
+          description: When true, updates the key without changing the lease
+    PutResponse:
+      type: object
+      description: Response from a put operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        prev_kv:
+          $ref: '#/components/schemas/KeyValue'
+    RangeRequest:
+      type: object
+      description: Request to retrieve a range of key-value pairs from the etcd cluster
+      required:
+        - key
+      properties:
+        key:
+          type: string
+          description: The first key in the range in base64-encoded format
+        range_end:
+          type: string
+          description: >-
+            The upper bound of the range in base64-encoded format (exclusive).
+            If not specified, only the key is retrieved. If set to key plus one
+            byte, all keys with the given prefix are retrieved.
+        limit:
+          type: string
+          description: Maximum number of key-value pairs to return. 0 means no limit.
+        revision:
+          type: string
+          description: Point-in-time revision for the query. 0 means the current revision.
+        sort_order:
+          type: string
+          enum: [NONE, ASCEND, DESCEND]
+          description: Sort order for the results
+        sort_target:
+          type: string
+          enum: [KEY, VERSION, CREATE, MOD, VALUE]
+          description: Field to sort results by
+        serializable:
+          type: boolean
+          description: >-
+            When true, uses serializable (stale) reads for higher throughput.
+            When false (default), uses linearizable reads for strong consistency.
+        keys_only:
+          type: boolean
+          description: When true, returns only keys without values
+        count_only:
+          type: boolean
+          description: When true, returns only the count without the key-value pairs
+        min_mod_revision:
+          type: string
+          description: Filter for keys with mod_revision greater than or equal to this value
+        max_mod_revision:
+          type: string
+          description: Filter for keys with mod_revision less than or equal to this value
+        min_create_revision:
+          type: string
+          description: Filter for keys with create_revision greater than or equal to this value
+        max_create_revision:
+          type: string
+          description: Filter for keys with create_revision less than or equal to this value
+    RangeResponse:
+      type: object
+      description: Response from a range query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        kvs:
+          type: array
+          description: List of key-value pairs matching the range query
+          items:
+            $ref: '#/components/schemas/KeyValue'
+        more:
+          type: boolean
+          description: >-
+            True if more key-value pairs exist beyond the limit specified in
+            the request
+        count:
+          type: string
+          description: Total number of keys in the range matching the request
+    DeleteRangeRequest:
+      type: object
+      description: Request to delete a range of key-value pairs from the etcd cluster
+      required:
+        - key
+      properties:
+        key:
+          type: string
+          description: The first key in the range to delete in base64-encoded format
+        range_end:
+          type: string
+          description: The upper bound of the range to delete in base64-encoded format (exclusive)
+        prev_kv:
+          type: boolean
+          description: When true, returns the deleted key-value pairs before deletion
+    DeleteRangeResponse:
+      type: object
+      description: Response from a delete range operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        deleted:
+          type: string
+          description: Number of keys deleted
+        prev_kvs:
+          type: array
+          description: Previous key-value pairs that were deleted when prev_kv was requested
+          items:
+            $ref: '#/components/schemas/KeyValue'
+    Compare:
+      type: object
+      description: A condition in a transaction that compares a key's attribute to a target value
+      properties:
+        result:
+          type: string
+          enum: [EQUAL, GREATER, LESS, NOT_EQUAL]
+          description: The comparison operation to apply
+        target:
+          type: string
+          enum: [VERSION, CREATE, MOD, VALUE, LEASE]
+          description: The attribute of the key to compare
+        key:
+          type: string
+          description: The key to compare in base64-encoded format
+        range_end:
+          type: string
+          description: The range end for comparing a range of keys
+        version:
+          type: string
+          description: Version to compare against when target is VERSION
+        create_revision:
+          type: string
+          description: Create revision to compare against when target is CREATE
+        mod_revision:
+          type: string
+          description: Mod revision to compare against when target is MOD
+        value:
+          type: string
+          description: Value to compare against when target is VALUE in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID to compare against when target is LEASE
+    RequestOp:
+      type: object
+      description: An operation within a transaction's success or failure branch
+      properties:
+        request_range:
+          $ref: '#/components/schemas/RangeRequest'
+        request_put:
+          $ref: '#/components/schemas/PutRequest'
+        request_delete_range:
+          $ref: '#/components/schemas/DeleteRangeRequest'
+        request_txn:
+          $ref: '#/components/schemas/TxnRequest'
+    TxnRequest:
+      type: object
+      description: >-
+        An atomic compare-and-swap transaction consisting of conditions, success
+        operations, and failure operations
+      properties:
+        compare:
+          type: array
+          description: Conditions that must all be true for the success branch to execute
+          items:
+            $ref: '#/components/schemas/Compare'
+        success:
+          type: array
+          description: Operations to execute when all compare conditions are true
+          items:
+            $ref: '#/components/schemas/RequestOp'
+        failure:
+          type: array
+          description: Operations to execute when any compare condition is false
+          items:
+            $ref: '#/components/schemas/RequestOp'
+    TxnResponse:
+      type: object
+      description: Response from a transaction execution
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        succeeded:
+          type: boolean
+          description: True if all compare conditions were true and the success branch was executed
+        responses:
+          type: array
+          description: Results of the operations executed in the branch that ran
+          items:
+            type: object
+            description: Operation response
+    CompactionRequest:
+      type: object
+      description: Request to compact the etcd event history
+      required:
+        - revision
+      properties:
+        revision:
+          type: string
+          description: Revision to compact up to (all revisions below this will be removed)
+        physical:
+          type: boolean
+          description: When true, triggers an immediate physical deletion of compacted data
+    CompactionResponse:
+      type: object
+      description: Response from a compaction operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    WatchCreateRequest:
+      type: object
+      description: Request to create a new watch on a key range
+      properties:
+        key:
+          type: string
+          description: The key to watch in base64-encoded format
+        range_end:
+          type: string
+          description: The range end for watching multiple keys in base64-encoded format
+        start_revision:
+          type: string
+          description: Revision to start watching from. 0 means the current revision.
+        progress_notify:
+          type: boolean
+          description: When true, sends periodic progress reports even when no events occur
+        filters:
+          type: array
+          description: Event types to filter out from the watch stream
+          items:
+            type: string
+            enum: [NOPUT, NODELETE]
+        prev_kv:
+          type: boolean
+          description: When true, includes the previous key-value pair in DELETE events
+        watch_id:
+          type: string
+          description: User-assigned ID to identify this watch stream
+        fragment:
+          type: boolean
+          description: When true, splits large watch responses into smaller fragments
+    WatchRequest:
+      type: object
+      description: A watch stream request that can create or cancel watches
+      properties:
+        create_request:
+          $ref: '#/components/schemas/WatchCreateRequest'
+        cancel_request:
+          type: object
+          description: Request to cancel an existing watch
+          properties:
+            watch_id:
+              type: string
+              description: ID of the watch to cancel
+    WatchEvent:
+      type: object
+      description: An event describing a change to a key in the etcd cluster
+      properties:
+        type:
+          type: string
+          enum: [PUT, DELETE]
+          description: Type of the event - PUT for creates/updates, DELETE for deletions
+        kv:
+          $ref: '#/components/schemas/KeyValue'
+        prev_kv:
+          $ref: '#/components/schemas/KeyValue'
+    WatchResponse:
+      type: object
+      description: A streaming response from the watch endpoint
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        watch_id:
+          type: string
+          description: ID of the watch that generated this response
+        created:
+          type: boolean
+          description: True if this response confirms the creation of a new watch
+        canceled:
+          type: boolean
+          description: True if this response confirms the cancellation of a watch
+        compact_revision:
+          type: string
+          description: >-
+            Set when a watch is canceled because the requested start revision has
+            been compacted
+        cancel_reason:
+          type: string
+          description: Reason the watch was canceled
+        fragment:
+          type: boolean
+          description: True if this is a fragment of a larger watch response
+        events:
+          type: array
+          description: List of events in this watch response
+          items:
+            $ref: '#/components/schemas/WatchEvent'
+    LeaseGrantRequest:
+      type: object
+      description: Request to create a new lease
+      required:
+        - TTL
+      properties:
+        TTL:
+          type: string
+          description: Time-to-live in seconds for the lease
+        ID:
+          type: string
+          description: User-specified lease ID. Set to 0 to let etcd assign the ID automatically.
+    LeaseGrantResponse:
+      type: object
+      description: Response from a lease grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        ID:
+          type: string
+          description: Lease ID assigned to the new lease
+        TTL:
+          type: string
+          description: Actual TTL in seconds granted to the lease
+        error:
+          type: string
+          description: Error message if the lease grant failed
+    LeaseRevokeRequest:
+      type: object
+      description: Request to revoke an existing lease
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to revoke
+    LeaseRevokeResponse:
+      type: object
+      description: Response from a lease revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    LeaseKeepAliveRequest:
+      type: object
+      description: Request to renew a lease
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to renew
+    LeaseKeepAliveResponse:
+      type: object
+      description: Response from a lease keepalive operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        ID:
+          type: string
+          description: ID of the renewed lease
+        TTL:
+          type: string
+          description: Remaining TTL in seconds after the renewal
+    LeaseTimeToLiveRequest:
+      type: object
+      description: Request to get the TTL of a lease
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to query
+        keys:
+          type: boolean
+          description: When true, returns all keys attached to the lease
+    LeaseTimeToLiveResponse:
+      type: object
+      description: Response from a lease TTL query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        ID:
+          type: string
+          description: ID of the lease
+        TTL:
+          type: string
+          description: Remaining TTL in seconds for the lease
+        grantedTTL:
+          type: string
+          description: Initial TTL in seconds that was granted to the lease
+        keys:
+          type: array
+          description: Keys attached to the lease when the keys option was requested
+          items:
+            type: string
+    LeaseLeasesResponse:
+      type: object
+      description: Response from a list leases operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        leases:
+          type: array
+          description: List of active leases
+          items:
+            type: object
+            description: A lease status entry
+            properties:
+              ID:
+                type: string
+                description: Lease ID
+    Member:
+      type: object
+      description: A member of the etcd cluster
+      properties:
+        ID:
+          type: string
+          description: Unique identifier for the cluster member
+        name:
+          type: string
+          description: Human-readable name of the cluster member
+        peerURLs:
+          type: array
+          description: URLs used for peer-to-peer communication within the cluster
+          items:
+            type: string
+        clientURLs:
+          type: array
+          description: URLs that clients use to communicate with this member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: True if this member is a non-voting learner member
+    MemberAddRequest:
+      type: object
+      description: Request to add a new member to the cluster
+      required:
+        - peerURLs
+      properties:
+        peerURLs:
+          type: array
+          description: Peer URLs of the new member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: When true, adds the member as a non-voting learner
+    MemberAddResponse:
+      type: object
+      description: Response from a member add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        member:
+          $ref: '#/components/schemas/Member'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberRemoveRequest:
+      type: object
+      description: Request to remove a member from the cluster
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the member to remove
+    MemberRemoveResponse:
+      type: object
+      description: Response from a member remove operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the removal
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberUpdateRequest:
+      type: object
+      description: Request to update a cluster member's peer URLs
+      required:
+        - ID
+        - peerURLs
+      properties:
+        ID:
+          type: string
+          description: ID of the member to update
+        peerURLs:
+          type: array
+          description: New peer URLs for the member
+          items:
+            type: string
+    MemberUpdateResponse:
+      type: object
+      description: Response from a member update operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberListResponse:
+      type: object
+      description: Response from a member list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: List of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberPromoteRequest:
+      type: object
+      description: Request to promote a learner member to a voting member
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the learner member to promote
+    MemberPromoteResponse:
+      type: object
+      description: Response from a member promote operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the promotion
+          items:
+            $ref: '#/components/schemas/Member'
+    DefragmentResponse:
+      type: object
+      description: Response from a defragmentation operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    StatusResponse:
+      type: object
+      description: Response from a member status query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        version:
+          type: string
+          description: etcd version of the member
+        dbSize:
+          type: string
+          description: Size of the backend database in bytes
+        dbSizeInUse:
+          type: string
+          description: Size of the backend database in bytes actually in use
+        leader:
+          type: string
+          description: Member ID of the current cluster leader
+        raftIndex:
+          type: string
+          description: Current Raft index of the member
+        raftTerm:
+          type: string
+          description: Current Raft term of the member
+        raftAppliedIndex:
+          type: string
+          description: Current Raft applied index of the member
+        errors:
+          type: array
+          description: List of active alarms or errors on the member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: True if this member is a non-voting learner
+    AlarmRequest:
+      type: object
+      description: Request to manage cluster alarms
+      properties:
+        action:
+          type: string
+          enum: [GET, ACTIVATE, DEACTIVATE]
+          description: Action to perform on alarms
+        memberID:
+          type: string
+          description: Member ID for the alarm. Set to 0 for all members.
+        alarm:
+          type: string
+          enum: [NONE, NOSPACE, CORRUPT]
+          description: Type of alarm to activate or deactivate
+    AlarmMember:
+      type: object
+      description: An alarm associated with a cluster member
+      properties:
+        memberID:
+          type: string
+          description: Member ID that has the alarm
+        alarm:
+          type: string
+          enum: [NONE, NOSPACE, CORRUPT]
+          description: Type of alarm
+    AlarmResponse:
+      type: object
+      description: Response from an alarm operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        alarms:
+          type: array
+          description: List of active alarms in the cluster
+          items:
+            $ref: '#/components/schemas/AlarmMember'
+    HashResponse:
+      type: object
+      description: Response from a backend hash query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        hash:
+          type: integer
+          description: Hash of the backend database
+    MoveLeaderRequest:
+      type: object
+      description: Request to transfer cluster leadership
+      required:
+        - targetID
+      properties:
+        targetID:
+          type: string
+          description: Member ID of the target leader
+    MoveLeaderResponse:
+      type: object
+      description: Response from a leadership transfer operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthEnableResponse:
+      type: object
+      description: Response from enabling authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthDisableResponse:
+      type: object
+      description: Response from disabling authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthenticateRequest:
+      type: object
+      description: Request to authenticate a user
+      required:
+        - name
+        - password
+      properties:
+        name:
+          type: string
+          description: Username to authenticate
+        password:
+          type: string
+          description: Password for the user
+          format: password
+    AuthenticateResponse:
+      type: object
+      description: Response from a successful authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        token:
+          type: string
+          description: JWT token to use for subsequent authenticated requests
+    AuthUserAddRequest:
+      type: object
+      description: Request to add a new user
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Username for the new user
+        password:
+          type: string
+          description: Plaintext password for the new user
+          format: password
+        hashedPassword:
+          type: string
+          description: Pre-hashed bcrypt password for the new user
+        options:
+          type: object
+          description: User creation options
+    AuthUserAddResponse:
+      type: object
+      description: Response from a user add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserGetRequest:
+      type: object
+      description: Request to get user details
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Username to retrieve
+    AuthUserGetResponse:
+      type: object
+      description: Response from a user get operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        roles:
+          type: array
+          description: List of roles assigned to the user
+          items:
+            type: string
+    AuthUserDeleteRequest:
+      type: object
+      description: Request to delete a user
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Username to delete
+    AuthUserDeleteResponse:
+      type: object
+      description: Response from a user delete operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserListResponse:
+      type: object
+      description: Response from a user list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        users:
+          type: array
+          description: List of all usernames
+          items:
+            type: string
+    AuthUserChangePasswordRequest:
+      type: object
+      description: Request to change a user's password
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Username whose password to change
+        password:
+          type: string
+          description: New plaintext password
+          format: password
+        hashedPassword:
+          type: string
+          description: New pre-hashed bcrypt password
+    AuthUserChangePasswordResponse:
+      type: object
+      description: Response from a password change operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserGrantRoleRequest:
+      type: object
+      description: Request to grant a role to a user
+      required:
+        - user
+        - role
+      properties:
+        user:
+          type: string
+          description: Username to grant the role to
+        role:
+          type: string
+          description: Name of the role to grant
+    AuthUserGrantRoleResponse:
+      type: object
+      description: Response from a user role grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserRevokeRoleRequest:
+      type: object
+      description: Request to revoke a role from a user
+      required:
+        - name
+        - role
+      properties:
+        name:
+          type: string
+          description: Username to revoke the role from
+        role:
+          type: string
+          description: Name of the role to revoke
+    AuthUserRevokeRoleResponse:
+      type: object
+      description: Response from a user role revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleAddRequest:
+      type: object
+      description: Request to add a new role
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Name for the new role
+    AuthRoleAddResponse:
+      type: object
+      description: Response from a role add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleGetRequest:
+      type: object
+      description: Request to get role details
+      required:
+        - role
+      properties:
+        role:
+          type: string
+          description: Name of the role to retrieve
+    Permission:
+      type: object
+      description: A permission granting access to a key range
+      properties:
+        permType:
+          type: string
+          enum: [READ, WRITE, READWRITE]
+          description: Type of access granted by the permission
+        key:
+          type: string
+          description: The key or start of the key range in base64-encoded format
+        range_end:
+          type: string
+          description: The end of the key range in base64-encoded format (exclusive)
+    AuthRoleGetResponse:
+      type: object
+      description: Response from a role get operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        perm:
+          type: array
+          description: List of permissions assigned to the role
+          items:
+            $ref: '#/components/schemas/Permission'
+    AuthRoleDeleteRequest:
+      type: object
+      description: Request to delete a role
+      required:
+        - role
+      properties:
+        role:
+          type: string
+          description: Name of the role to delete
+    AuthRoleDeleteResponse:
+      type: object
+      description: Response from a role delete operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleListResponse:
+      type: object
+      description: Response from a role list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        roles:
+          type: array
+          description: List of all role names
+          items:
+            type: string
+    AuthRoleGrantPermissionRequest:
+      type: object
+      description: Request to grant a permission to a role
+      required:
+        - name
+        - perm
+      properties:
+        name:
+          type: string
+          description: Name of the role to grant the permission to
+        perm:
+          $ref: '#/components/schemas/Permission'
+    AuthRoleGrantPermissionResponse:
+      type: object
+      description: Response from a role permission grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleRevokePermissionRequest:
+      type: object
+      description: Request to revoke a permission from a role
+      required:
+        - role
+        - key
+      properties:
+        role:
+          type: string
+          description: Name of the role to revoke the permission from
+        key:
+          type: string
+          description: The key of the permission to revoke in base64-encoded format
+        range_end:
+          type: string
+          description: The range end of the permission to revoke in base64-encoded format
+    AuthRoleRevokePermissionResponse:
+      type: object
+      description: Response from a role permission revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message

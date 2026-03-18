@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://etcd.io/schemas/etcd/key-value.json",
+  "title": "etcd Key-Value Store",
+  "description": "Schema for etcd key-value store entities including key-value pairs, leases, cluster members, transactions, watch events, and authentication resources used by the etcd v3 API.",
+  "type": "object",
+  "$defs": {
+    "KeyValue": {
+      "type": "object",
+      "title": "KeyValue",
+      "description": "A key-value pair stored in the etcd cluster. Keys and values are base64-encoded byte strings. The revision fields track the cluster-wide revision at which the key was created and last modified.",
+      "required": ["key"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The key in base64-encoded format",
+          "contentEncoding": "base64"
+        },
+        "create_revision": {
+          "type": "string",
+          "description": "Cluster revision when this key was first created. Used for optimistic concurrency control in transactions.",
+          "pattern": "^[0-9]+$"
+        },
+        "mod_revision": {
+          "type": "string",
+          "description": "Cluster revision when this key was last modified. Monotonically increasing with each write operation.",
+          "pattern": "^[0-9]+$"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the key, starts at 1 on creation and increments by 1 on each put. Resets to 1 after delete and recreate.",
+          "pattern": "^[0-9]+$"
+        },
+        "value": {
+          "type": "string",
+          "description": "The stored value in base64-encoded format. Can be any binary data.",
+          "contentEncoding": "base64"
+        },
+        "lease": {
+          "type": "string",
+          "description": "Lease ID attached to the key. When the lease expires, this key is automatically deleted. Value of 0 means no lease is attached.",
+          "pattern": "^[0-9]+$"
+        }
+      }
+    },
+    "ResponseHeader": {
+      "type": "object",
+      "title": "ResponseHeader",
+      "description": "Metadata header included in every etcd API response, containing cluster identification and the store revision at the time of the response.",
+      "properties": {
+        "cluster_id": {
+          "type": "string",
+          "description": "Unique identifier for the etcd cluster",
+          "pattern": "^[0-9]+$"
+        },
+        "member_id": {
+          "type": "string",
+          "description": "Unique identifier for the cluster member that generated the response",
+          "pattern": "^[0-9]+$"
+        },
+        "revision": {
+          "type": "string",
+          "description": "Key-value store revision at the time of the response. Monotonically increasing with each write operation.",
+          "pattern": "^[0-9]+$"
+        },
+        "raft_term": {
+          "type": "string",
+          "description": "Raft term at the time of the response. Increments each time a new leader is elected.",
+          "pattern": "^[0-9]+$"
+        }
+      }
+    },
+    "Lease": {
+      "type": "object",
+      "title": "Lease",
+      "description": "A time-based lease that can be attached to keys to give them a TTL. When the lease expires, all attached keys are automatically deleted. Clients must periodically send keepalive requests to prevent lease expiration.",
+      "required": ["ID", "TTL"],
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "Unique identifier for the lease assigned by the etcd cluster",
+          "pattern": "^[0-9]+$"
+        },
+        "TTL": {
+          "type": "string",
+          "description": "Time-to-live in seconds for the lease. After this duration without a keepalive, the lease expires.",
+          "pattern": "^[0-9]+$"
+        },
+        "grantedTTL": {
+          "type": "string",
+          "description": "Original TTL in seconds that was granted when the lease was created",
+          "pattern": "^[0-9]+$"
+        },
+        "keys": {
+          "type": "array",
+          "description": "List of keys attached to this lease that will be deleted when the lease expires",
+          "items": {
+            "type": "string",
+            "description": "A key in base64-encoded format",
+            "contentEncoding": "base64"
+          }
+        }
+      }
+    },
+    "Member": {
+      "type": "object",
+      "title": "Member",
+      "description": "A node participating in the etcd cluster. Members communicate via peer URLs and serve clients via client URLs. Learner members are non-voting participants that receive Raft log replication but do not vote in elections.",
+      "required": ["ID"],
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "Unique identifier for the cluster member",
+          "pattern": "^[0-9]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the cluster member, typically the hostname",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "peerURLs": {
+          "type": "array",
+          "description": "URLs used by other etcd cluster members to communicate with this member",
+          "items": {
+            "type": "string",
+            "description": "A peer communication URL",
+            "format": "uri"
+          }
+        },
+        "clientURLs": {
+          "type": "array",
+          "description": "URLs that etcd clients use to connect to this member",
+          "items": {
+            "type": "string",
+            "description": "A client communication URL",
+            "format": "uri"
+          }
+        },
+        "isLearner": {
+          "type": "boolean",
+          "description": "True if this member is a non-voting learner. Learners receive Raft log entries but do not count toward quorum."
+        }
+      }
+    },
+    "WatchEvent": {
+      "type": "object",
+      "title": "WatchEvent",
+      "description": "An event describing a change to a key in the etcd cluster. Emitted by watch streams when keys are created, updated, or deleted.",
+      "required": ["type", "kv"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["PUT", "DELETE"],
+          "description": "Type of the event. PUT indicates a key was created or updated; DELETE indicates a key was deleted."
+        },
+        "kv": {
+          "$ref": "#/$defs/KeyValue",
+          "description": "The current key-value pair at the time of the event. For DELETE events, only the key and mod_revision are populated."
+        },
+        "prev_kv": {
+          "$ref": "#/$defs/KeyValue",
+          "description": "The previous key-value pair before the event occurred. Only present when the watch was created with prev_kv=true."
+        }
+      }
+    },
+    "Permission": {
+      "type": "object",
+      "title": "Permission",
+      "description": "An access control permission granting read, write, or read-write access to a specific key or key range in the etcd cluster.",
+      "required": ["permType", "key"],
+      "properties": {
+        "permType": {
+          "type": "string",
+          "enum": ["READ", "WRITE", "READWRITE"],
+          "description": "Type of access granted. READ allows get/range operations, WRITE allows put/delete operations, READWRITE allows both."
+        },
+        "key": {
+          "type": "string",
+          "description": "The key or start of the key range in base64-encoded format",
+          "contentEncoding": "base64"
+        },
+        "range_end": {
+          "type": "string",
+          "description": "The end of the key range in base64-encoded format (exclusive). If omitted, only the single key is covered.",
+          "contentEncoding": "base64"
+        }
+      }
+    },
+    "Role": {
+      "type": "object",
+      "title": "Role",
+      "description": "An authorization role that defines a set of permissions over key ranges. Roles are assigned to users to grant them access to specific parts of the etcd key space.",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique name for the role within the etcd cluster",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "keyPermission": {
+          "type": "array",
+          "description": "List of key-range permissions associated with this role",
+          "items": {
+            "$ref": "#/$defs/Permission"
+          }
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "title": "User",
+      "description": "An authenticated user in the etcd authorization system. Users are assigned roles that define their access permissions to the key-value store.",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique username for the user within the etcd cluster",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "roles": {
+          "type": "array",
+          "description": "List of role names assigned to the user",
+          "items": {
+            "type": "string",
+            "description": "A role name"
+          }
+        },
+        "options": {
+          "type": "object",
+          "description": "Additional user creation options",
+          "properties": {
+            "no_password": {
+              "type": "boolean",
+              "description": "When true, the user has no password and can only authenticate via mTLS client certificates"
+            }
+          }
+        }
+      }
+    },
+    "Alarm": {
+      "type": "object",
+      "title": "Alarm",
+      "description": "A cluster-level alarm indicating an error condition. When a NOSPACE alarm is active, the cluster stops accepting write requests to prevent data loss.",
+      "properties": {
+        "memberID": {
+          "type": "string",
+          "description": "ID of the cluster member that has this alarm",
+          "pattern": "^[0-9]+$"
+        },
+        "alarm": {
+          "type": "string",
+          "enum": ["NONE", "NOSPACE", "CORRUPT"],
+          "description": "Type of alarm. NOSPACE indicates insufficient storage; CORRUPT indicates data corruption detected."
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "title": "Transaction",
+      "description": "An atomic compare-and-swap transaction that executes a set of operations conditionally. All compare conditions must be true for the success branch to execute; otherwise the failure branch runs. The entire transaction is atomic and isolated.",
+      "properties": {
+        "compare": {
+          "type": "array",
+          "description": "Conditions evaluated to determine which branch to execute",
+          "items": {
+            "$ref": "#/$defs/Compare"
+          }
+        },
+        "success": {
+          "type": "array",
+          "description": "Operations executed when all compare conditions are true",
+          "items": {
+            "$ref": "#/$defs/RequestOp"
+          }
+        },
+        "failure": {
+          "type": "array",
+          "description": "Operations executed when any compare condition is false",
+          "items": {
+            "$ref": "#/$defs/RequestOp"
+          }
+        }
+      }
+    },
+    "Compare": {
+      "type": "object",
+      "title": "Compare",
+      "description": "A condition in a transaction that compares a key attribute (version, create revision, mod revision, value, or lease) to a target value using a comparison operator.",
+      "required": ["result", "target", "key"],
+      "properties": {
+        "result": {
+          "type": "string",
+          "enum": ["EQUAL", "GREATER", "LESS", "NOT_EQUAL"],
+          "description": "The comparison operator to apply when evaluating the condition"
+        },
+        "target": {
+          "type": "string",
+          "enum": ["VERSION", "CREATE", "MOD", "VALUE", "LEASE"],
+          "description": "The attribute of the key to compare against the target value"
+        },
+        "key": {
+          "type": "string",
+          "description": "The key whose attribute is being compared in base64-encoded format",
+          "contentEncoding": "base64"
+        },
+        "range_end": {
+          "type": "string",
+          "description": "Range end for comparing across a range of keys in base64-encoded format",
+          "contentEncoding": "base64"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version number to compare against when target is VERSION"
+        },
+        "create_revision": {
+          "type": "string",
+          "description": "Create revision to compare against when target is CREATE"
+        },
+        "mod_revision": {
+          "type": "string",
+          "description": "Mod revision to compare against when target is MOD"
+        },
+        "value": {
+          "type": "string",
+          "description": "Value to compare against when target is VALUE in base64-encoded format",
+          "contentEncoding": "base64"
+        },
+        "lease": {
+          "type": "string",
+          "description": "Lease ID to compare against when target is LEASE"
+        }
+      }
+    },
+    "RequestOp": {
+      "type": "object",
+      "title": "RequestOp",
+      "description": "A single operation within a transaction branch. Exactly one of the request fields should be set to specify the operation type.",
+      "properties": {
+        "request_range": {
+          "type": "object",
+          "description": "A range query operation to execute within the transaction"
+        },
+        "request_put": {
+          "type": "object",
+          "description": "A put operation to execute within the transaction"
+        },
+        "request_delete_range": {
+          "type": "object",
+          "description": "A delete range operation to execute within the transaction"
+        },
+        "request_txn": {
+          "$ref": "#/$defs/Transaction",
+          "description": "A nested transaction to execute within the outer transaction"
+        }
+      }
+    }
+  }
+}
