@@ -46,7 +46,7 @@ paths:
   /kv/put:
     post:
       operationId: kvPut
-      summary: Put a key-value pair
+      summary: Etcd Put a key-value pair
       description: >-
         Stores a key-value pair in the etcd cluster. If the key already exists,
         the value is updated. Supports setting a lease ID to associate the key
@@ -82,7 +82,7 @@ paths:
   /kv/range:
     post:
       operationId: kvRange
-      summary: Get a range of key-value pairs
+      summary: Etcd Get a range of key-value pairs
       description: >-
         Retrieves key-value pairs from the etcd cluster. A single key can be
         fetched by specifying only the key field. A range of keys can be fetched
@@ -120,7 +120,7 @@ paths:
   /kv/deleterange:
     post:
       operationId: kvDeleteRange
-      summary: Delete a range of key-value pairs
+      summary: Etcd Delete a range of key-value pairs
       description: >-
         Deletes one or more key-value pairs from the etcd cluster. A single key
         can be deleted by specifying only the key field. A range of keys is deleted
@@ -157,7 +157,7 @@ paths:
   /kv/txn:
     post:
       operationId: kvTxn
-      summary: Execute a transaction
+      summary: Etcd Execute a transaction
       description: >-
         Executes an atomic compare-and-swap transaction against the etcd key-value
         store. A transaction consists of a set of compare conditions, a success
@@ -194,7 +194,7 @@ paths:
   /kv/compaction:
     post:
       operationId: kvCompact
-      summary: Compact the event history
+      summary: Etcd Compact the event history
       description: >-
         Compacts the etcd event history up to the given revision. All superseded
         keys with revisions less than the compaction revision are removed from the
@@ -225,7 +225,7 @@ paths:
   /watch:
     post:
       operationId: watchEvents
-      summary: Watch for key change events
+      summary: Etcd Watch for key change events
       description: >-
         Opens a streaming watch connection to receive notifications of key-value
         changes in the etcd cluster. Clients send WatchCreateRequest messages to
@@ -264,7 +264,7 @@ paths:
   /lease/grant:
     post:
       operationId: leaseGrant
-      summary: Grant a lease
+      summary: Etcd Grant a lease
       description: >-
         Creates a new lease with the specified TTL in seconds. The returned lease
         ID can be attached to key-value pairs so they are automatically deleted
@@ -295,7 +295,7 @@ paths:
   /lease/revoke:
     post:
       operationId: leaseRevoke
-      summary: Revoke a lease
+      summary: Etcd Revoke a lease
       description: >-
         Revokes an existing lease identified by its lease ID. When a lease is
         revoked, all keys attached to that lease are automatically deleted from
@@ -325,7 +325,7 @@ paths:
   /lease/keepalive:
     post:
       operationId: leaseKeepAlive
-      summary: Renew a lease
+      summary: Etcd Renew a lease
       description: >-
         Renews an existing lease to prevent it from expiring. Clients must call
         this endpoint periodically with an interval shorter than the lease TTL to
@@ -356,7 +356,7 @@ paths:
   /lease/timetolive:
     post:
       operationId: leaseTimeToLive
-      summary: Get lease time to live
+      summary: Etcd Get lease time to live
       description: >-
         Returns the remaining time-to-live and other information about a lease
         identified by its lease ID. When the keys option is set to true, the
@@ -387,7 +387,7 @@ paths:
   /lease/leases:
     post:
       operationId: leaseLeases
-      summary: List all leases
+      summary: Etcd List all leases
       description: >-
         Returns a list of all active leases in the etcd cluster. The response
         includes the lease IDs of all leases but does not include detailed
@@ -411,7 +411,7 @@ paths:
   /cluster/member/add:
     post:
       operationId: clusterMemberAdd
-      summary: Add a member to the cluster
+      summary: Etcd Add a member to the cluster
       description: >-
         Adds a new member to the etcd cluster. The peer URLs of the new member
         must be provided. The new member starts in an unstarted state and is
@@ -442,7 +442,7 @@ paths:
   /cluster/member/remove:
     post:
       operationId: clusterMemberRemove
-      summary: Remove a member from the cluster
+      summary: Etcd Remove a member from the cluster
       description: >-
         Removes an existing member from the etcd cluster identified by its member
         ID. The removed member is immediately excluded from the cluster's Raft
@@ -473,7 +473,7 @@ paths:
   /cluster/member/update:
     post:
       operationId: clusterMemberUpdate
-      summary: Update a cluster member
+      summary: Etcd Update a cluster member
       description: >-
         Updates the peer URLs of an existing cluster member identified by its
         member ID. This is used when a cluster member's network address changes.
@@ -504,7 +504,7 @@ paths:
   /cluster/member/list:
     post:
       operationId: clusterMemberList
-      summary: List cluster members
+      summary: Etcd List cluster members
       description: >-
         Returns a list of all members in the etcd cluster including their member
         IDs, names, peer URLs, client URLs, and whether they are learner members.
@@ -528,7 +528,7 @@ paths:
   /cluster/member/promote:
     post:
       operationId: clusterMemberPromote
-      summary: Promote a learner member
+      summary: Etcd Promote a learner member
       description: >-
         Promotes a learner (non-voting) member to a full voting member of the
         etcd cluster. The learner must be caught up with the cluster's Raft log
@@ -559,7 +559,7 @@ paths:
   /maintenance/snapshot:
     post:
       operationId: maintenanceSnapshot
-      summary: Stream a database snapshot
+      summary: Etcd Stream a database snapshot
       description: >-
         Streams a point-in-time snapshot of the etcd database as a binary blob.
         The snapshot can be used to create a backup of the etcd data or to
@@ -585,7 +585,7 @@ paths:
   /maintenance/defragment:
     post:
       operationId: maintenanceDefragment
-      summary: Defragment a member's backend
+      summary: Etcd Defragment a member's backend
       description: >-
         Defragments the storage backend of the etcd member that receives the
         request, reclaiming disk space from deleted keys. Defragmentation is an
@@ -610,7 +610,7 @@ paths:
   /maintenance/status:
     post:
       operationId: maintenanceStatus
-      summary: Get member status
+      summary: Etcd Get member status
       description: >-
         Returns the status of the etcd member that receives the request, including
         the cluster ID, member ID, Raft index, Raft term, Raft applied index, and
@@ -635,7 +635,7 @@ paths:
   /maintenance/alarm:
     post:
       operationId: maintenanceAlarm
-      summary: Manage cluster alarms
+      summary: Etcd Manage cluster alarms
       description: >-
         Manages cluster-level alarms that indicate error conditions such as
         insufficient storage space (NOSPACE). Supports activating alarms,
@@ -667,7 +667,7 @@ paths:
   /maintenance/hash:
     post:
       operationId: maintenanceHash
-      summary: Get member backend hash
+      summary: Etcd Get member backend hash
       description: >-
         Returns a hash of the etcd member's backend database. This hash can be
         used to verify data consistency across cluster members. If members report
@@ -685,7 +685,7 @@ paths:
   /maintenance/transfer-leadership:
     post:
       operationId: maintenanceTransferLeadership
-      summary: Transfer cluster leadership
+      summary: Etcd Transfer cluster leadership
       description: >-
         Transfers the Raft leadership from the current leader to the specified
         target member. This operation is useful during maintenance to gracefully
@@ -710,7 +710,7 @@ paths:
   /auth/enable:
     post:
       operationId: authEnable
-      summary: Enable authentication
+      summary: Etcd Enable authentication
       description: >-
         Enables authentication on the etcd cluster. Before enabling authentication,
         a root user with root role must be created. Once authentication is enabled,
@@ -728,7 +728,7 @@ paths:
   /auth/disable:
     post:
       operationId: authDisable
-      summary: Disable authentication
+      summary: Etcd Disable authentication
       description: >-
         Disables authentication on the etcd cluster, allowing all clients to
         access the cluster without credentials. This operation requires root
@@ -747,7 +747,7 @@ paths:
   /auth/authenticate:
     post:
       operationId: authAuthenticate
-      summary: Authenticate a user
+      summary: Etcd Authenticate a user
       description: >-
         Authenticates a user with their username and password and returns a JWT
         token that can be used for subsequent authenticated requests. The token
@@ -778,7 +778,7 @@ paths:
   /auth/user/add:
     post:
       operationId: authUserAdd
-      summary: Add a user
+      summary: Etcd Add a user
       description: >-
         Creates a new user in the etcd authentication system with the specified
         username and password. Users can be assigned to roles which grant them
@@ -809,7 +809,7 @@ paths:
   /auth/user/get:
     post:
       operationId: authUserGet
-      summary: Get user details
+      summary: Etcd Get user details
       description: >-
         Returns details about a specific user including their assigned roles.
         This endpoint requires root or appropriate administrative privileges.
@@ -838,7 +838,7 @@ paths:
   /auth/user/delete:
     post:
       operationId: authUserDelete
-      summary: Delete a user
+      summary: Etcd Delete a user
       description: >-
         Deletes a user from the etcd authentication system. Deleting a user
         removes all of their role assignments. The root user cannot be deleted
@@ -867,7 +867,7 @@ paths:
   /auth/user/list:
     post:
       operationId: authUserList
-      summary: List all users
+      summary: Etcd List all users
       description: >-
         Returns a list of all usernames registered in the etcd authentication
         system. This endpoint requires root or administrative privileges. Use
@@ -885,7 +885,7 @@ paths:
   /auth/user/changepw:
     post:
       operationId: authUserChangePassword
-      summary: Change a user's password
+      summary: Etcd Change a user's password
       description: >-
         Changes the password of an existing user in the etcd authentication
         system. Non-root users can change their own password. Root or administrative
@@ -915,7 +915,7 @@ paths:
   /auth/user/grant:
     post:
       operationId: authUserGrantRole
-      summary: Grant a role to a user
+      summary: Etcd Grant a role to a user
       description: >-
         Assigns a role to a user in the etcd authentication system. The user
         inherits all key-range permissions defined on the granted role. A user
@@ -945,7 +945,7 @@ paths:
   /auth/user/revoke:
     post:
       operationId: authUserRevokeRole
-      summary: Revoke a role from a user
+      summary: Etcd Revoke a role from a user
       description: >-
         Removes a role assignment from a user in the etcd authentication system.
         After revocation, the user loses all permissions granted by that role.
@@ -974,7 +974,7 @@ paths:
   /auth/role/add:
     post:
       operationId: authRoleAdd
-      summary: Add a role
+      summary: Etcd Add a role
       description: >-
         Creates a new role in the etcd authentication system. Roles define sets
         of permissions over key ranges. Each permission specifies a key range
@@ -1005,7 +1005,7 @@ paths:
   /auth/role/get:
     post:
       operationId: authRoleGet
-      summary: Get role details
+      summary: Etcd Get role details
       description: >-
         Returns details about a specific role including all key-range permissions
         assigned to the role. This endpoint is used to inspect role configurations
@@ -1034,7 +1034,7 @@ paths:
   /auth/role/delete:
     post:
       operationId: authRoleDelete
-      summary: Delete a role
+      summary: Etcd Delete a role
       description: >-
         Deletes a role from the etcd authentication system. When a role is deleted,
         it is automatically revoked from all users that had been assigned the role.
@@ -1063,7 +1063,7 @@ paths:
   /auth/role/list:
     post:
       operationId: authRoleList
-      summary: List all roles
+      summary: Etcd List all roles
       description: >-
         Returns a list of all role names defined in the etcd authentication system.
         Use the role/get endpoint to retrieve detailed information including
@@ -1080,7 +1080,7 @@ paths:
   /auth/role/grant:
     post:
       operationId: authRoleGrantPermission
-      summary: Grant a permission to a role
+      summary: Etcd Grant a permission to a role
       description: >-
         Assigns a key-range permission to a role. The permission specifies a
         key range (single key or range using key and range_end) and the allowed
@@ -1110,7 +1110,7 @@ paths:
   /auth/role/revoke:
     post:
       operationId: authRoleRevokePermission
-      summary: Revoke a permission from a role
+      summary: Etcd Revoke a permission from a role
       description: >-
         Removes a key-range permission from a role. All users assigned the role
         will immediately lose the revoked permission. The key and range_end fields

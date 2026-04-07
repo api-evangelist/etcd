@@ -1,5 +1,5 @@
 aid: etcd
-name: etcd
+name: Etcd
 description: >-
   etcd is a CNCF graduated distributed, reliable key-value store used as
   the backing store for all Kubernetes cluster data. It provides strong
