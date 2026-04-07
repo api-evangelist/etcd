@@ -28,18 +28,18 @@ servers:
       port:
         default: '2379'
 tags:
-  - name: KV
-    description: Key-value store operations including put, get, delete, and range queries
-  - name: Watch
-    description: Watch operations for streaming key change notifications
-  - name: Lease
-    description: Lease management for TTL-based key expiration
-  - name: Cluster
-    description: Cluster membership management including member add, remove, and list
-  - name: Maintenance
-    description: Maintenance operations including snapshots, defragmentation, and status
   - name: Auth
     description: Authentication and authorization management for users and roles
+  - name: Cluster
+    description: Cluster membership management including member add, remove, and list
+  - name: KV
+    description: Key-value store operations including put, get, delete, and range queries
+  - name: Lease
+    description: Lease management for TTL-based key expiration
+  - name: Maintenance
+    description: Maintenance operations including snapshots, defragmentation, and status
+  - name: Watch
+    description: Watch operations for streaming key change notifications
 security:
   - bearerAuth: []
 paths:
