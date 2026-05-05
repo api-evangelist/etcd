@@ -1,0 +1,13 @@
+{
+  "repo": "etcd",
+  "feeds": [
+    {
+      "source": "https://etcd.io/blog/",
+      "feed_url": "https://etcd.io/blog/index.xml",
+      "saved": 10,
+      "title": "Blog on etcd"
+    }
+  ],
+  "post_count": 10,
+  "fetched": "2026-05-03T23:27:51Z"
+}
