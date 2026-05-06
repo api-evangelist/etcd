@@ -4,107 +4,54 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Etcd
 providerId: etcd
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: false
 tags:
-  - Cloud Native
-  - Consensus
-  - Distributed Systems
-  - Graduated
-  - Key-Value Store
-  - Kubernetes
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Etcd API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  - Distributed Systems
+  - Key-Value Store
+  - Open Source
+description: etcd is self-hosted open-source software, so there is no upstream "service" rate limit.
+  etcd does enforce its own resource caps (max-request-bytes, quota-backend-bytes, max-concurrent-streams)
+  that act as throttling/safety mechanisms; the actual request throughput is limited by hardware (disk
+  fsync latency dominates) and by the Raft protocol's serialization of writes. The values below describe
+  configurable etcd guardrails rather than a vendor quota.
+sources:
+  - https://etcd.io/docs/latest/op-guide/configuration/
+  - https://etcd.io/docs/latest/op-guide/maintenance/
+notes: etcd is operator-tuned; replace these defaults with the values configured for your cluster.
 responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  resourceExhausted: 8 (gRPC RESOURCE_EXHAUSTED)
+  unavailable: 14 (gRPC UNAVAILABLE)
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - etcd gRPC API
-      - etcd HTTP Gateway API
-      - etcd Concurrency API
-      - etcd Metrics API
-      - etcd v2 HTTP API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - etcd gRPC API
-      - etcd HTTP Gateway API
-      - etcd Concurrency API
-      - etcd Metrics API
-      - etcd v2 HTTP API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - etcd gRPC API
-      - etcd HTTP Gateway API
-      - etcd Concurrency API
-      - etcd Metrics API
-      - etcd v2 HTTP API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - etcd gRPC API
-      - etcd HTTP Gateway API
-      - etcd Concurrency API
-      - etcd Metrics API
-      - etcd v2 HTTP API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - etcd gRPC API
-      - etcd HTTP Gateway API
-      - etcd Concurrency API
-      - etcd Metrics API
-      - etcd v2 HTTP API
+  - name: max-request-bytes
+    scope: server
+    metric: bytes_per_request
+    limit: 1572864
+    notes: Default 1.5 MiB per request; configurable.
+  - name: quota-backend-bytes
+    scope: cluster
+    metric: bytes_storage
+    limit: 2147483648
+    notes: Default 2 GiB DB quota; raise to 8 GiB max safe; cluster goes read-only when exceeded.
+  - name: max-concurrent-streams
+    scope: server
+    metric: concurrent_streams
+    limit: 4294967295
+    notes: gRPC max-concurrent-streams; effectively unbounded by default.
+  - name: Operator-imposed throttle
+    scope: client
+    metric: requests_per_second
+    limit: operator-defined via client-side rate limiting or proxy
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Linearizable reads
+    description: Linearizable reads require quorum; degrade to serializable reads to lower load when
+      consistency tolerates it.
+  - name: Compaction and defragmentation
+    description: Schedule periodic compaction of revisions and defrag to keep DB size under quota-backend-bytes.
+  - name: Backoff
+    description: On RESOURCE_EXHAUSTED or UNAVAILABLE, clients should apply exponential backoff with
+      jitter and avoid retry storms.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

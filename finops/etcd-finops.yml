@@ -1,171 +1,85 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Etcd
+providerId: etcd
+created: '2026-05-04'
+modified: '2026-05-05'
+reconciled: false
+tags:
+  - FinOps
+  - FOCUS
+  - Open Source
+  - Distributed Systems
+  - Kubernetes
+description: 'FinOps view of etcd: no vendor invoice. Direct cost is the underlying compute, storage
+  (low-latency SSD), and networking required to run a quorum-typically-3 cluster. When etcd is consumed
+  via managed Kubernetes (EKS, GKE, AKS), its cost is bundled into the control-plane fee on the cloud
+  bill.'
+sources:
+  - https://etcd.io/
+  - https://www.cncf.io/projects/etcd/
+notes: No vendor invoice from the etcd project. FinOps surface is infrastructure cost (self-hosted) or
+  a portion of managed-Kubernetes control-plane spend.
 alignedWith:
   framework: FinOps Foundation Framework
   frameworkUrl: https://www.finops.org/framework/
   dataSpec: FOCUS
   dataSpecVersion: '1.3'
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
-provider: Etcd
-providerId: etcd
-publisherName: Etcd
-serviceCategory: API
-created: '2026-05-04'
-modified: '2026-05-04'
-tags:
-  - Cloud Native
-  - Consensus
-  - Distributed Systems
-  - Graduated
-  - Key-Value Store
-  - Kubernetes
-  - FinOps
-  - Cost Management
-  - FOCUS
-description: FinOps framework definition for the Etcd API surface. Provides a FOCUS-aligned mapping for
-  cost allocation, usage measurement, and unit-economics reporting across the provider's APIs.
-principles:
-  - name: Visibility
-    description: Make API consumption costs visible to engineering, product, and finance teams in near
-      real-time.
-  - name: Allocation
-    description: Tag every chargeable API call with the consuming team, environment, application, and
-      feature so cost can be allocated.
-  - name: Optimization
-    description: Continuously evaluate request patterns, caching, batching, and tier selection to reduce
-      cost per useful unit of work.
-  - name: Accountability
-    description: Establish budget owners and chargeback or showback flows for each consuming team.
-domains:
-  - name: Understand Usage and Cost
-    capabilities:
-      - Data Ingestion
-      - Allocation
-      - Reporting and Analytics
-      - Anomaly Management
-  - name: Quantify Business Value
-    capabilities:
-      - Planning and Estimating
-      - Forecasting
-      - Budgeting
-      - Benchmarking
-      - Unit Economics
-  - name: Optimize Usage and Cost
-    capabilities:
-      - Architecting for Cloud
-      - Rate Optimization
-      - Workload Optimization
-      - Cloud Sustainability
-      - Licensing and SaaS
-  - name: Manage the FinOps Practice
-    capabilities:
-      - FinOps Practice Operations
-      - FinOps Education and Enablement
-      - Invoicing and Chargeback
-      - Onboarding Workloads
-      - Intersecting Disciplines
+publisherName: Cloud Native Computing Foundation
+serviceCategory: Distributed Systems / Key-Value Store
 billingModel:
-  pricingCategory: Usage-Based
-  billingFrequency: Monthly
+  pricingCategory: Open Source (no direct cost)
+  billingFrequency: N/A
   billingCurrency: USD
   chargeCategories:
     - Usage
-    - Purchase
-    - Tax
-    - Credit
-    - Adjustment
-  chargeFrequency: Recurring
 focusColumns:
-  ServiceName: Etcd
-  ServiceCategory: Developer Tools / API
-  ProviderName: Etcd
-  PublisherName: Etcd
-  InvoiceIssuerName: Etcd
-  PricingCategory: Usage-Based
-  PricingUnit: request
+  ServiceName: etcd
+  ServiceCategory: Distributed Systems / Key-Value Store
+  ProviderName: etcd
+  PublisherName: Cloud Native Computing Foundation
+  InvoiceIssuerName: N/A (open source)
   BillingCurrency: USD
-  ChargeCategory: Usage
 meters:
-  - name: api_requests
-    description: Count of billable API requests
-    unit: request
+  - name: compute_hours
+    unit: instance-hour
     aggregation: sum
     dimensions:
-      - api
-      - endpoint
-      - tier
+      - cluster
       - region
-      - consumer
-  - name: data_egress
-    description: Bytes returned over the network in API responses
+      - instance_type
+  - name: ssd_storage
+    unit: GB-month
+    aggregation: max
+    dimensions:
+      - cluster
+      - region
+  - name: backup_storage
+    unit: GB-month
+    aggregation: max
+    dimensions:
+      - cluster
+  - name: network_egress
     unit: GB
     aggregation: sum
     dimensions:
-      - api
+      - cluster
       - region
-      - consumer
-  - name: compute_seconds
-    description: Server-side compute consumed by the request, where applicable
-    unit: second
-    aggregation: sum
-    dimensions:
-      - api
-      - endpoint
-      - tier
-apis:
-  - name: etcd gRPC API
-    baseURL: ''
-    tags:
-      - Cluster Management
-      - gRPC
-      - Key-Value
-      - Lease
-      - Watch
-    serviceName: etcd gRPC API
-    serviceCategory: API
-  - name: etcd HTTP Gateway API
-    baseURL: ''
-    tags:
-      - Gateway
-      - gRPC
-      - HTTP
-      - REST
-    serviceName: etcd HTTP Gateway API
-    serviceCategory: API
-  - name: etcd Concurrency API
-    baseURL: ''
-    tags:
-      - Concurrency
-      - Coordination
-      - Distributed Locking
-      - Leader Election
-    serviceName: etcd Concurrency API
-    serviceCategory: API
-  - name: etcd Metrics API
-    baseURL: ''
-    tags:
-      - Metrics
-      - Monitoring
-      - Observability
-      - Prometheus
-    serviceName: etcd Metrics API
-    serviceCategory: API
-  - name: etcd v2 HTTP API
-    baseURL: ''
-    tags:
-      - Deprecated
-      - HTTP
-      - Key-Value
-      - REST
-    serviceName: etcd v2 HTTP API
-    serviceCategory: API
-unitEconomics:
-  - name: Cost per 1K Requests
-    metric: billed_cost / (api_requests / 1000)
-    target: TBD
-  - name: Cost per Active Consumer
-    metric: billed_cost / active_consumers
-    target: TBD
+principles:
+  - name: Visibility
+    description: Scrape etcd's Prometheus metrics (mvcc_db_total_size_in_bytes, disk fsync latency, leader
+      changes) and join with cloud cost data per cluster.
+  - name: Allocation
+    description: Tag etcd nodes/disks per cluster and per environment so platform-team cost is attributable
+      to consuming Kubernetes/control-plane workloads.
+  - name: Optimization
+    description: Co-locate etcd peers on low-latency NVMe SSD; right-size CPU/memory; use defrag and
+      compaction to keep DB small; consolidate small clusters where multi-tenant model permits.
+  - name: Accountability
+    description: Platform team owns etcd cluster cost; charge back to consuming Kubernetes control-plane
+      tenants on a per-cluster or per-namespace basis.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
