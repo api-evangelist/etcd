@@ -1,0 +1,1217 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: etcd HTTP Gateway API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support
+    to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations
+    (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration,
+    cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization
+    controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the pro
+  tags:
+  - Etcd
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: etcd
+    baseUri: http://localhost:2379/v3
+    description: etcd HTTP Gateway API HTTP API.
+    authentication:
+      type: bearer
+      token: '{{ETCD_TOKEN}}'
+    resources:
+    - name: kv-put
+      path: /kv/put
+      operations:
+      - name: kvput
+        method: POST
+        description: Etcd Put a key-value pair
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: kv-range
+      path: /kv/range
+      operations:
+      - name: kvrange
+        method: POST
+        description: Etcd Get a range of key-value pairs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: kv-deleterange
+      path: /kv/deleterange
+      operations:
+      - name: kvdeleterange
+        method: POST
+        description: Etcd Delete a range of key-value pairs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: kv-txn
+      path: /kv/txn
+      operations:
+      - name: kvtxn
+        method: POST
+        description: Etcd Execute a transaction
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: kv-compaction
+      path: /kv/compaction
+      operations:
+      - name: kvcompact
+        method: POST
+        description: Etcd Compact the event history
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: watch
+      path: /watch
+      operations:
+      - name: watchevents
+        method: POST
+        description: Etcd Watch for key change events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: lease-grant
+      path: /lease/grant
+      operations:
+      - name: leasegrant
+        method: POST
+        description: Etcd Grant a lease
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: lease-revoke
+      path: /lease/revoke
+      operations:
+      - name: leaserevoke
+        method: POST
+        description: Etcd Revoke a lease
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: lease-keepalive
+      path: /lease/keepalive
+      operations:
+      - name: leasekeepalive
+        method: POST
+        description: Etcd Renew a lease
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: lease-timetolive
+      path: /lease/timetolive
+      operations:
+      - name: leasetimetolive
+        method: POST
+        description: Etcd Get lease time to live
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: lease-leases
+      path: /lease/leases
+      operations:
+      - name: leaseleases
+        method: POST
+        description: Etcd List all leases
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cluster-member-add
+      path: /cluster/member/add
+      operations:
+      - name: clustermemberadd
+        method: POST
+        description: Etcd Add a member to the cluster
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cluster-member-remove
+      path: /cluster/member/remove
+      operations:
+      - name: clustermemberremove
+        method: POST
+        description: Etcd Remove a member from the cluster
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cluster-member-update
+      path: /cluster/member/update
+      operations:
+      - name: clustermemberupdate
+        method: POST
+        description: Etcd Update a cluster member
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cluster-member-list
+      path: /cluster/member/list
+      operations:
+      - name: clustermemberlist
+        method: POST
+        description: Etcd List cluster members
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cluster-member-promote
+      path: /cluster/member/promote
+      operations:
+      - name: clustermemberpromote
+        method: POST
+        description: Etcd Promote a learner member
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-snapshot
+      path: /maintenance/snapshot
+      operations:
+      - name: maintenancesnapshot
+        method: POST
+        description: Etcd Stream a database snapshot
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-defragment
+      path: /maintenance/defragment
+      operations:
+      - name: maintenancedefragment
+        method: POST
+        description: Etcd Defragment a member's backend
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-status
+      path: /maintenance/status
+      operations:
+      - name: maintenancestatus
+        method: POST
+        description: Etcd Get member status
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-alarm
+      path: /maintenance/alarm
+      operations:
+      - name: maintenancealarm
+        method: POST
+        description: Etcd Manage cluster alarms
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-hash
+      path: /maintenance/hash
+      operations:
+      - name: maintenancehash
+        method: POST
+        description: Etcd Get member backend hash
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-transfer-leadership
+      path: /maintenance/transfer-leadership
+      operations:
+      - name: maintenancetransferleadership
+        method: POST
+        description: Etcd Transfer cluster leadership
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-enable
+      path: /auth/enable
+      operations:
+      - name: authenable
+        method: POST
+        description: Etcd Enable authentication
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-disable
+      path: /auth/disable
+      operations:
+      - name: authdisable
+        method: POST
+        description: Etcd Disable authentication
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-authenticate
+      path: /auth/authenticate
+      operations:
+      - name: authauthenticate
+        method: POST
+        description: Etcd Authenticate a user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-add
+      path: /auth/user/add
+      operations:
+      - name: authuseradd
+        method: POST
+        description: Etcd Add a user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-get
+      path: /auth/user/get
+      operations:
+      - name: authuserget
+        method: POST
+        description: Etcd Get user details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-delete
+      path: /auth/user/delete
+      operations:
+      - name: authuserdelete
+        method: POST
+        description: Etcd Delete a user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-list
+      path: /auth/user/list
+      operations:
+      - name: authuserlist
+        method: POST
+        description: Etcd List all users
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-changepw
+      path: /auth/user/changepw
+      operations:
+      - name: authuserchangepassword
+        method: POST
+        description: Etcd Change a user's password
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-grant
+      path: /auth/user/grant
+      operations:
+      - name: authusergrantrole
+        method: POST
+        description: Etcd Grant a role to a user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-user-revoke
+      path: /auth/user/revoke
+      operations:
+      - name: authuserrevokerole
+        method: POST
+        description: Etcd Revoke a role from a user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-role-add
+      path: /auth/role/add
+      operations:
+      - name: authroleadd
+        method: POST
+        description: Etcd Add a role
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-role-get
+      path: /auth/role/get
+      operations:
+      - name: authroleget
+        method: POST
+        description: Etcd Get role details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-role-delete
+      path: /auth/role/delete
+      operations:
+      - name: authroledelete
+        method: POST
+        description: Etcd Delete a role
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-role-list
+      path: /auth/role/list
+      operations:
+      - name: authrolelist
+        method: POST
+        description: Etcd List all roles
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-role-grant
+      path: /auth/role/grant
+      operations:
+      - name: authrolegrantpermission
+        method: POST
+        description: Etcd Grant a permission to a role
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-role-revoke
+      path: /auth/role/revoke
+      operations:
+      - name: authrolerevokepermission
+        method: POST
+        description: Etcd Revoke a permission from a role
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: etcd-rest
+    description: REST adapter for etcd HTTP Gateway API.
+    resources:
+    - path: /kv/put
+      name: kvput
+      operations:
+      - method: POST
+        name: kvput
+        description: Etcd Put a key-value pair
+        call: etcd.kvput
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /kv/range
+      name: kvrange
+      operations:
+      - method: POST
+        name: kvrange
+        description: Etcd Get a range of key-value pairs
+        call: etcd.kvrange
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /kv/deleterange
+      name: kvdeleterange
+      operations:
+      - method: POST
+        name: kvdeleterange
+        description: Etcd Delete a range of key-value pairs
+        call: etcd.kvdeleterange
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /kv/txn
+      name: kvtxn
+      operations:
+      - method: POST
+        name: kvtxn
+        description: Etcd Execute a transaction
+        call: etcd.kvtxn
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /kv/compaction
+      name: kvcompact
+      operations:
+      - method: POST
+        name: kvcompact
+        description: Etcd Compact the event history
+        call: etcd.kvcompact
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /watch
+      name: watchevents
+      operations:
+      - method: POST
+        name: watchevents
+        description: Etcd Watch for key change events
+        call: etcd.watchevents
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /lease/grant
+      name: leasegrant
+      operations:
+      - method: POST
+        name: leasegrant
+        description: Etcd Grant a lease
+        call: etcd.leasegrant
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /lease/revoke
+      name: leaserevoke
+      operations:
+      - method: POST
+        name: leaserevoke
+        description: Etcd Revoke a lease
+        call: etcd.leaserevoke
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /lease/keepalive
+      name: leasekeepalive
+      operations:
+      - method: POST
+        name: leasekeepalive
+        description: Etcd Renew a lease
+        call: etcd.leasekeepalive
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /lease/timetolive
+      name: leasetimetolive
+      operations:
+      - method: POST
+        name: leasetimetolive
+        description: Etcd Get lease time to live
+        call: etcd.leasetimetolive
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /lease/leases
+      name: leaseleases
+      operations:
+      - method: POST
+        name: leaseleases
+        description: Etcd List all leases
+        call: etcd.leaseleases
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /cluster/member/add
+      name: clustermemberadd
+      operations:
+      - method: POST
+        name: clustermemberadd
+        description: Etcd Add a member to the cluster
+        call: etcd.clustermemberadd
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /cluster/member/remove
+      name: clustermemberremove
+      operations:
+      - method: POST
+        name: clustermemberremove
+        description: Etcd Remove a member from the cluster
+        call: etcd.clustermemberremove
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /cluster/member/update
+      name: clustermemberupdate
+      operations:
+      - method: POST
+        name: clustermemberupdate
+        description: Etcd Update a cluster member
+        call: etcd.clustermemberupdate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /cluster/member/list
+      name: clustermemberlist
+      operations:
+      - method: POST
+        name: clustermemberlist
+        description: Etcd List cluster members
+        call: etcd.clustermemberlist
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /cluster/member/promote
+      name: clustermemberpromote
+      operations:
+      - method: POST
+        name: clustermemberpromote
+        description: Etcd Promote a learner member
+        call: etcd.clustermemberpromote
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /maintenance/snapshot
+      name: maintenancesnapshot
+      operations:
+      - method: POST
+        name: maintenancesnapshot
+        description: Etcd Stream a database snapshot
+        call: etcd.maintenancesnapshot
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /maintenance/defragment
+      name: maintenancedefragment
+      operations:
+      - method: POST
+        name: maintenancedefragment
+        description: Etcd Defragment a member's backend
+        call: etcd.maintenancedefragment
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /maintenance/status
+      name: maintenancestatus
+      operations:
+      - method: POST
+        name: maintenancestatus
+        description: Etcd Get member status
+        call: etcd.maintenancestatus
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /maintenance/alarm
+      name: maintenancealarm
+      operations:
+      - method: POST
+        name: maintenancealarm
+        description: Etcd Manage cluster alarms
+        call: etcd.maintenancealarm
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /maintenance/hash
+      name: maintenancehash
+      operations:
+      - method: POST
+        name: maintenancehash
+        description: Etcd Get member backend hash
+        call: etcd.maintenancehash
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /maintenance/transfer-leadership
+      name: maintenancetransferleadership
+      operations:
+      - method: POST
+        name: maintenancetransferleadership
+        description: Etcd Transfer cluster leadership
+        call: etcd.maintenancetransferleadership
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/enable
+      name: authenable
+      operations:
+      - method: POST
+        name: authenable
+        description: Etcd Enable authentication
+        call: etcd.authenable
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/disable
+      name: authdisable
+      operations:
+      - method: POST
+        name: authdisable
+        description: Etcd Disable authentication
+        call: etcd.authdisable
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/authenticate
+      name: authauthenticate
+      operations:
+      - method: POST
+        name: authauthenticate
+        description: Etcd Authenticate a user
+        call: etcd.authauthenticate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/add
+      name: authuseradd
+      operations:
+      - method: POST
+        name: authuseradd
+        description: Etcd Add a user
+        call: etcd.authuseradd
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/get
+      name: authuserget
+      operations:
+      - method: POST
+        name: authuserget
+        description: Etcd Get user details
+        call: etcd.authuserget
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/delete
+      name: authuserdelete
+      operations:
+      - method: POST
+        name: authuserdelete
+        description: Etcd Delete a user
+        call: etcd.authuserdelete
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/list
+      name: authuserlist
+      operations:
+      - method: POST
+        name: authuserlist
+        description: Etcd List all users
+        call: etcd.authuserlist
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/changepw
+      name: authuserchangepassword
+      operations:
+      - method: POST
+        name: authuserchangepassword
+        description: Etcd Change a user's password
+        call: etcd.authuserchangepassword
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/grant
+      name: authusergrantrole
+      operations:
+      - method: POST
+        name: authusergrantrole
+        description: Etcd Grant a role to a user
+        call: etcd.authusergrantrole
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/user/revoke
+      name: authuserrevokerole
+      operations:
+      - method: POST
+        name: authuserrevokerole
+        description: Etcd Revoke a role from a user
+        call: etcd.authuserrevokerole
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/role/add
+      name: authroleadd
+      operations:
+      - method: POST
+        name: authroleadd
+        description: Etcd Add a role
+        call: etcd.authroleadd
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/role/get
+      name: authroleget
+      operations:
+      - method: POST
+        name: authroleget
+        description: Etcd Get role details
+        call: etcd.authroleget
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/role/delete
+      name: authroledelete
+      operations:
+      - method: POST
+        name: authroledelete
+        description: Etcd Delete a role
+        call: etcd.authroledelete
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/role/list
+      name: authrolelist
+      operations:
+      - method: POST
+        name: authrolelist
+        description: Etcd List all roles
+        call: etcd.authrolelist
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/role/grant
+      name: authrolegrantpermission
+      operations:
+      - method: POST
+        name: authrolegrantpermission
+        description: Etcd Grant a permission to a role
+        call: etcd.authrolegrantpermission
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/role/revoke
+      name: authrolerevokepermission
+      operations:
+      - method: POST
+        name: authrolerevokepermission
+        description: Etcd Revoke a permission from a role
+        call: etcd.authrolerevokepermission
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: etcd-mcp
+    transport: http
+    description: MCP adapter for etcd HTTP Gateway API for AI agent use.
+    tools:
+    - name: kvput
+      description: Etcd Put a key-value pair
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.kvput
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: kvrange
+      description: Etcd Get a range of key-value pairs
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.kvrange
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: kvdeleterange
+      description: Etcd Delete a range of key-value pairs
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.kvdeleterange
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: kvtxn
+      description: Etcd Execute a transaction
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.kvtxn
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: kvcompact
+      description: Etcd Compact the event history
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.kvcompact
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: watchevents
+      description: Etcd Watch for key change events
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.watchevents
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: leasegrant
+      description: Etcd Grant a lease
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.leasegrant
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: leaserevoke
+      description: Etcd Revoke a lease
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.leaserevoke
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: leasekeepalive
+      description: Etcd Renew a lease
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.leasekeepalive
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: leasetimetolive
+      description: Etcd Get lease time to live
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.leasetimetolive
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: leaseleases
+      description: Etcd List all leases
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.leaseleases
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: clustermemberadd
+      description: Etcd Add a member to the cluster
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.clustermemberadd
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: clustermemberremove
+      description: Etcd Remove a member from the cluster
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.clustermemberremove
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: clustermemberupdate
+      description: Etcd Update a cluster member
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.clustermemberupdate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: clustermemberlist
+      description: Etcd List cluster members
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.clustermemberlist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: clustermemberpromote
+      description: Etcd Promote a learner member
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.clustermemberpromote
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: maintenancesnapshot
+      description: Etcd Stream a database snapshot
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.maintenancesnapshot
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: maintenancedefragment
+      description: Etcd Defragment a member's backend
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.maintenancedefragment
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: maintenancestatus
+      description: Etcd Get member status
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.maintenancestatus
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: maintenancealarm
+      description: Etcd Manage cluster alarms
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.maintenancealarm
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: maintenancehash
+      description: Etcd Get member backend hash
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.maintenancehash
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: maintenancetransferleadership
+      description: Etcd Transfer cluster leadership
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.maintenancetransferleadership
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authenable
+      description: Etcd Enable authentication
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authenable
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authdisable
+      description: Etcd Disable authentication
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authdisable
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authauthenticate
+      description: Etcd Authenticate a user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authauthenticate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authuseradd
+      description: Etcd Add a user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authuseradd
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authuserget
+      description: Etcd Get user details
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authuserget
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authuserdelete
+      description: Etcd Delete a user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authuserdelete
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authuserlist
+      description: Etcd List all users
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authuserlist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authuserchangepassword
+      description: Etcd Change a user's password
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authuserchangepassword
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authusergrantrole
+      description: Etcd Grant a role to a user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authusergrantrole
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authuserrevokerole
+      description: Etcd Revoke a role from a user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authuserrevokerole
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authroleadd
+      description: Etcd Add a role
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authroleadd
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authroleget
+      description: Etcd Get role details
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authroleget
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authroledelete
+      description: Etcd Delete a role
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authroledelete
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authrolelist
+      description: Etcd List all roles
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authrolelist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authrolegrantpermission
+      description: Etcd Grant a permission to a role
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authrolegrantpermission
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authrolerevokepermission
+      description: Etcd Revoke a permission from a role
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: etcd.authrolerevokepermission
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    ETCD_TOKEN: ETCD_TOKEN
