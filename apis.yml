@@ -38,7 +38,7 @@ apis:
         url: https://etcd.io/docs/v3.5/learning/api_guarantees/
       - type: Authentication
         url: https://etcd.io/docs/v3.5/op-guide/authentication/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://etcd.io/docs/v3.5/dev-guide/interacting_v3/
       - type: Client Libraries
         url: https://etcd.io/docs/v3.5/integrations/
@@ -130,7 +130,7 @@ apis:
 common:
   - type: JSONSchema
     url: json-schema/etcd-key-value-schema.json
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/etcd-context.jsonld
   - type: Website
     name: etcd Website
@@ -140,11 +140,11 @@ common:
     name: etcd Documentation
     description: Official etcd documentation.
     url: https://etcd.io/docs/
-  - type: Getting Started
+  - type: GettingStarted
     name: etcd Getting Started
     description: Guide to installing and using etcd for the first time.
     url: https://etcd.io/docs/v3.5/quickstart/
-  - type: GitHub Organization
+  - type: GitHubOrganization
     name: etcd GitHub Organization
     description: Source code and related repositories for the etcd project.
     url: https://github.com/etcd-io
@@ -160,7 +160,7 @@ common:
     name: etcd Community
     description: Community resources and contribution guidelines for the etcd project.
     url: https://etcd.io/community/
-  - type: Change Log
+  - type: ChangeLog
     name: etcd Changelog
     description: Release notes and version history for etcd.
     url: https://github.com/etcd-io/etcd/blob/main/CHANGELOG/
@@ -172,7 +172,7 @@ common:
     name: etcd Support
     description: Community support channels including mailing lists and Slack.
     url: https://etcd.io/community/
-  - type: Stack Overflow
+  - type: StackOverflow
     name: etcd Stack Overflow
     description: etcd-tagged questions and answers on Stack Overflow.
     url: https://stackoverflow.com/questions/tagged/etcd
