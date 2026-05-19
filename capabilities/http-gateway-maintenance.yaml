@@ -1,0 +1,250 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: etcd HTTP Gateway API — Maintenance
+  description: 'etcd HTTP Gateway API — Maintenance. 6 operations. Lead operation: Etcd Manage cluster alarms. Self-contained
+    Naftiko capability covering one Etcd business surface.'
+  tags:
+  - Etcd
+  - Maintenance
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ETCD_API_KEY: ETCD_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: http-gateway-maintenance
+    baseUri: http://{host}:{port}/v3
+    description: etcd HTTP Gateway API — Maintenance business capability. Self-contained, no shared references.
+    resources:
+    - name: maintenance-alarm
+      path: /maintenance/alarm
+      operations:
+      - name: maintenancealarm
+        method: POST
+        description: Etcd Manage cluster alarms
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: maintenance-defragment
+      path: /maintenance/defragment
+      operations:
+      - name: maintenancedefragment
+        method: POST
+        description: Etcd Defragment a member's backend
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-hash
+      path: /maintenance/hash
+      operations:
+      - name: maintenancehash
+        method: POST
+        description: Etcd Get member backend hash
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-snapshot
+      path: /maintenance/snapshot
+      operations:
+      - name: maintenancesnapshot
+        method: POST
+        description: Etcd Stream a database snapshot
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-status
+      path: /maintenance/status
+      operations:
+      - name: maintenancestatus
+        method: POST
+        description: Etcd Get member status
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: maintenance-transfer-leadership
+      path: /maintenance/transfer-leadership
+      operations:
+      - name: maintenancetransferleadership
+        method: POST
+        description: Etcd Transfer cluster leadership
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.ETCD_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: http-gateway-maintenance-rest
+    port: 8080
+    description: REST adapter for etcd HTTP Gateway API — Maintenance. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/maintenance/alarm
+      name: maintenance-alarm
+      description: REST surface for maintenance-alarm.
+      operations:
+      - method: POST
+        name: maintenancealarm
+        description: Etcd Manage cluster alarms
+        call: http-gateway-maintenance.maintenancealarm
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/maintenance/defragment
+      name: maintenance-defragment
+      description: REST surface for maintenance-defragment.
+      operations:
+      - method: POST
+        name: maintenancedefragment
+        description: Etcd Defragment a member's backend
+        call: http-gateway-maintenance.maintenancedefragment
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/maintenance/hash
+      name: maintenance-hash
+      description: REST surface for maintenance-hash.
+      operations:
+      - method: POST
+        name: maintenancehash
+        description: Etcd Get member backend hash
+        call: http-gateway-maintenance.maintenancehash
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/maintenance/snapshot
+      name: maintenance-snapshot
+      description: REST surface for maintenance-snapshot.
+      operations:
+      - method: POST
+        name: maintenancesnapshot
+        description: Etcd Stream a database snapshot
+        call: http-gateway-maintenance.maintenancesnapshot
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/maintenance/status
+      name: maintenance-status
+      description: REST surface for maintenance-status.
+      operations:
+      - method: POST
+        name: maintenancestatus
+        description: Etcd Get member status
+        call: http-gateway-maintenance.maintenancestatus
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/maintenance/transfer-leadership
+      name: maintenance-transfer-leadership
+      description: REST surface for maintenance-transfer-leadership.
+      operations:
+      - method: POST
+        name: maintenancetransferleadership
+        description: Etcd Transfer cluster leadership
+        call: http-gateway-maintenance.maintenancetransferleadership
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: http-gateway-maintenance-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for etcd HTTP Gateway API — Maintenance. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: etcd-manage-cluster-alarms
+      description: Etcd Manage cluster alarms
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-maintenance.maintenancealarm
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-defragment-member-s-backend
+      description: Etcd Defragment a member's backend
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-maintenance.maintenancedefragment
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-get-member-backend-hash
+      description: Etcd Get member backend hash
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: http-gateway-maintenance.maintenancehash
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-stream-database-snapshot
+      description: Etcd Stream a database snapshot
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-maintenance.maintenancesnapshot
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-get-member-status
+      description: Etcd Get member status
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: http-gateway-maintenance.maintenancestatus
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-transfer-cluster-leadership
+      description: Etcd Transfer cluster leadership
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-maintenance.maintenancetransferleadership
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

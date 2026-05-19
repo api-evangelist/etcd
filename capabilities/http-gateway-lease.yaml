@@ -1,0 +1,238 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: etcd HTTP Gateway API — Lease
+  description: 'etcd HTTP Gateway API — Lease. 5 operations. Lead operation: Etcd Grant a lease. Self-contained Naftiko capability
+    covering one Etcd business surface.'
+  tags:
+  - Etcd
+  - Lease
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ETCD_API_KEY: ETCD_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: http-gateway-lease
+    baseUri: http://{host}:{port}/v3
+    description: etcd HTTP Gateway API — Lease business capability. Self-contained, no shared references.
+    resources:
+    - name: lease-grant
+      path: /lease/grant
+      operations:
+      - name: leasegrant
+        method: POST
+        description: Etcd Grant a lease
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: lease-keepalive
+      path: /lease/keepalive
+      operations:
+      - name: leasekeepalive
+        method: POST
+        description: Etcd Renew a lease
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: lease-leases
+      path: /lease/leases
+      operations:
+      - name: leaseleases
+        method: POST
+        description: Etcd List all leases
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: lease-revoke
+      path: /lease/revoke
+      operations:
+      - name: leaserevoke
+        method: POST
+        description: Etcd Revoke a lease
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: lease-timetolive
+      path: /lease/timetolive
+      operations:
+      - name: leasetimetolive
+        method: POST
+        description: Etcd Get lease time to live
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.ETCD_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: http-gateway-lease-rest
+    port: 8080
+    description: REST adapter for etcd HTTP Gateway API — Lease. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/lease/grant
+      name: lease-grant
+      description: REST surface for lease-grant.
+      operations:
+      - method: POST
+        name: leasegrant
+        description: Etcd Grant a lease
+        call: http-gateway-lease.leasegrant
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/lease/keepalive
+      name: lease-keepalive
+      description: REST surface for lease-keepalive.
+      operations:
+      - method: POST
+        name: leasekeepalive
+        description: Etcd Renew a lease
+        call: http-gateway-lease.leasekeepalive
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/lease/leases
+      name: lease-leases
+      description: REST surface for lease-leases.
+      operations:
+      - method: POST
+        name: leaseleases
+        description: Etcd List all leases
+        call: http-gateway-lease.leaseleases
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/lease/revoke
+      name: lease-revoke
+      description: REST surface for lease-revoke.
+      operations:
+      - method: POST
+        name: leaserevoke
+        description: Etcd Revoke a lease
+        call: http-gateway-lease.leaserevoke
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/lease/timetolive
+      name: lease-timetolive
+      description: REST surface for lease-timetolive.
+      operations:
+      - method: POST
+        name: leasetimetolive
+        description: Etcd Get lease time to live
+        call: http-gateway-lease.leasetimetolive
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: http-gateway-lease-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for etcd HTTP Gateway API — Lease. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: etcd-grant-lease
+      description: Etcd Grant a lease
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-lease.leasegrant
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-renew-lease
+      description: Etcd Renew a lease
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-lease.leasekeepalive
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-list-all-leases
+      description: Etcd List all leases
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: http-gateway-lease.leaseleases
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-revoke-lease
+      description: Etcd Revoke a lease
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-lease.leaserevoke
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: etcd-get-lease-time-live
+      description: Etcd Get lease time to live
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: http-gateway-lease.leasetimetolive
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

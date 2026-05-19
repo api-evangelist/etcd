@@ -1,0 +1,80 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: etcd HTTP Gateway API — Watch
+  description: 'etcd HTTP Gateway API — Watch. 1 operations. Lead operation: Etcd Watch for key change events. Self-contained
+    Naftiko capability covering one Etcd business surface.'
+  tags:
+  - Etcd
+  - Watch
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ETCD_API_KEY: ETCD_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: http-gateway-watch
+    baseUri: http://{host}:{port}/v3
+    description: etcd HTTP Gateway API — Watch business capability. Self-contained, no shared references.
+    resources:
+    - name: watch
+      path: /watch
+      operations:
+      - name: watchevents
+        method: POST
+        description: Etcd Watch for key change events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.ETCD_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: http-gateway-watch-rest
+    port: 8080
+    description: REST adapter for etcd HTTP Gateway API — Watch. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/watch
+      name: watch
+      description: REST surface for watch.
+      operations:
+      - method: POST
+        name: watchevents
+        description: Etcd Watch for key change events
+        call: http-gateway-watch.watchevents
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: http-gateway-watch-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for etcd HTTP Gateway API — Watch. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: etcd-watch-key-change-events
+      description: Etcd Watch for key change events
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: http-gateway-watch.watchevents
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
