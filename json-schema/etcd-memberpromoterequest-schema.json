@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberPromoteRequest",
+  "title": "MemberPromoteRequest",
+  "type": "object",
+  "description": "Request to promote a learner member to a voting member",
+  "required": [
+    "ID"
+  ],
+  "properties": {
+    "ID": {
+      "type": "string",
+      "description": "ID of the learner member to promote"
+    }
+  }
+}

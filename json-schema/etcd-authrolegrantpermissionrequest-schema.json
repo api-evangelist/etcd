@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthRoleGrantPermissionRequest",
+  "title": "AuthRoleGrantPermissionRequest",
+  "type": "object",
+  "description": "Request to grant a permission to a role",
+  "required": [
+    "name",
+    "perm"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the role to grant the permission to"
+    },
+    "perm": {
+      "$ref": "#/components/schemas/Permission"
+    }
+  }
+}

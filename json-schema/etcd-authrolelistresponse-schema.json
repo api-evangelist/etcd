@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthRoleListResponse",
+  "title": "AuthRoleListResponse",
+  "type": "object",
+  "description": "Response from a role list operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "roles": {
+      "type": "array",
+      "description": "List of all role names",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

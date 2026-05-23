@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AlarmMember",
+  "title": "AlarmMember",
+  "type": "object",
+  "description": "An alarm associated with a cluster member",
+  "properties": {
+    "memberID": {
+      "type": "string",
+      "description": "Member ID that has the alarm"
+    },
+    "alarm": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "NOSPACE",
+        "CORRUPT"
+      ],
+      "description": "Type of alarm"
+    }
+  }
+}

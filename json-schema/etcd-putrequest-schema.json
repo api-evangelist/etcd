@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PutRequest",
+  "title": "PutRequest",
+  "type": "object",
+  "description": "Request to store a key-value pair in the etcd cluster",
+  "required": [
+    "key",
+    "value"
+  ],
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The key to store in base64-encoded format"
+    },
+    "value": {
+      "type": "string",
+      "description": "The value to store in base64-encoded format"
+    },
+    "lease": {
+      "type": "string",
+      "description": "Lease ID to associate with the key for TTL-based expiration"
+    },
+    "prev_kv": {
+      "type": "boolean",
+      "description": "When true, returns the previous key-value pair before the update"
+    },
+    "ignore_value": {
+      "type": "boolean",
+      "description": "When true, updates the key without changing the value (only updates lease)"
+    },
+    "ignore_lease": {
+      "type": "boolean",
+      "description": "When true, updates the key without changing the lease"
+    }
+  }
+}

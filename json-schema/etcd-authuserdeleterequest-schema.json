@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserDeleteRequest",
+  "title": "AuthUserDeleteRequest",
+  "type": "object",
+  "description": "Request to delete a user",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Username to delete"
+    }
+  }
+}

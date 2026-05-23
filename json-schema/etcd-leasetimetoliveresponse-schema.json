@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LeaseTimeToLiveResponse",
+  "title": "LeaseTimeToLiveResponse",
+  "type": "object",
+  "description": "Response from a lease TTL query",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "ID": {
+      "type": "string",
+      "description": "ID of the lease"
+    },
+    "TTL": {
+      "type": "string",
+      "description": "Remaining TTL in seconds for the lease"
+    },
+    "grantedTTL": {
+      "type": "string",
+      "description": "Initial TTL in seconds that was granted to the lease"
+    },
+    "keys": {
+      "type": "array",
+      "description": "Keys attached to the lease when the keys option was requested",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

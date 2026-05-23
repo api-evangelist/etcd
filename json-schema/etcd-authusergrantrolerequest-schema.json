@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserGrantRoleRequest",
+  "title": "AuthUserGrantRoleRequest",
+  "type": "object",
+  "description": "Request to grant a role to a user",
+  "required": [
+    "user",
+    "role"
+  ],
+  "properties": {
+    "user": {
+      "type": "string",
+      "description": "Username to grant the role to"
+    },
+    "role": {
+      "type": "string",
+      "description": "Name of the role to grant"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/DeleteRangeRequest",
+  "title": "DeleteRangeRequest",
+  "type": "object",
+  "description": "Request to delete a range of key-value pairs from the etcd cluster",
+  "required": [
+    "key"
+  ],
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The first key in the range to delete in base64-encoded format"
+    },
+    "range_end": {
+      "type": "string",
+      "description": "The upper bound of the range to delete in base64-encoded format (exclusive)"
+    },
+    "prev_kv": {
+      "type": "boolean",
+      "description": "When true, returns the deleted key-value pairs before deletion"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RangeRequest",
+  "title": "RangeRequest",
+  "type": "object",
+  "description": "Request to retrieve a range of key-value pairs from the etcd cluster",
+  "required": [
+    "key"
+  ],
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The first key in the range in base64-encoded format"
+    },
+    "range_end": {
+      "type": "string",
+      "description": "The upper bound of the range in base64-encoded format (exclusive). If not specified, only the key is retrieved. If set to key plus one byte, all keys with the given prefix are retrieved."
+    },
+    "limit": {
+      "type": "string",
+      "description": "Maximum number of key-value pairs to return. 0 means no limit."
+    },
+    "revision": {
+      "type": "string",
+      "description": "Point-in-time revision for the query. 0 means the current revision."
+    },
+    "sort_order": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "ASCEND",
+        "DESCEND"
+      ],
+      "description": "Sort order for the results"
+    },
+    "sort_target": {
+      "type": "string",
+      "enum": [
+        "KEY",
+        "VERSION",
+        "CREATE",
+        "MOD",
+        "VALUE"
+      ],
+      "description": "Field to sort results by"
+    },
+    "serializable": {
+      "type": "boolean",
+      "description": "When true, uses serializable (stale) reads for higher throughput. When false (default), uses linearizable reads for strong consistency."
+    },
+    "keys_only": {
+      "type": "boolean",
+      "description": "When true, returns only keys without values"
+    },
+    "count_only": {
+      "type": "boolean",
+      "description": "When true, returns only the count without the key-value pairs"
+    },
+    "min_mod_revision": {
+      "type": "string",
+      "description": "Filter for keys with mod_revision greater than or equal to this value"
+    },
+    "max_mod_revision": {
+      "type": "string",
+      "description": "Filter for keys with mod_revision less than or equal to this value"
+    },
+    "min_create_revision": {
+      "type": "string",
+      "description": "Filter for keys with create_revision greater than or equal to this value"
+    },
+    "max_create_revision": {
+      "type": "string",
+      "description": "Filter for keys with create_revision less than or equal to this value"
+    }
+  }
+}

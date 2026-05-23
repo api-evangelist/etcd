@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberRemoveRequest",
+  "title": "MemberRemoveRequest",
+  "type": "object",
+  "description": "Request to remove a member from the cluster",
+  "required": [
+    "ID"
+  ],
+  "properties": {
+    "ID": {
+      "type": "string",
+      "description": "ID of the member to remove"
+    }
+  }
+}

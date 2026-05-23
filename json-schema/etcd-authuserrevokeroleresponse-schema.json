@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserRevokeRoleResponse",
+  "title": "AuthUserRevokeRoleResponse",
+  "type": "object",
+  "description": "Response from a user role revoke operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    }
+  }
+}

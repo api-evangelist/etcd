@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberRemoveResponse",
+  "title": "MemberRemoveResponse",
+  "type": "object",
+  "description": "Response from a member remove operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "members": {
+      "type": "array",
+      "description": "Updated list of all cluster members after the removal",
+      "items": {
+        "$ref": "#/components/schemas/Member"
+      }
+    }
+  }
+}

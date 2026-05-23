@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserRevokeRoleRequest",
+  "title": "AuthUserRevokeRoleRequest",
+  "type": "object",
+  "description": "Request to revoke a role from a user",
+  "required": [
+    "name",
+    "role"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Username to revoke the role from"
+    },
+    "role": {
+      "type": "string",
+      "description": "Name of the role to revoke"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberUpdateRequest",
+  "title": "MemberUpdateRequest",
+  "type": "object",
+  "description": "Request to update a cluster member's peer URLs",
+  "required": [
+    "ID",
+    "peerURLs"
+  ],
+  "properties": {
+    "ID": {
+      "type": "string",
+      "description": "ID of the member to update"
+    },
+    "peerURLs": {
+      "type": "array",
+      "description": "New peer URLs for the member",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

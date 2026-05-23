@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberAddRequest",
+  "title": "MemberAddRequest",
+  "type": "object",
+  "description": "Request to add a new member to the cluster",
+  "required": [
+    "peerURLs"
+  ],
+  "properties": {
+    "peerURLs": {
+      "type": "array",
+      "description": "Peer URLs of the new member",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isLearner": {
+      "type": "boolean",
+      "description": "When true, adds the member as a non-voting learner"
+    }
+  }
+}

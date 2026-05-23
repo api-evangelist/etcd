@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthRoleRevokePermissionRequest",
+  "title": "AuthRoleRevokePermissionRequest",
+  "type": "object",
+  "description": "Request to revoke a permission from a role",
+  "required": [
+    "role",
+    "key"
+  ],
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "Name of the role to revoke the permission from"
+    },
+    "key": {
+      "type": "string",
+      "description": "The key of the permission to revoke in base64-encoded format"
+    },
+    "range_end": {
+      "type": "string",
+      "description": "The range end of the permission to revoke in base64-encoded format"
+    }
+  }
+}

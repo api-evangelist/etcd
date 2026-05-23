@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/WatchRequest",
+  "title": "WatchRequest",
+  "type": "object",
+  "description": "A watch stream request that can create or cancel watches",
+  "properties": {
+    "create_request": {
+      "$ref": "#/components/schemas/WatchCreateRequest"
+    },
+    "cancel_request": {
+      "type": "object",
+      "description": "Request to cancel an existing watch",
+      "properties": {
+        "watch_id": {
+          "type": "string",
+          "description": "ID of the watch to cancel"
+        }
+      }
+    }
+  }
+}

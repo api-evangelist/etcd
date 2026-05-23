@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/DeleteRangeResponse",
+  "title": "DeleteRangeResponse",
+  "type": "object",
+  "description": "Response from a delete range operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "deleted": {
+      "type": "string",
+      "description": "Number of keys deleted"
+    },
+    "prev_kvs": {
+      "type": "array",
+      "description": "Previous key-value pairs that were deleted when prev_kv was requested",
+      "items": {
+        "$ref": "#/components/schemas/KeyValue"
+      }
+    }
+  }
+}

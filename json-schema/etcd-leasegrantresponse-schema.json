@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LeaseGrantResponse",
+  "title": "LeaseGrantResponse",
+  "type": "object",
+  "description": "Response from a lease grant operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "ID": {
+      "type": "string",
+      "description": "Lease ID assigned to the new lease"
+    },
+    "TTL": {
+      "type": "string",
+      "description": "Actual TTL in seconds granted to the lease"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if the lease grant failed"
+    }
+  }
+}

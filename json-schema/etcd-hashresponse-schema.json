@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/HashResponse",
+  "title": "HashResponse",
+  "type": "object",
+  "description": "Response from a backend hash query",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "hash": {
+      "type": "integer",
+      "description": "Hash of the backend database"
+    }
+  }
+}

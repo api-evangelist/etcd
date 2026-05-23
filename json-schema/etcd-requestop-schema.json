@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RequestOp",
+  "title": "RequestOp",
+  "type": "object",
+  "description": "An operation within a transaction's success or failure branch",
+  "properties": {
+    "request_range": {
+      "$ref": "#/components/schemas/RangeRequest"
+    },
+    "request_put": {
+      "$ref": "#/components/schemas/PutRequest"
+    },
+    "request_delete_range": {
+      "$ref": "#/components/schemas/DeleteRangeRequest"
+    },
+    "request_txn": {
+      "$ref": "#/components/schemas/TxnRequest"
+    }
+  }
+}

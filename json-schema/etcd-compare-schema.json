@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Compare",
+  "title": "Compare",
+  "type": "object",
+  "description": "A condition in a transaction that compares a key's attribute to a target value",
+  "properties": {
+    "result": {
+      "type": "string",
+      "enum": [
+        "EQUAL",
+        "GREATER",
+        "LESS",
+        "NOT_EQUAL"
+      ],
+      "description": "The comparison operation to apply"
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "VERSION",
+        "CREATE",
+        "MOD",
+        "VALUE",
+        "LEASE"
+      ],
+      "description": "The attribute of the key to compare"
+    },
+    "key": {
+      "type": "string",
+      "description": "The key to compare in base64-encoded format"
+    },
+    "range_end": {
+      "type": "string",
+      "description": "The range end for comparing a range of keys"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version to compare against when target is VERSION"
+    },
+    "create_revision": {
+      "type": "string",
+      "description": "Create revision to compare against when target is CREATE"
+    },
+    "mod_revision": {
+      "type": "string",
+      "description": "Mod revision to compare against when target is MOD"
+    },
+    "value": {
+      "type": "string",
+      "description": "Value to compare against when target is VALUE in base64-encoded format"
+    },
+    "lease": {
+      "type": "string",
+      "description": "Lease ID to compare against when target is LEASE"
+    }
+  }
+}

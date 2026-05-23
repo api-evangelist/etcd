@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Permission",
+  "title": "Permission",
+  "type": "object",
+  "description": "A permission granting access to a key range",
+  "properties": {
+    "permType": {
+      "type": "string",
+      "enum": [
+        "READ",
+        "WRITE",
+        "READWRITE"
+      ],
+      "description": "Type of access granted by the permission"
+    },
+    "key": {
+      "type": "string",
+      "description": "The key or start of the key range in base64-encoded format"
+    },
+    "range_end": {
+      "type": "string",
+      "description": "The end of the key range in base64-encoded format (exclusive)"
+    }
+  }
+}

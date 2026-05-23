@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AlarmResponse",
+  "title": "AlarmResponse",
+  "type": "object",
+  "description": "Response from an alarm operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "alarms": {
+      "type": "array",
+      "description": "List of active alarms in the cluster",
+      "items": {
+        "$ref": "#/components/schemas/AlarmMember"
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LeaseTimeToLiveRequest",
+  "title": "LeaseTimeToLiveRequest",
+  "type": "object",
+  "description": "Request to get the TTL of a lease",
+  "required": [
+    "ID"
+  ],
+  "properties": {
+    "ID": {
+      "type": "string",
+      "description": "ID of the lease to query"
+    },
+    "keys": {
+      "type": "boolean",
+      "description": "When true, returns all keys attached to the lease"
+    }
+  }
+}

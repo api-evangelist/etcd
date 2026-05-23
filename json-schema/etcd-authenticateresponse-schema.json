@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthenticateResponse",
+  "title": "AuthenticateResponse",
+  "type": "object",
+  "description": "Response from a successful authentication",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "token": {
+      "type": "string",
+      "description": "JWT token to use for subsequent authenticated requests"
+    }
+  }
+}

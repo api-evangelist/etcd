@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CompactionRequest",
+  "title": "CompactionRequest",
+  "type": "object",
+  "description": "Request to compact the etcd event history",
+  "required": [
+    "revision"
+  ],
+  "properties": {
+    "revision": {
+      "type": "string",
+      "description": "Revision to compact up to (all revisions below this will be removed)"
+    },
+    "physical": {
+      "type": "boolean",
+      "description": "When true, triggers an immediate physical deletion of compacted data"
+    }
+  }
+}

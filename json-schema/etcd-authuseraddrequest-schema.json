@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserAddRequest",
+  "title": "AuthUserAddRequest",
+  "type": "object",
+  "description": "Request to add a new user",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Username for the new user"
+    },
+    "password": {
+      "type": "string",
+      "description": "Plaintext password for the new user",
+      "format": "password"
+    },
+    "hashedPassword": {
+      "type": "string",
+      "description": "Pre-hashed bcrypt password for the new user"
+    },
+    "options": {
+      "type": "object",
+      "description": "User creation options"
+    }
+  }
+}

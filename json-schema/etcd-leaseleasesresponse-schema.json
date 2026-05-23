@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LeaseLeasesResponse",
+  "title": "LeaseLeasesResponse",
+  "type": "object",
+  "description": "Response from a list leases operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "leases": {
+      "type": "array",
+      "description": "List of active leases",
+      "items": {
+        "type": "object",
+        "description": "A lease status entry",
+        "properties": {
+          "ID": {
+            "type": "string",
+            "description": "Lease ID"
+          }
+        }
+      }
+    }
+  }
+}

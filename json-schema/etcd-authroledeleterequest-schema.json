@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthRoleDeleteRequest",
+  "title": "AuthRoleDeleteRequest",
+  "type": "object",
+  "description": "Request to delete a role",
+  "required": [
+    "role"
+  ],
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "Name of the role to delete"
+    }
+  }
+}

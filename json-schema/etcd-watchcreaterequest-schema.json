@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/WatchCreateRequest",
+  "title": "WatchCreateRequest",
+  "type": "object",
+  "description": "Request to create a new watch on a key range",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The key to watch in base64-encoded format"
+    },
+    "range_end": {
+      "type": "string",
+      "description": "The range end for watching multiple keys in base64-encoded format"
+    },
+    "start_revision": {
+      "type": "string",
+      "description": "Revision to start watching from. 0 means the current revision."
+    },
+    "progress_notify": {
+      "type": "boolean",
+      "description": "When true, sends periodic progress reports even when no events occur"
+    },
+    "filters": {
+      "type": "array",
+      "description": "Event types to filter out from the watch stream",
+      "items": {
+        "type": "string",
+        "enum": [
+          "NOPUT",
+          "NODELETE"
+        ]
+      }
+    },
+    "prev_kv": {
+      "type": "boolean",
+      "description": "When true, includes the previous key-value pair in DELETE events"
+    },
+    "watch_id": {
+      "type": "string",
+      "description": "User-assigned ID to identify this watch stream"
+    },
+    "fragment": {
+      "type": "boolean",
+      "description": "When true, splits large watch responses into smaller fragments"
+    }
+  }
+}

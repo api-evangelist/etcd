@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Member",
+  "title": "Member",
+  "type": "object",
+  "description": "A member of the etcd cluster",
+  "properties": {
+    "ID": {
+      "type": "string",
+      "description": "Unique identifier for the cluster member"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the cluster member"
+    },
+    "peerURLs": {
+      "type": "array",
+      "description": "URLs used for peer-to-peer communication within the cluster",
+      "items": {
+        "type": "string"
+      }
+    },
+    "clientURLs": {
+      "type": "array",
+      "description": "URLs that clients use to communicate with this member",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isLearner": {
+      "type": "boolean",
+      "description": "True if this member is a non-voting learner member"
+    }
+  }
+}

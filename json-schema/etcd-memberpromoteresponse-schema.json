@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberPromoteResponse",
+  "title": "MemberPromoteResponse",
+  "type": "object",
+  "description": "Response from a member promote operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "members": {
+      "type": "array",
+      "description": "Updated list of all cluster members after the promotion",
+      "items": {
+        "$ref": "#/components/schemas/Member"
+      }
+    }
+  }
+}

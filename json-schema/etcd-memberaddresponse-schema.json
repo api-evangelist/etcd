@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MemberAddResponse",
+  "title": "MemberAddResponse",
+  "type": "object",
+  "description": "Response from a member add operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "member": {
+      "$ref": "#/components/schemas/Member"
+    },
+    "members": {
+      "type": "array",
+      "description": "Updated list of all cluster members",
+      "items": {
+        "$ref": "#/components/schemas/Member"
+      }
+    }
+  }
+}

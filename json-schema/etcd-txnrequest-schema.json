@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TxnRequest",
+  "title": "TxnRequest",
+  "type": "object",
+  "description": "An atomic compare-and-swap transaction consisting of conditions, success operations, and failure operations",
+  "properties": {
+    "compare": {
+      "type": "array",
+      "description": "Conditions that must all be true for the success branch to execute",
+      "items": {
+        "$ref": "#/components/schemas/Compare"
+      }
+    },
+    "success": {
+      "type": "array",
+      "description": "Operations to execute when all compare conditions are true",
+      "items": {
+        "$ref": "#/components/schemas/RequestOp"
+      }
+    },
+    "failure": {
+      "type": "array",
+      "description": "Operations to execute when any compare condition is false",
+      "items": {
+        "$ref": "#/components/schemas/RequestOp"
+      }
+    }
+  }
+}

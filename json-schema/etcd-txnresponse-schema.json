@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TxnResponse",
+  "title": "TxnResponse",
+  "type": "object",
+  "description": "Response from a transaction execution",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "succeeded": {
+      "type": "boolean",
+      "description": "True if all compare conditions were true and the success branch was executed"
+    },
+    "responses": {
+      "type": "array",
+      "description": "Results of the operations executed in the branch that ran",
+      "items": {
+        "type": "object",
+        "description": "Operation response"
+      }
+    }
+  }
+}

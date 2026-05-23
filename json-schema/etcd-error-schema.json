@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Error",
+  "title": "Error",
+  "type": "object",
+  "description": "Error response from the etcd API",
+  "properties": {
+    "error": {
+      "type": "string",
+      "description": "Human-readable error message"
+    },
+    "code": {
+      "type": "integer",
+      "description": "gRPC status code for the error"
+    },
+    "message": {
+      "type": "string",
+      "description": "Detailed error message"
+    }
+  }
+}

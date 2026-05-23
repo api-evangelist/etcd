@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LeaseKeepAliveResponse",
+  "title": "LeaseKeepAliveResponse",
+  "type": "object",
+  "description": "Response from a lease keepalive operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "ID": {
+      "type": "string",
+      "description": "ID of the renewed lease"
+    },
+    "TTL": {
+      "type": "string",
+      "description": "Remaining TTL in seconds after the renewal"
+    }
+  }
+}

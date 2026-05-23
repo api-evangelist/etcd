@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/WatchEvent",
+  "title": "WatchEvent",
+  "type": "object",
+  "description": "An event describing a change to a key in the etcd cluster",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "PUT",
+        "DELETE"
+      ],
+      "description": "Type of the event - PUT for creates/updates, DELETE for deletions"
+    },
+    "kv": {
+      "$ref": "#/components/schemas/KeyValue"
+    },
+    "prev_kv": {
+      "$ref": "#/components/schemas/KeyValue"
+    }
+  }
+}

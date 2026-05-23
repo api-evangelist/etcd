@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthenticateRequest",
+  "title": "AuthenticateRequest",
+  "type": "object",
+  "description": "Request to authenticate a user",
+  "required": [
+    "name",
+    "password"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Username to authenticate"
+    },
+    "password": {
+      "type": "string",
+      "description": "Password for the user",
+      "format": "password"
+    }
+  }
+}

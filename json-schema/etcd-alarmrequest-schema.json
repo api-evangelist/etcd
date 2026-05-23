@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AlarmRequest",
+  "title": "AlarmRequest",
+  "type": "object",
+  "description": "Request to manage cluster alarms",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "GET",
+        "ACTIVATE",
+        "DEACTIVATE"
+      ],
+      "description": "Action to perform on alarms"
+    },
+    "memberID": {
+      "type": "string",
+      "description": "Member ID for the alarm. Set to 0 for all members."
+    },
+    "alarm": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "NOSPACE",
+        "CORRUPT"
+      ],
+      "description": "Type of alarm to activate or deactivate"
+    }
+  }
+}

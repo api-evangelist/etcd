@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RangeResponse",
+  "title": "RangeResponse",
+  "type": "object",
+  "description": "Response from a range query",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "kvs": {
+      "type": "array",
+      "description": "List of key-value pairs matching the range query",
+      "items": {
+        "$ref": "#/components/schemas/KeyValue"
+      }
+    },
+    "more": {
+      "type": "boolean",
+      "description": "True if more key-value pairs exist beyond the limit specified in the request"
+    },
+    "count": {
+      "type": "string",
+      "description": "Total number of keys in the range matching the request"
+    }
+  }
+}

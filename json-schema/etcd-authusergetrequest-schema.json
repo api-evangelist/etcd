@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserGetRequest",
+  "title": "AuthUserGetRequest",
+  "type": "object",
+  "description": "Request to get user details",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Username to retrieve"
+    }
+  }
+}

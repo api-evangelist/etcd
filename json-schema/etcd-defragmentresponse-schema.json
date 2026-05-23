@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/DefragmentResponse",
+  "title": "DefragmentResponse",
+  "type": "object",
+  "description": "Response from a defragmentation operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    }
+  }
+}

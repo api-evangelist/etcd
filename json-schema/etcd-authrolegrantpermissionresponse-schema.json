@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthRoleGrantPermissionResponse",
+  "title": "AuthRoleGrantPermissionResponse",
+  "type": "object",
+  "description": "Response from a role permission grant operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    }
+  }
+}

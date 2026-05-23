@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthRoleAddRequest",
+  "title": "AuthRoleAddRequest",
+  "type": "object",
+  "description": "Request to add a new role",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name for the new role"
+    }
+  }
+}

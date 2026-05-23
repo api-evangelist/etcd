@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/LeaseKeepAliveRequest",
+  "title": "LeaseKeepAliveRequest",
+  "type": "object",
+  "description": "Request to renew a lease",
+  "required": [
+    "ID"
+  ],
+  "properties": {
+    "ID": {
+      "type": "string",
+      "description": "ID of the lease to renew"
+    }
+  }
+}

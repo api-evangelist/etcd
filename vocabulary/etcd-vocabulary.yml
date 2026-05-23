@@ -1,0 +1,17 @@
+name: Etcd Domain Vocabulary
+provider: Etcd
+providerId: etcd
+description: Tag-derived vocabulary for the Etcd API surface; sourced from openapi/ tags.
+terms:
+- term: Auth
+  description: Authentication and authorization management for users and roles
+- term: Cluster
+  description: Cluster membership management including member add, remove, and list
+- term: KV
+  description: Key-value store operations including put, get, delete, and range queries
+- term: Lease
+  description: Lease management for TTL-based key expiration
+- term: Maintenance
+  description: Maintenance operations including snapshots, defragmentation, and status
+- term: Watch
+  description: Watch operations for streaming key change notifications

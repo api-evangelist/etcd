@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/StatusResponse",
+  "title": "StatusResponse",
+  "type": "object",
+  "description": "Response from a member status query",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "version": {
+      "type": "string",
+      "description": "etcd version of the member"
+    },
+    "dbSize": {
+      "type": "string",
+      "description": "Size of the backend database in bytes"
+    },
+    "dbSizeInUse": {
+      "type": "string",
+      "description": "Size of the backend database in bytes actually in use"
+    },
+    "leader": {
+      "type": "string",
+      "description": "Member ID of the current cluster leader"
+    },
+    "raftIndex": {
+      "type": "string",
+      "description": "Current Raft index of the member"
+    },
+    "raftTerm": {
+      "type": "string",
+      "description": "Current Raft term of the member"
+    },
+    "raftAppliedIndex": {
+      "type": "string",
+      "description": "Current Raft applied index of the member"
+    },
+    "errors": {
+      "type": "array",
+      "description": "List of active alarms or errors on the member",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isLearner": {
+      "type": "boolean",
+      "description": "True if this member is a non-voting learner"
+    }
+  }
+}

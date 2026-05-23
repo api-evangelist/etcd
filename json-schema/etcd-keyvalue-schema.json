@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/KeyValue",
+  "title": "KeyValue",
+  "type": "object",
+  "description": "A key-value pair stored in the etcd cluster. Keys and values are base64-encoded byte strings. The version field is the version of the key, the create_revision is the cluster revision when the key was created, and the mod_revision is the cluster revision when the key was last modified.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The key in base64-encoded format"
+    },
+    "create_revision": {
+      "type": "string",
+      "description": "Revision of the etcd cluster when the key was created"
+    },
+    "mod_revision": {
+      "type": "string",
+      "description": "Revision of the etcd cluster when the key was last modified"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the key, monotonically increasing for each put on the key"
+    },
+    "value": {
+      "type": "string",
+      "description": "The value in base64-encoded format"
+    },
+    "lease": {
+      "type": "string",
+      "description": "Lease ID attached to the key, or 0 if no lease is attached"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuthUserListResponse",
+  "title": "AuthUserListResponse",
+  "type": "object",
+  "description": "Response from a user list operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "users": {
+      "type": "array",
+      "description": "List of all usernames",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

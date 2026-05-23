@@ -1,0 +1,861 @@
+{
+  "provider": "Etcd",
+  "providerId": "etcd",
+  "kind": "json-structure",
+  "description": "Structural overview of the Etcd API surface; extracted from openapi/.",
+  "schemaCount": 75,
+  "operationCount": 38,
+  "schemas": [
+    {
+      "name": "KeyValue",
+      "type": "object",
+      "propertyCount": 6,
+      "required": []
+    },
+    {
+      "name": "ResponseHeader",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "PutRequest",
+      "type": "object",
+      "propertyCount": 6,
+      "required": [
+        "key",
+        "value"
+      ]
+    },
+    {
+      "name": "PutResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "RangeRequest",
+      "type": "object",
+      "propertyCount": 13,
+      "required": [
+        "key"
+      ]
+    },
+    {
+      "name": "RangeResponse",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "DeleteRangeRequest",
+      "type": "object",
+      "propertyCount": 3,
+      "required": [
+        "key"
+      ]
+    },
+    {
+      "name": "DeleteRangeResponse",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Compare",
+      "type": "object",
+      "propertyCount": 9,
+      "required": []
+    },
+    {
+      "name": "RequestOp",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "TxnRequest",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "TxnResponse",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "CompactionRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "revision"
+      ]
+    },
+    {
+      "name": "CompactionResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "WatchCreateRequest",
+      "type": "object",
+      "propertyCount": 8,
+      "required": []
+    },
+    {
+      "name": "WatchRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "WatchEvent",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "WatchResponse",
+      "type": "object",
+      "propertyCount": 8,
+      "required": []
+    },
+    {
+      "name": "LeaseGrantRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "TTL"
+      ]
+    },
+    {
+      "name": "LeaseGrantResponse",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "LeaseRevokeRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "ID"
+      ]
+    },
+    {
+      "name": "LeaseRevokeResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "LeaseKeepAliveRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "ID"
+      ]
+    },
+    {
+      "name": "LeaseKeepAliveResponse",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "LeaseTimeToLiveRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "ID"
+      ]
+    },
+    {
+      "name": "LeaseTimeToLiveResponse",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "LeaseLeasesResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "Member",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "MemberAddRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "peerURLs"
+      ]
+    },
+    {
+      "name": "MemberAddResponse",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "MemberRemoveRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "ID"
+      ]
+    },
+    {
+      "name": "MemberRemoveResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "MemberUpdateRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "ID",
+        "peerURLs"
+      ]
+    },
+    {
+      "name": "MemberUpdateResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "MemberListResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "MemberPromoteRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "ID"
+      ]
+    },
+    {
+      "name": "MemberPromoteResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "DefragmentResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "StatusResponse",
+      "type": "object",
+      "propertyCount": 10,
+      "required": []
+    },
+    {
+      "name": "AlarmRequest",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "AlarmMember",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AlarmResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "HashResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "MoveLeaderRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "targetID"
+      ]
+    },
+    {
+      "name": "MoveLeaderResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthEnableResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthDisableResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthenticateRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "name",
+        "password"
+      ]
+    },
+    {
+      "name": "AuthenticateResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AuthUserAddRequest",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "name": "AuthUserAddResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthUserGetRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "name": "AuthUserGetResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AuthUserDeleteRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "name": "AuthUserDeleteResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthUserListResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AuthUserChangePasswordRequest",
+      "type": "object",
+      "propertyCount": 3,
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "name": "AuthUserChangePasswordResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthUserGrantRoleRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "user",
+        "role"
+      ]
+    },
+    {
+      "name": "AuthUserGrantRoleResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthUserRevokeRoleRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "name",
+        "role"
+      ]
+    },
+    {
+      "name": "AuthUserRevokeRoleResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthRoleAddRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "name": "AuthRoleAddResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthRoleGetRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "role"
+      ]
+    },
+    {
+      "name": "Permission",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "AuthRoleGetResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AuthRoleDeleteRequest",
+      "type": "object",
+      "propertyCount": 1,
+      "required": [
+        "role"
+      ]
+    },
+    {
+      "name": "AuthRoleDeleteResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthRoleListResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AuthRoleGrantPermissionRequest",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "name",
+        "perm"
+      ]
+    },
+    {
+      "name": "AuthRoleGrantPermissionResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "AuthRoleRevokePermissionRequest",
+      "type": "object",
+      "propertyCount": 3,
+      "required": [
+        "role",
+        "key"
+      ]
+    },
+    {
+      "name": "AuthRoleRevokePermissionResponse",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "Error",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    }
+  ],
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/kv/put",
+      "operationId": "kvPut",
+      "summary": "Etcd Put a key-value pair",
+      "tags": [
+        "KV"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/kv/range",
+      "operationId": "kvRange",
+      "summary": "Etcd Get a range of key-value pairs",
+      "tags": [
+        "KV"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/kv/deleterange",
+      "operationId": "kvDeleteRange",
+      "summary": "Etcd Delete a range of key-value pairs",
+      "tags": [
+        "KV"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/kv/txn",
+      "operationId": "kvTxn",
+      "summary": "Etcd Execute a transaction",
+      "tags": [
+        "KV"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/kv/compaction",
+      "operationId": "kvCompact",
+      "summary": "Etcd Compact the event history",
+      "tags": [
+        "KV"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/watch",
+      "operationId": "watchEvents",
+      "summary": "Etcd Watch for key change events",
+      "tags": [
+        "Watch"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/lease/grant",
+      "operationId": "leaseGrant",
+      "summary": "Etcd Grant a lease",
+      "tags": [
+        "Lease"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/lease/revoke",
+      "operationId": "leaseRevoke",
+      "summary": "Etcd Revoke a lease",
+      "tags": [
+        "Lease"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/lease/keepalive",
+      "operationId": "leaseKeepAlive",
+      "summary": "Etcd Renew a lease",
+      "tags": [
+        "Lease"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/lease/timetolive",
+      "operationId": "leaseTimeToLive",
+      "summary": "Etcd Get lease time to live",
+      "tags": [
+        "Lease"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/lease/leases",
+      "operationId": "leaseLeases",
+      "summary": "Etcd List all leases",
+      "tags": [
+        "Lease"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cluster/member/add",
+      "operationId": "clusterMemberAdd",
+      "summary": "Etcd Add a member to the cluster",
+      "tags": [
+        "Cluster"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cluster/member/remove",
+      "operationId": "clusterMemberRemove",
+      "summary": "Etcd Remove a member from the cluster",
+      "tags": [
+        "Cluster"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cluster/member/update",
+      "operationId": "clusterMemberUpdate",
+      "summary": "Etcd Update a cluster member",
+      "tags": [
+        "Cluster"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cluster/member/list",
+      "operationId": "clusterMemberList",
+      "summary": "Etcd List cluster members",
+      "tags": [
+        "Cluster"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cluster/member/promote",
+      "operationId": "clusterMemberPromote",
+      "summary": "Etcd Promote a learner member",
+      "tags": [
+        "Cluster"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/maintenance/snapshot",
+      "operationId": "maintenanceSnapshot",
+      "summary": "Etcd Stream a database snapshot",
+      "tags": [
+        "Maintenance"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/maintenance/defragment",
+      "operationId": "maintenanceDefragment",
+      "summary": "Etcd Defragment a member's backend",
+      "tags": [
+        "Maintenance"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/maintenance/status",
+      "operationId": "maintenanceStatus",
+      "summary": "Etcd Get member status",
+      "tags": [
+        "Maintenance"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/maintenance/alarm",
+      "operationId": "maintenanceAlarm",
+      "summary": "Etcd Manage cluster alarms",
+      "tags": [
+        "Maintenance"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/maintenance/hash",
+      "operationId": "maintenanceHash",
+      "summary": "Etcd Get member backend hash",
+      "tags": [
+        "Maintenance"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/maintenance/transfer-leadership",
+      "operationId": "maintenanceTransferLeadership",
+      "summary": "Etcd Transfer cluster leadership",
+      "tags": [
+        "Maintenance"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/enable",
+      "operationId": "authEnable",
+      "summary": "Etcd Enable authentication",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/disable",
+      "operationId": "authDisable",
+      "summary": "Etcd Disable authentication",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/authenticate",
+      "operationId": "authAuthenticate",
+      "summary": "Etcd Authenticate a user",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/add",
+      "operationId": "authUserAdd",
+      "summary": "Etcd Add a user",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/get",
+      "operationId": "authUserGet",
+      "summary": "Etcd Get user details",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/delete",
+      "operationId": "authUserDelete",
+      "summary": "Etcd Delete a user",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/list",
+      "operationId": "authUserList",
+      "summary": "Etcd List all users",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/changepw",
+      "operationId": "authUserChangePassword",
+      "summary": "Etcd Change a user's password",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/grant",
+      "operationId": "authUserGrantRole",
+      "summary": "Etcd Grant a role to a user",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/user/revoke",
+      "operationId": "authUserRevokeRole",
+      "summary": "Etcd Revoke a role from a user",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/role/add",
+      "operationId": "authRoleAdd",
+      "summary": "Etcd Add a role",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/role/get",
+      "operationId": "authRoleGet",
+      "summary": "Etcd Get role details",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/role/delete",
+      "operationId": "authRoleDelete",
+      "summary": "Etcd Delete a role",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/role/list",
+      "operationId": "authRoleList",
+      "summary": "Etcd List all roles",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/role/grant",
+      "operationId": "authRoleGrantPermission",
+      "summary": "Etcd Grant a permission to a role",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/role/revoke",
+      "operationId": "authRoleRevokePermission",
+      "summary": "Etcd Revoke a permission from a role",
+      "tags": [
+        "Auth"
+      ]
+    }
+  ]
+}

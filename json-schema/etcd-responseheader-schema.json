@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ResponseHeader",
+  "title": "ResponseHeader",
+  "type": "object",
+  "description": "Header included in every etcd response containing cluster metadata and the revision at which the response was generated.",
+  "properties": {
+    "cluster_id": {
+      "type": "string",
+      "description": "ID of the etcd cluster"
+    },
+    "member_id": {
+      "type": "string",
+      "description": "ID of the member that generated the response"
+    },
+    "revision": {
+      "type": "string",
+      "description": "Key-value store revision at the time of the response"
+    },
+    "raft_term": {
+      "type": "string",
+      "description": "Raft term at the time of the response"
+    }
+  }
+}

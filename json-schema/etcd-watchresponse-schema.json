@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/WatchResponse",
+  "title": "WatchResponse",
+  "type": "object",
+  "description": "A streaming response from the watch endpoint",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "watch_id": {
+      "type": "string",
+      "description": "ID of the watch that generated this response"
+    },
+    "created": {
+      "type": "boolean",
+      "description": "True if this response confirms the creation of a new watch"
+    },
+    "canceled": {
+      "type": "boolean",
+      "description": "True if this response confirms the cancellation of a watch"
+    },
+    "compact_revision": {
+      "type": "string",
+      "description": "Set when a watch is canceled because the requested start revision has been compacted"
+    },
+    "cancel_reason": {
+      "type": "string",
+      "description": "Reason the watch was canceled"
+    },
+    "fragment": {
+      "type": "boolean",
+      "description": "True if this is a fragment of a larger watch response"
+    },
+    "events": {
+      "type": "array",
+      "description": "List of events in this watch response",
+      "items": {
+        "$ref": "#/components/schemas/WatchEvent"
+      }
+    }
+  }
+}

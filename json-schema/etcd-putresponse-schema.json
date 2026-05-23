@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PutResponse",
+  "title": "PutResponse",
+  "type": "object",
+  "description": "Response from a put operation",
+  "properties": {
+    "header": {
+      "$ref": "#/components/schemas/ResponseHeader"
+    },
+    "prev_kv": {
+      "$ref": "#/components/schemas/KeyValue"
+    }
+  }
+}

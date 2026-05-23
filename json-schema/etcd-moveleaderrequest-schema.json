@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MoveLeaderRequest",
+  "title": "MoveLeaderRequest",
+  "type": "object",
+  "description": "Request to transfer cluster leadership",
+  "required": [
+    "targetID"
+  ],
+  "properties": {
+    "targetID": {
+      "type": "string",
+      "description": "Member ID of the target leader"
+    }
+  }
+}
