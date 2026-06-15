@@ -1,0 +1,594 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "KV",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Put a key-value pair",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/put",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Stores a key-value pair in the etcd cluster. If the key already exists, the value is updated. Supports setting a lease ID to associate the key with a TTL-based lease that will delete the key when it expires. The prev_kv option returns the previous key-value pair before the update."
+        },
+        {
+          "info": {
+            "name": "Etcd Get a range of key-value pairs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/range",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves key-value pairs from the etcd cluster. A single key can be fetched by specifying only the key field. A range of keys can be fetched by specifying both key and range_end. Setting range_end to the key plus one byte fetches all keys with the given prefix. The limit parameter controls the maximum number of results returned, and the revision parameter enables point-in-time queries against a specific store revision."
+        },
+        {
+          "info": {
+            "name": "Etcd Delete a range of key-value pairs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/deleterange",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes one or more key-value pairs from the etcd cluster. A single key can be deleted by specifying only the key field. A range of keys is deleted by specifying both key and range_end. The prev_kv option returns the deleted key-value pairs before deletion. The count-only option returns only the count of deleted keys without performing the actual deletion."
+        },
+        {
+          "info": {
+            "name": "Etcd Execute a transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/txn",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes an atomic compare-and-swap transaction against the etcd key-value store. A transaction consists of a set of compare conditions, a success branch of operations executed if all conditions are true, and a failure branch executed if any condition is false. Transactions are atomic and isolated, providing strong consistency guarantees within the etcd cluster."
+        },
+        {
+          "info": {
+            "name": "Etcd Compact the event history",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/compaction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Compacts the etcd event history up to the given revision. All superseded keys with revisions less than the compaction revision are removed from the store, and watch operations cannot be made against compacted revisions. The physical option triggers a physical deletion of compacted keys immediately rather than deferring to the next compaction cycle."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Watch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Watch for key change events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/watch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Opens a streaming watch connection to receive notifications of key-value changes in the etcd cluster. Clients send WatchCreateRequest messages to subscribe to key ranges and WatchCancelRequest messages to unsubscribe. The server streams WatchResponse messages containing events that describe each key change including the event type (PUT or DELETE) and the updated key-value pair. Watches can be started from a specific revision to receive historical events."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Lease",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Grant a lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/grant",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new lease with the specified TTL in seconds. The returned lease ID can be attached to key-value pairs so they are automatically deleted when the lease expires. Clients must periodically renew the lease using the keepalive endpoint to prevent expiration. The ID field can be set to 0 to allow etcd to assign a lease ID automatically."
+        },
+        {
+          "info": {
+            "name": "Etcd Revoke a lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/revoke",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Revokes an existing lease identified by its lease ID. When a lease is revoked, all keys attached to that lease are automatically deleted from the etcd cluster. This is useful for releasing distributed locks or invalidating all session-scoped keys at once."
+        },
+        {
+          "info": {
+            "name": "Etcd Renew a lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/keepalive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Renews an existing lease to prevent it from expiring. Clients must call this endpoint periodically with an interval shorter than the lease TTL to maintain the lease. The response returns the remaining TTL of the lease after the renewal. If the lease has already expired, an error is returned and a new lease must be granted."
+        },
+        {
+          "info": {
+            "name": "Etcd Get lease time to live",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/timetolive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the remaining time-to-live and other information about a lease identified by its lease ID. When the keys option is set to true, the response also includes all keys attached to the lease. This endpoint is useful for monitoring lease health and understanding which keys will be deleted when the lease expires."
+        },
+        {
+          "info": {
+            "name": "Etcd List all leases",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/leases"
+          },
+          "docs": "Returns a list of all active leases in the etcd cluster. The response includes the lease IDs of all leases but does not include detailed information such as TTL or attached keys. Use the timetolive endpoint to retrieve detailed information about a specific lease."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cluster",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Add a member to the cluster",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/add",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a new member to the etcd cluster. The peer URLs of the new member must be provided. The new member starts in an unstarted state and is considered a learner until it catches up with the cluster's Raft log. The isLearner field can be set to true to explicitly add the member as a non-voting learner member."
+        },
+        {
+          "info": {
+            "name": "Etcd Remove a member from the cluster",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/remove",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes an existing member from the etcd cluster identified by its member ID. The removed member is immediately excluded from the cluster's Raft quorum. Removing a member that holds the leadership will trigger a new leader election. Care must be taken to maintain quorum when removing members from small clusters."
+        },
+        {
+          "info": {
+            "name": "Etcd Update a cluster member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the peer URLs of an existing cluster member identified by its member ID. This is used when a cluster member's network address changes. The member must be reachable at the new URLs for the update to succeed. All other member properties are read-only and cannot be updated through this endpoint."
+        },
+        {
+          "info": {
+            "name": "Etcd List cluster members",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/list"
+          },
+          "docs": "Returns a list of all members in the etcd cluster including their member IDs, names, peer URLs, client URLs, and whether they are learner members. The linearizable option controls whether the response is read from the cluster leader for the most up-to-date view of membership."
+        },
+        {
+          "info": {
+            "name": "Etcd Promote a learner member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/promote",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Promotes a learner (non-voting) member to a full voting member of the etcd cluster. The learner must be caught up with the cluster's Raft log before it can be promoted. This two-phase approach (add as learner, then promote) provides a safer way to grow clusters without temporarily reducing quorum availability."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Maintenance",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Stream a database snapshot",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/snapshot"
+          },
+          "docs": "Streams a point-in-time snapshot of the etcd database as a binary blob. The snapshot can be used to create a backup of the etcd data or to restore a cluster to a previous state. The snapshot is streamed in chunks to support large database sizes. This operation should be performed on a healthy cluster member to ensure consistency."
+        },
+        {
+          "info": {
+            "name": "Etcd Defragment a member's backend",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/defragment"
+          },
+          "docs": "Defragments the storage backend of the etcd member that receives the request, reclaiming disk space from deleted keys. Defragmentation is an expensive operation that blocks the member from serving requests during the process. It should be performed during maintenance windows on individual members rather than on all cluster members simultaneously."
+        },
+        {
+          "info": {
+            "name": "Etcd Get member status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/status"
+          },
+          "docs": "Returns the status of the etcd member that receives the request, including the cluster ID, member ID, Raft index, Raft term, Raft applied index, and whether the member is a learner. The leader field contains the member ID of the current cluster leader. This endpoint is useful for monitoring the health and state of individual cluster members."
+        },
+        {
+          "info": {
+            "name": "Etcd Manage cluster alarms",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/alarm",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Manages cluster-level alarms that indicate error conditions such as insufficient storage space (NOSPACE). Supports activating alarms, deactivating (disarming) alarms, and listing all active alarms. When a NOSPACE alarm is active, the cluster becomes read-only to prevent data loss. After addressing the underlying issue, the alarm must be explicitly deactivated to restore write access."
+        },
+        {
+          "info": {
+            "name": "Etcd Get member backend hash",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/hash"
+          },
+          "docs": "Returns a hash of the etcd member's backend database. This hash can be used to verify data consistency across cluster members. If members report different hashes, it may indicate a data corruption issue. This endpoint is primarily used for debugging and consistency verification."
+        },
+        {
+          "info": {
+            "name": "Etcd Transfer cluster leadership",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/transfer-leadership",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Transfers the Raft leadership from the current leader to the specified target member. This operation is useful during maintenance to gracefully move leadership away from a member that needs to be taken offline. The target member must be a healthy voting member of the cluster for the transfer to succeed."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Enable authentication",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/enable"
+          },
+          "docs": "Enables authentication on the etcd cluster. Before enabling authentication, a root user with root role must be created. Once authentication is enabled, all requests must include valid credentials. The root user has full access to all resources and can manage users and roles."
+        },
+        {
+          "info": {
+            "name": "Etcd Disable authentication",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/disable"
+          },
+          "docs": "Disables authentication on the etcd cluster, allowing all clients to access the cluster without credentials. This operation requires root user authentication when auth is currently enabled. Disabling authentication removes all access controls and should only be performed in trusted network environments."
+        },
+        {
+          "info": {
+            "name": "Etcd Authenticate a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/authenticate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticates a user with their username and password and returns a JWT token that can be used for subsequent authenticated requests. The token must be included in the Authorization header as a Bearer token. Tokens expire based on the cluster's configured token TTL and must be refreshed by calling this endpoint again."
+        },
+        {
+          "info": {
+            "name": "Etcd Add a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/add",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new user in the etcd authentication system with the specified username and password. Users can be assigned to roles which grant them permissions to access specific key ranges. The hashedPassword field can be used to provide a pre-hashed bcrypt password instead of a plaintext password."
+        },
+        {
+          "info": {
+            "name": "Etcd Get user details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns details about a specific user including their assigned roles. This endpoint requires root or appropriate administrative privileges. The password hash is not returned for security reasons."
+        },
+        {
+          "info": {
+            "name": "Etcd Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes a user from the etcd authentication system. Deleting a user removes all of their role assignments. The root user cannot be deleted while authentication is enabled."
+        },
+        {
+          "info": {
+            "name": "Etcd List all users",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/list"
+          },
+          "docs": "Returns a list of all usernames registered in the etcd authentication system. This endpoint requires root or administrative privileges. Use the user/get endpoint to retrieve detailed information including role assignments for a specific user."
+        },
+        {
+          "info": {
+            "name": "Etcd Change a user's password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/changepw",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Changes the password of an existing user in the etcd authentication system. Non-root users can change their own password. Root or administrative users can change the password of any user. The hashedPassword field can be used to provide a pre-hashed bcrypt password."
+        },
+        {
+          "info": {
+            "name": "Etcd Grant a role to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/grant",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns a role to a user in the etcd authentication system. The user inherits all key-range permissions defined on the granted role. A user can be assigned multiple roles. The role must exist before it can be granted to a user."
+        },
+        {
+          "info": {
+            "name": "Etcd Revoke a role from a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/revoke",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes a role assignment from a user in the etcd authentication system. After revocation, the user loses all permissions granted by that role. Other role assignments remain intact."
+        },
+        {
+          "info": {
+            "name": "Etcd Add a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/add",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new role in the etcd authentication system. Roles define sets of permissions over key ranges. Each permission specifies a key range (single key or range using key and range_end) and the allowed operations (read, write, or readwrite). Roles are assigned to users to grant them access."
+        },
+        {
+          "info": {
+            "name": "Etcd Get role details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns details about a specific role including all key-range permissions assigned to the role. This endpoint is used to inspect role configurations for auditing and debugging purposes."
+        },
+        {
+          "info": {
+            "name": "Etcd Delete a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes a role from the etcd authentication system. When a role is deleted, it is automatically revoked from all users that had been assigned the role. The root role cannot be deleted while authentication is enabled."
+        },
+        {
+          "info": {
+            "name": "Etcd List all roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/list"
+          },
+          "docs": "Returns a list of all role names defined in the etcd authentication system. Use the role/get endpoint to retrieve detailed information including permissions for a specific role."
+        },
+        {
+          "info": {
+            "name": "Etcd Grant a permission to a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/grant",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns a key-range permission to a role. The permission specifies a key range (single key or range using key and range_end) and the allowed operations (read, write, or readwrite). All users assigned the role will gain the new permission immediately."
+        },
+        {
+          "info": {
+            "name": "Etcd Revoke a permission from a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/revoke",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes a key-range permission from a role. All users assigned the role will immediately lose the revoked permission. The key and range_end fields must match an existing permission on the role exactly."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
