@@ -116,6 +116,10 @@ apis:
       - Key-Value
       - REST
 common:
+  - type: DomainSecurity
+    url: security/etcd-domain-security.yml
+  - type: Authentication
+    url: authentication/etcd-authentication.yml
   - type: JSONSchema
     url: json-schema/etcd-key-value-schema.json
   - type: JSONLD
