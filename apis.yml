@@ -116,6 +116,8 @@ apis:
       - Key-Value
       - REST
 common:
+  - type: AgenticAccess
+    url: agentic-access/etcd-agentic-access.yml
   - type: DomainSecurity
     url: security/etcd-domain-security.yml
   - type: Authentication
