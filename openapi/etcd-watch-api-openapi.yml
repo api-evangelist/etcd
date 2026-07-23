@@ -1,0 +1,206 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway Auth Watch API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+servers:
+- url: http://{host}:{port}/v3
+  description: etcd gRPC Gateway
+  variables:
+    host:
+      default: localhost
+    port:
+      default: '2379'
+security:
+- bearerAuth: []
+tags:
+- name: Watch
+  description: Watch operations for streaming key change notifications
+paths:
+  /watch:
+    post:
+      operationId: watchEvents
+      summary: Etcd Watch for key change events
+      description: Opens a streaming watch connection to receive notifications of key-value changes in the etcd cluster. Clients send WatchCreateRequest messages to subscribe to key ranges and WatchCancelRequest messages to unsubscribe. The server streams WatchResponse messages containing events that describe each key change including the event type (PUT or DELETE) and the updated key-value pair. Watches can be started from a specific revision to receive historical events.
+      tags:
+      - Watch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchRequest'
+      responses:
+        '200':
+          description: Watch stream established
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    WatchResponse:
+      type: object
+      description: A streaming response from the watch endpoint
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        watch_id:
+          type: string
+          description: ID of the watch that generated this response
+        created:
+          type: boolean
+          description: True if this response confirms the creation of a new watch
+        canceled:
+          type: boolean
+          description: True if this response confirms the cancellation of a watch
+        compact_revision:
+          type: string
+          description: Set when a watch is canceled because the requested start revision has been compacted
+        cancel_reason:
+          type: string
+          description: Reason the watch was canceled
+        fragment:
+          type: boolean
+          description: True if this is a fragment of a larger watch response
+        events:
+          type: array
+          description: List of events in this watch response
+          items:
+            $ref: '#/components/schemas/WatchEvent'
+    WatchRequest:
+      type: object
+      description: A watch stream request that can create or cancel watches
+      properties:
+        create_request:
+          $ref: '#/components/schemas/WatchCreateRequest'
+        cancel_request:
+          type: object
+          description: Request to cancel an existing watch
+          properties:
+            watch_id:
+              type: string
+              description: ID of the watch to cancel
+    WatchCreateRequest:
+      type: object
+      description: Request to create a new watch on a key range
+      properties:
+        key:
+          type: string
+          description: The key to watch in base64-encoded format
+        range_end:
+          type: string
+          description: The range end for watching multiple keys in base64-encoded format
+        start_revision:
+          type: string
+          description: Revision to start watching from. 0 means the current revision.
+        progress_notify:
+          type: boolean
+          description: When true, sends periodic progress reports even when no events occur
+        filters:
+          type: array
+          description: Event types to filter out from the watch stream
+          items:
+            type: string
+            enum:
+            - NOPUT
+            - NODELETE
+        prev_kv:
+          type: boolean
+          description: When true, includes the previous key-value pair in DELETE events
+        watch_id:
+          type: string
+          description: User-assigned ID to identify this watch stream
+        fragment:
+          type: boolean
+          description: When true, splits large watch responses into smaller fragments
+    WatchEvent:
+      type: object
+      description: An event describing a change to a key in the etcd cluster
+      properties:
+        type:
+          type: string
+          enum:
+          - PUT
+          - DELETE
+          description: Type of the event - PUT for creates/updates, DELETE for deletions
+        kv:
+          $ref: '#/components/schemas/KeyValue'
+        prev_kv:
+          $ref: '#/components/schemas/KeyValue'
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    KeyValue:
+      type: object
+      description: A key-value pair stored in the etcd cluster. Keys and values are base64-encoded byte strings. The version field is the version of the key, the create_revision is the cluster revision when the key was created, and the mod_revision is the cluster revision when the key was last modified.
+      properties:
+        key:
+          type: string
+          description: The key in base64-encoded format
+        create_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was created
+        mod_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was last modified
+        version:
+          type: string
+          description: Version of the key, monotonically increasing for each put on the key
+        value:
+          type: string
+          description: The value in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID attached to the key, or 0 if no lease is attached
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the /auth/authenticate endpoint. Include in the Authorization header as "Bearer {token}".
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/

@@ -1,0 +1,295 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway Auth Maintenance API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+servers:
+- url: http://{host}:{port}/v3
+  description: etcd gRPC Gateway
+  variables:
+    host:
+      default: localhost
+    port:
+      default: '2379'
+security:
+- bearerAuth: []
+tags:
+- name: Maintenance
+  description: Maintenance operations including snapshots, defragmentation, and status
+paths:
+  /maintenance/snapshot:
+    post:
+      operationId: maintenanceSnapshot
+      summary: Etcd Stream a database snapshot
+      description: Streams a point-in-time snapshot of the etcd database as a binary blob. The snapshot can be used to create a backup of the etcd data or to restore a cluster to a previous state. The snapshot is streamed in chunks to support large database sizes. This operation should be performed on a healthy cluster member to ensure consistency.
+      tags:
+      - Maintenance
+      responses:
+        '200':
+          description: Database snapshot stream
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/defragment:
+    post:
+      operationId: maintenanceDefragment
+      summary: Etcd Defragment a member's backend
+      description: Defragments the storage backend of the etcd member that receives the request, reclaiming disk space from deleted keys. Defragmentation is an expensive operation that blocks the member from serving requests during the process. It should be performed during maintenance windows on individual members rather than on all cluster members simultaneously.
+      tags:
+      - Maintenance
+      responses:
+        '200':
+          description: Defragmentation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefragmentResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/status:
+    post:
+      operationId: maintenanceStatus
+      summary: Etcd Get member status
+      description: Returns the status of the etcd member that receives the request, including the cluster ID, member ID, Raft index, Raft term, Raft applied index, and whether the member is a learner. The leader field contains the member ID of the current cluster leader. This endpoint is useful for monitoring the health and state of individual cluster members.
+      tags:
+      - Maintenance
+      responses:
+        '200':
+          description: Member status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/alarm:
+    post:
+      operationId: maintenanceAlarm
+      summary: Etcd Manage cluster alarms
+      description: Manages cluster-level alarms that indicate error conditions such as insufficient storage space (NOSPACE). Supports activating alarms, deactivating (disarming) alarms, and listing all active alarms. When a NOSPACE alarm is active, the cluster becomes read-only to prevent data loss. After addressing the underlying issue, the alarm must be explicitly deactivated to restore write access.
+      tags:
+      - Maintenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlarmRequest'
+      responses:
+        '200':
+          description: Alarm operation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlarmResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /maintenance/hash:
+    post:
+      operationId: maintenanceHash
+      summary: Etcd Get member backend hash
+      description: Returns a hash of the etcd member's backend database. This hash can be used to verify data consistency across cluster members. If members report different hashes, it may indicate a data corruption issue. This endpoint is primarily used for debugging and consistency verification.
+      tags:
+      - Maintenance
+      responses:
+        '200':
+          description: Backend hash retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HashResponse'
+  /maintenance/transfer-leadership:
+    post:
+      operationId: maintenanceTransferLeadership
+      summary: Etcd Transfer cluster leadership
+      description: Transfers the Raft leadership from the current leader to the specified target member. This operation is useful during maintenance to gracefully move leadership away from a member that needs to be taken offline. The target member must be a healthy voting member of the cluster for the transfer to succeed.
+      tags:
+      - Maintenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveLeaderRequest'
+      responses:
+        '200':
+          description: Leadership transfer initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoveLeaderResponse'
+components:
+  schemas:
+    DefragmentResponse:
+      type: object
+      description: Response from a defragmentation operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    MoveLeaderRequest:
+      type: object
+      description: Request to transfer cluster leadership
+      required:
+      - targetID
+      properties:
+        targetID:
+          type: string
+          description: Member ID of the target leader
+    AlarmMember:
+      type: object
+      description: An alarm associated with a cluster member
+      properties:
+        memberID:
+          type: string
+          description: Member ID that has the alarm
+        alarm:
+          type: string
+          enum:
+          - NONE
+          - NOSPACE
+          - CORRUPT
+          description: Type of alarm
+    AlarmRequest:
+      type: object
+      description: Request to manage cluster alarms
+      properties:
+        action:
+          type: string
+          enum:
+          - GET
+          - ACTIVATE
+          - DEACTIVATE
+          description: Action to perform on alarms
+        memberID:
+          type: string
+          description: Member ID for the alarm. Set to 0 for all members.
+        alarm:
+          type: string
+          enum:
+          - NONE
+          - NOSPACE
+          - CORRUPT
+          description: Type of alarm to activate or deactivate
+    AlarmResponse:
+      type: object
+      description: Response from an alarm operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        alarms:
+          type: array
+          description: List of active alarms in the cluster
+          items:
+            $ref: '#/components/schemas/AlarmMember'
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    HashResponse:
+      type: object
+      description: Response from a backend hash query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        hash:
+          type: integer
+          description: Hash of the backend database
+    MoveLeaderResponse:
+      type: object
+      description: Response from a leadership transfer operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    StatusResponse:
+      type: object
+      description: Response from a member status query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        version:
+          type: string
+          description: etcd version of the member
+        dbSize:
+          type: string
+          description: Size of the backend database in bytes
+        dbSizeInUse:
+          type: string
+          description: Size of the backend database in bytes actually in use
+        leader:
+          type: string
+          description: Member ID of the current cluster leader
+        raftIndex:
+          type: string
+          description: Current Raft index of the member
+        raftTerm:
+          type: string
+          description: Current Raft term of the member
+        raftAppliedIndex:
+          type: string
+          description: Current Raft applied index of the member
+        errors:
+          type: array
+          description: List of active alarms or errors on the member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: True if this member is a non-voting learner
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the /auth/authenticate endpoint. Include in the Authorization header as "Bearer {token}".
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/

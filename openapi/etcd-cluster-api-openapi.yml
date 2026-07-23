@@ -1,0 +1,314 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway Auth Cluster API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+servers:
+- url: http://{host}:{port}/v3
+  description: etcd gRPC Gateway
+  variables:
+    host:
+      default: localhost
+    port:
+      default: '2379'
+security:
+- bearerAuth: []
+tags:
+- name: Cluster
+  description: Cluster membership management including member add, remove, and list
+paths:
+  /cluster/member/add:
+    post:
+      operationId: clusterMemberAdd
+      summary: Etcd Add a member to the cluster
+      description: Adds a new member to the etcd cluster. The peer URLs of the new member must be provided. The new member starts in an unstarted state and is considered a learner until it catches up with the cluster's Raft log. The isLearner field can be set to true to explicitly add the member as a non-voting learner member.
+      tags:
+      - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberAddRequest'
+      responses:
+        '200':
+          description: Member added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberAddResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/remove:
+    post:
+      operationId: clusterMemberRemove
+      summary: Etcd Remove a member from the cluster
+      description: Removes an existing member from the etcd cluster identified by its member ID. The removed member is immediately excluded from the cluster's Raft quorum. Removing a member that holds the leadership will trigger a new leader election. Care must be taken to maintain quorum when removing members from small clusters.
+      tags:
+      - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberRemoveRequest'
+      responses:
+        '200':
+          description: Member removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberRemoveResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/update:
+    post:
+      operationId: clusterMemberUpdate
+      summary: Etcd Update a cluster member
+      description: Updates the peer URLs of an existing cluster member identified by its member ID. This is used when a cluster member's network address changes. The member must be reachable at the new URLs for the update to succeed. All other member properties are read-only and cannot be updated through this endpoint.
+      tags:
+      - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberUpdateRequest'
+      responses:
+        '200':
+          description: Member updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberUpdateResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/list:
+    post:
+      operationId: clusterMemberList
+      summary: Etcd List cluster members
+      description: Returns a list of all members in the etcd cluster including their member IDs, names, peer URLs, client URLs, and whether they are learner members. The linearizable option controls whether the response is read from the cluster leader for the most up-to-date view of membership.
+      tags:
+      - Cluster
+      responses:
+        '200':
+          description: Cluster member list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberListResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cluster/member/promote:
+    post:
+      operationId: clusterMemberPromote
+      summary: Etcd Promote a learner member
+      description: Promotes a learner (non-voting) member to a full voting member of the etcd cluster. The learner must be caught up with the cluster's Raft log before it can be promoted. This two-phase approach (add as learner, then promote) provides a safer way to grow clusters without temporarily reducing quorum availability.
+      tags:
+      - Cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberPromoteRequest'
+      responses:
+        '200':
+          description: Learner member promoted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberPromoteResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    MemberPromoteRequest:
+      type: object
+      description: Request to promote a learner member to a voting member
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the learner member to promote
+    MemberPromoteResponse:
+      type: object
+      description: Response from a member promote operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the promotion
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberAddResponse:
+      type: object
+      description: Response from a member add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        member:
+          $ref: '#/components/schemas/Member'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberAddRequest:
+      type: object
+      description: Request to add a new member to the cluster
+      required:
+      - peerURLs
+      properties:
+        peerURLs:
+          type: array
+          description: Peer URLs of the new member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: When true, adds the member as a non-voting learner
+    MemberListResponse:
+      type: object
+      description: Response from a member list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: List of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberUpdateRequest:
+      type: object
+      description: Request to update a cluster member's peer URLs
+      required:
+      - ID
+      - peerURLs
+      properties:
+        ID:
+          type: string
+          description: ID of the member to update
+        peerURLs:
+          type: array
+          description: New peer URLs for the member
+          items:
+            type: string
+    Member:
+      type: object
+      description: A member of the etcd cluster
+      properties:
+        ID:
+          type: string
+          description: Unique identifier for the cluster member
+        name:
+          type: string
+          description: Human-readable name of the cluster member
+        peerURLs:
+          type: array
+          description: URLs used for peer-to-peer communication within the cluster
+          items:
+            type: string
+        clientURLs:
+          type: array
+          description: URLs that clients use to communicate with this member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: True if this member is a non-voting learner member
+    MemberRemoveRequest:
+      type: object
+      description: Request to remove a member from the cluster
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the member to remove
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    MemberRemoveResponse:
+      type: object
+      description: Response from a member remove operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the removal
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberUpdateResponse:
+      type: object
+      description: Response from a member update operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the /auth/authenticate endpoint. Include in the Authorization header as "Bearer {token}".
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/

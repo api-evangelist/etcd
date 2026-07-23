@@ -1,0 +1,298 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway Auth Lease API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+servers:
+- url: http://{host}:{port}/v3
+  description: etcd gRPC Gateway
+  variables:
+    host:
+      default: localhost
+    port:
+      default: '2379'
+security:
+- bearerAuth: []
+tags:
+- name: Lease
+  description: Lease management for TTL-based key expiration
+paths:
+  /lease/grant:
+    post:
+      operationId: leaseGrant
+      summary: Etcd Grant a lease
+      description: Creates a new lease with the specified TTL in seconds. The returned lease ID can be attached to key-value pairs so they are automatically deleted when the lease expires. Clients must periodically renew the lease using the keepalive endpoint to prevent expiration. The ID field can be set to 0 to allow etcd to assign a lease ID automatically.
+      tags:
+      - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseGrantRequest'
+      responses:
+        '200':
+          description: Lease granted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseGrantResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/revoke:
+    post:
+      operationId: leaseRevoke
+      summary: Etcd Revoke a lease
+      description: Revokes an existing lease identified by its lease ID. When a lease is revoked, all keys attached to that lease are automatically deleted from the etcd cluster. This is useful for releasing distributed locks or invalidating all session-scoped keys at once.
+      tags:
+      - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseRevokeRequest'
+      responses:
+        '200':
+          description: Lease revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseRevokeResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/keepalive:
+    post:
+      operationId: leaseKeepAlive
+      summary: Etcd Renew a lease
+      description: Renews an existing lease to prevent it from expiring. Clients must call this endpoint periodically with an interval shorter than the lease TTL to maintain the lease. The response returns the remaining TTL of the lease after the renewal. If the lease has already expired, an error is returned and a new lease must be granted.
+      tags:
+      - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseKeepAliveRequest'
+      responses:
+        '200':
+          description: Lease renewed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseKeepAliveResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/timetolive:
+    post:
+      operationId: leaseTimeToLive
+      summary: Etcd Get lease time to live
+      description: Returns the remaining time-to-live and other information about a lease identified by its lease ID. When the keys option is set to true, the response also includes all keys attached to the lease. This endpoint is useful for monitoring lease health and understanding which keys will be deleted when the lease expires.
+      tags:
+      - Lease
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaseTimeToLiveRequest'
+      responses:
+        '200':
+          description: Lease TTL information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseTimeToLiveResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lease/leases:
+    post:
+      operationId: leaseLeases
+      summary: Etcd List all leases
+      description: Returns a list of all active leases in the etcd cluster. The response includes the lease IDs of all leases but does not include detailed information such as TTL or attached keys. Use the timetolive endpoint to retrieve detailed information about a specific lease.
+      tags:
+      - Lease
+      responses:
+        '200':
+          description: Lease list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaseLeasesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    LeaseRevokeRequest:
+      type: object
+      description: Request to revoke an existing lease
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to revoke
+    LeaseGrantRequest:
+      type: object
+      description: Request to create a new lease
+      required:
+      - TTL
+      properties:
+        TTL:
+          type: string
+          description: Time-to-live in seconds for the lease
+        ID:
+          type: string
+          description: User-specified lease ID. Set to 0 to let etcd assign the ID automatically.
+    LeaseGrantResponse:
+      type: object
+      description: Response from a lease grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        ID:
+          type: string
+          description: Lease ID assigned to the new lease
+        TTL:
+          type: string
+          description: Actual TTL in seconds granted to the lease
+        error:
+          type: string
+          description: Error message if the lease grant failed
+    LeaseTimeToLiveRequest:
+      type: object
+      description: Request to get the TTL of a lease
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to query
+        keys:
+          type: boolean
+          description: When true, returns all keys attached to the lease
+    LeaseTimeToLiveResponse:
+      type: object
+      description: Response from a lease TTL query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        ID:
+          type: string
+          description: ID of the lease
+        TTL:
+          type: string
+          description: Remaining TTL in seconds for the lease
+        grantedTTL:
+          type: string
+          description: Initial TTL in seconds that was granted to the lease
+        keys:
+          type: array
+          description: Keys attached to the lease when the keys option was requested
+          items:
+            type: string
+    LeaseRevokeResponse:
+      type: object
+      description: Response from a lease revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    LeaseKeepAliveResponse:
+      type: object
+      description: Response from a lease keepalive operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        ID:
+          type: string
+          description: ID of the renewed lease
+        TTL:
+          type: string
+          description: Remaining TTL in seconds after the renewal
+    LeaseLeasesResponse:
+      type: object
+      description: Response from a list leases operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        leases:
+          type: array
+          description: List of active leases
+          items:
+            type: object
+            description: A lease status entry
+            properties:
+              ID:
+                type: string
+                description: Lease ID
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    LeaseKeepAliveRequest:
+      type: object
+      description: Request to renew a lease
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to renew
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the /auth/authenticate endpoint. Include in the Authorization header as "Bearer {token}".
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/

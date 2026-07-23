@@ -1,0 +1,479 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway Auth KV API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+servers:
+- url: http://{host}:{port}/v3
+  description: etcd gRPC Gateway
+  variables:
+    host:
+      default: localhost
+    port:
+      default: '2379'
+security:
+- bearerAuth: []
+tags:
+- name: KV
+  description: Key-value store operations including put, get, delete, and range queries
+paths:
+  /kv/put:
+    post:
+      operationId: kvPut
+      summary: Etcd Put a key-value pair
+      description: Stores a key-value pair in the etcd cluster. If the key already exists, the value is updated. Supports setting a lease ID to associate the key with a TTL-based lease that will delete the key when it expires. The prev_kv option returns the previous key-value pair before the update.
+      tags:
+      - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutRequest'
+      responses:
+        '200':
+          description: Key-value pair stored successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PutResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/range:
+    post:
+      operationId: kvRange
+      summary: Etcd Get a range of key-value pairs
+      description: Retrieves key-value pairs from the etcd cluster. A single key can be fetched by specifying only the key field. A range of keys can be fetched by specifying both key and range_end. Setting range_end to the key plus one byte fetches all keys with the given prefix. The limit parameter controls the maximum number of results returned, and the revision parameter enables point-in-time queries against a specific store revision.
+      tags:
+      - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RangeRequest'
+      responses:
+        '200':
+          description: Key-value pairs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RangeResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/deleterange:
+    post:
+      operationId: kvDeleteRange
+      summary: Etcd Delete a range of key-value pairs
+      description: Deletes one or more key-value pairs from the etcd cluster. A single key can be deleted by specifying only the key field. A range of keys is deleted by specifying both key and range_end. The prev_kv option returns the deleted key-value pairs before deletion. The count-only option returns only the count of deleted keys without performing the actual deletion.
+      tags:
+      - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteRangeRequest'
+      responses:
+        '200':
+          description: Key-value pairs deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteRangeResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/txn:
+    post:
+      operationId: kvTxn
+      summary: Etcd Execute a transaction
+      description: Executes an atomic compare-and-swap transaction against the etcd key-value store. A transaction consists of a set of compare conditions, a success branch of operations executed if all conditions are true, and a failure branch executed if any condition is false. Transactions are atomic and isolated, providing strong consistency guarantees within the etcd cluster.
+      tags:
+      - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TxnRequest'
+      responses:
+        '200':
+          description: Transaction executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxnResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/compaction:
+    post:
+      operationId: kvCompact
+      summary: Etcd Compact the event history
+      description: Compacts the etcd event history up to the given revision. All superseded keys with revisions less than the compaction revision are removed from the store, and watch operations cannot be made against compacted revisions. The physical option triggers a physical deletion of compacted keys immediately rather than deferring to the next compaction cycle.
+      tags:
+      - KV
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompactionRequest'
+      responses:
+        '200':
+          description: Compaction completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompactionResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TxnResponse:
+      type: object
+      description: Response from a transaction execution
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        succeeded:
+          type: boolean
+          description: True if all compare conditions were true and the success branch was executed
+        responses:
+          type: array
+          description: Results of the operations executed in the branch that ran
+          items:
+            type: object
+            description: Operation response
+    DeleteRangeResponse:
+      type: object
+      description: Response from a delete range operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        deleted:
+          type: string
+          description: Number of keys deleted
+        prev_kvs:
+          type: array
+          description: Previous key-value pairs that were deleted when prev_kv was requested
+          items:
+            $ref: '#/components/schemas/KeyValue'
+    PutResponse:
+      type: object
+      description: Response from a put operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        prev_kv:
+          $ref: '#/components/schemas/KeyValue'
+    Compare:
+      type: object
+      description: A condition in a transaction that compares a key's attribute to a target value
+      properties:
+        result:
+          type: string
+          enum:
+          - EQUAL
+          - GREATER
+          - LESS
+          - NOT_EQUAL
+          description: The comparison operation to apply
+        target:
+          type: string
+          enum:
+          - VERSION
+          - CREATE
+          - MOD
+          - VALUE
+          - LEASE
+          description: The attribute of the key to compare
+        key:
+          type: string
+          description: The key to compare in base64-encoded format
+        range_end:
+          type: string
+          description: The range end for comparing a range of keys
+        version:
+          type: string
+          description: Version to compare against when target is VERSION
+        create_revision:
+          type: string
+          description: Create revision to compare against when target is CREATE
+        mod_revision:
+          type: string
+          description: Mod revision to compare against when target is MOD
+        value:
+          type: string
+          description: Value to compare against when target is VALUE in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID to compare against when target is LEASE
+    CompactionRequest:
+      type: object
+      description: Request to compact the etcd event history
+      required:
+      - revision
+      properties:
+        revision:
+          type: string
+          description: Revision to compact up to (all revisions below this will be removed)
+        physical:
+          type: boolean
+          description: When true, triggers an immediate physical deletion of compacted data
+    CompactionResponse:
+      type: object
+      description: Response from a compaction operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    RangeRequest:
+      type: object
+      description: Request to retrieve a range of key-value pairs from the etcd cluster
+      required:
+      - key
+      properties:
+        key:
+          type: string
+          description: The first key in the range in base64-encoded format
+        range_end:
+          type: string
+          description: The upper bound of the range in base64-encoded format (exclusive). If not specified, only the key is retrieved. If set to key plus one byte, all keys with the given prefix are retrieved.
+        limit:
+          type: string
+          description: Maximum number of key-value pairs to return. 0 means no limit.
+        revision:
+          type: string
+          description: Point-in-time revision for the query. 0 means the current revision.
+        sort_order:
+          type: string
+          enum:
+          - NONE
+          - ASCEND
+          - DESCEND
+          description: Sort order for the results
+        sort_target:
+          type: string
+          enum:
+          - KEY
+          - VERSION
+          - CREATE
+          - MOD
+          - VALUE
+          description: Field to sort results by
+        serializable:
+          type: boolean
+          description: When true, uses serializable (stale) reads for higher throughput. When false (default), uses linearizable reads for strong consistency.
+        keys_only:
+          type: boolean
+          description: When true, returns only keys without values
+        count_only:
+          type: boolean
+          description: When true, returns only the count without the key-value pairs
+        min_mod_revision:
+          type: string
+          description: Filter for keys with mod_revision greater than or equal to this value
+        max_mod_revision:
+          type: string
+          description: Filter for keys with mod_revision less than or equal to this value
+        min_create_revision:
+          type: string
+          description: Filter for keys with create_revision greater than or equal to this value
+        max_create_revision:
+          type: string
+          description: Filter for keys with create_revision less than or equal to this value
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    RangeResponse:
+      type: object
+      description: Response from a range query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        kvs:
+          type: array
+          description: List of key-value pairs matching the range query
+          items:
+            $ref: '#/components/schemas/KeyValue'
+        more:
+          type: boolean
+          description: True if more key-value pairs exist beyond the limit specified in the request
+        count:
+          type: string
+          description: Total number of keys in the range matching the request
+    RequestOp:
+      type: object
+      description: An operation within a transaction's success or failure branch
+      properties:
+        request_range:
+          $ref: '#/components/schemas/RangeRequest'
+        request_put:
+          $ref: '#/components/schemas/PutRequest'
+        request_delete_range:
+          $ref: '#/components/schemas/DeleteRangeRequest'
+        request_txn:
+          $ref: '#/components/schemas/TxnRequest'
+    DeleteRangeRequest:
+      type: object
+      description: Request to delete a range of key-value pairs from the etcd cluster
+      required:
+      - key
+      properties:
+        key:
+          type: string
+          description: The first key in the range to delete in base64-encoded format
+        range_end:
+          type: string
+          description: The upper bound of the range to delete in base64-encoded format (exclusive)
+        prev_kv:
+          type: boolean
+          description: When true, returns the deleted key-value pairs before deletion
+    PutRequest:
+      type: object
+      description: Request to store a key-value pair in the etcd cluster
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: The key to store in base64-encoded format
+        value:
+          type: string
+          description: The value to store in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID to associate with the key for TTL-based expiration
+        prev_kv:
+          type: boolean
+          description: When true, returns the previous key-value pair before the update
+        ignore_value:
+          type: boolean
+          description: When true, updates the key without changing the value (only updates lease)
+        ignore_lease:
+          type: boolean
+          description: When true, updates the key without changing the lease
+    KeyValue:
+      type: object
+      description: A key-value pair stored in the etcd cluster. Keys and values are base64-encoded byte strings. The version field is the version of the key, the create_revision is the cluster revision when the key was created, and the mod_revision is the cluster revision when the key was last modified.
+      properties:
+        key:
+          type: string
+          description: The key in base64-encoded format
+        create_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was created
+        mod_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was last modified
+        version:
+          type: string
+          description: Version of the key, monotonically increasing for each put on the key
+        value:
+          type: string
+          description: The value in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID attached to the key, or 0 if no lease is attached
+    TxnRequest:
+      type: object
+      description: An atomic compare-and-swap transaction consisting of conditions, success operations, and failure operations
+      properties:
+        compare:
+          type: array
+          description: Conditions that must all be true for the success branch to execute
+          items:
+            $ref: '#/components/schemas/Compare'
+        success:
+          type: array
+          description: Operations to execute when all compare conditions are true
+          items:
+            $ref: '#/components/schemas/RequestOp'
+        failure:
+          type: array
+          description: Operations to execute when any compare condition is false
+          items:
+            $ref: '#/components/schemas/RequestOp'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the /auth/authenticate endpoint. Include in the Authorization header as "Bearer {token}".
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/

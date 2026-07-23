@@ -1,0 +1,715 @@
+openapi: 3.1.0
+info:
+  title: etcd HTTP Gateway Auth API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  version: '3.5'
+  contact:
+    name: etcd Community
+    url: https://etcd.io/community/
+  termsOfService: https://github.com/etcd-io/etcd/blob/main/LICENSE
+servers:
+- url: http://{host}:{port}/v3
+  description: etcd gRPC Gateway
+  variables:
+    host:
+      default: localhost
+    port:
+      default: '2379'
+security:
+- bearerAuth: []
+tags:
+- name: Auth
+  description: Authentication and authorization management for users and roles
+paths:
+  /auth/enable:
+    post:
+      operationId: authEnable
+      summary: Etcd Enable authentication
+      description: Enables authentication on the etcd cluster. Before enabling authentication, a root user with root role must be created. Once authentication is enabled, all requests must include valid credentials. The root user has full access to all resources and can manage users and roles.
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: Authentication enabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEnableResponse'
+  /auth/disable:
+    post:
+      operationId: authDisable
+      summary: Etcd Disable authentication
+      description: Disables authentication on the etcd cluster, allowing all clients to access the cluster without credentials. This operation requires root user authentication when auth is currently enabled. Disabling authentication removes all access controls and should only be performed in trusted network environments.
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: Authentication disabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthDisableResponse'
+  /auth/authenticate:
+    post:
+      operationId: authAuthenticate
+      summary: Etcd Authenticate a user
+      description: Authenticates a user with their username and password and returns a JWT token that can be used for subsequent authenticated requests. The token must be included in the Authorization header as a Bearer token. Tokens expire based on the cluster's configured token TTL and must be refreshed by calling this endpoint again.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/add:
+    post:
+      operationId: authUserAdd
+      summary: Etcd Add a user
+      description: Creates a new user in the etcd authentication system with the specified username and password. Users can be assigned to roles which grant them permissions to access specific key ranges. The hashedPassword field can be used to provide a pre-hashed bcrypt password instead of a plaintext password.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserAddRequest'
+      responses:
+        '200':
+          description: User added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserAddResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/get:
+    post:
+      operationId: authUserGet
+      summary: Etcd Get user details
+      description: Returns details about a specific user including their assigned roles. This endpoint requires root or appropriate administrative privileges. The password hash is not returned for security reasons.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserGetRequest'
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserGetResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/delete:
+    post:
+      operationId: authUserDelete
+      summary: Etcd Delete a user
+      description: Deletes a user from the etcd authentication system. Deleting a user removes all of their role assignments. The root user cannot be deleted while authentication is enabled.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserDeleteRequest'
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserDeleteResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/list:
+    post:
+      operationId: authUserList
+      summary: Etcd List all users
+      description: Returns a list of all usernames registered in the etcd authentication system. This endpoint requires root or administrative privileges. Use the user/get endpoint to retrieve detailed information including role assignments for a specific user.
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: User list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserListResponse'
+  /auth/user/changepw:
+    post:
+      operationId: authUserChangePassword
+      summary: Etcd Change a user's password
+      description: Changes the password of an existing user in the etcd authentication system. Non-root users can change their own password. Root or administrative users can change the password of any user. The hashedPassword field can be used to provide a pre-hashed bcrypt password.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserChangePasswordRequest'
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserChangePasswordResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/grant:
+    post:
+      operationId: authUserGrantRole
+      summary: Etcd Grant a role to a user
+      description: Assigns a role to a user in the etcd authentication system. The user inherits all key-range permissions defined on the granted role. A user can be assigned multiple roles. The role must exist before it can be granted to a user.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserGrantRoleRequest'
+      responses:
+        '200':
+          description: Role granted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserGrantRoleResponse'
+        '404':
+          description: User or role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/user/revoke:
+    post:
+      operationId: authUserRevokeRole
+      summary: Etcd Revoke a role from a user
+      description: Removes a role assignment from a user in the etcd authentication system. After revocation, the user loses all permissions granted by that role. Other role assignments remain intact.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthUserRevokeRoleRequest'
+      responses:
+        '200':
+          description: Role revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserRevokeRoleResponse'
+        '404':
+          description: User or role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/add:
+    post:
+      operationId: authRoleAdd
+      summary: Etcd Add a role
+      description: Creates a new role in the etcd authentication system. Roles define sets of permissions over key ranges. Each permission specifies a key range (single key or range using key and range_end) and the allowed operations (read, write, or readwrite). Roles are assigned to users to grant them access.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleAddRequest'
+      responses:
+        '200':
+          description: Role added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleAddResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/get:
+    post:
+      operationId: authRoleGet
+      summary: Etcd Get role details
+      description: Returns details about a specific role including all key-range permissions assigned to the role. This endpoint is used to inspect role configurations for auditing and debugging purposes.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleGetRequest'
+      responses:
+        '200':
+          description: Role details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleGetResponse'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/delete:
+    post:
+      operationId: authRoleDelete
+      summary: Etcd Delete a role
+      description: Deletes a role from the etcd authentication system. When a role is deleted, it is automatically revoked from all users that had been assigned the role. The root role cannot be deleted while authentication is enabled.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleDeleteRequest'
+      responses:
+        '200':
+          description: Role deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleDeleteResponse'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/list:
+    post:
+      operationId: authRoleList
+      summary: Etcd List all roles
+      description: Returns a list of all role names defined in the etcd authentication system. Use the role/get endpoint to retrieve detailed information including permissions for a specific role.
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: Role list retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleListResponse'
+  /auth/role/grant:
+    post:
+      operationId: authRoleGrantPermission
+      summary: Etcd Grant a permission to a role
+      description: Assigns a key-range permission to a role. The permission specifies a key range (single key or range using key and range_end) and the allowed operations (read, write, or readwrite). All users assigned the role will gain the new permission immediately.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleGrantPermissionRequest'
+      responses:
+        '200':
+          description: Permission granted to role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleGrantPermissionResponse'
+        '404':
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/role/revoke:
+    post:
+      operationId: authRoleRevokePermission
+      summary: Etcd Revoke a permission from a role
+      description: Removes a key-range permission from a role. All users assigned the role will immediately lose the revoked permission. The key and range_end fields must match an existing permission on the role exactly.
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRoleRevokePermissionRequest'
+      responses:
+        '200':
+          description: Permission revoked from role successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRoleRevokePermissionResponse'
+        '404':
+          description: Role or permission not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    AuthUserRevokeRoleResponse:
+      type: object
+      description: Response from a user role revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleAddResponse:
+      type: object
+      description: Response from a role add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserChangePasswordResponse:
+      type: object
+      description: Response from a password change operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserDeleteRequest:
+      type: object
+      description: Request to delete a user
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Username to delete
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    AuthenticateResponse:
+      type: object
+      description: Response from a successful authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        token:
+          type: string
+          description: JWT token to use for subsequent authenticated requests
+    AuthUserGrantRoleRequest:
+      type: object
+      description: Request to grant a role to a user
+      required:
+      - user
+      - role
+      properties:
+        user:
+          type: string
+          description: Username to grant the role to
+        role:
+          type: string
+          description: Name of the role to grant
+    AuthUserGetRequest:
+      type: object
+      description: Request to get user details
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Username to retrieve
+    AuthRoleDeleteResponse:
+      type: object
+      description: Response from a role delete operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleRevokePermissionResponse:
+      type: object
+      description: Response from a role permission revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleRevokePermissionRequest:
+      type: object
+      description: Request to revoke a permission from a role
+      required:
+      - role
+      - key
+      properties:
+        role:
+          type: string
+          description: Name of the role to revoke the permission from
+        key:
+          type: string
+          description: The key of the permission to revoke in base64-encoded format
+        range_end:
+          type: string
+          description: The range end of the permission to revoke in base64-encoded format
+    AuthRoleGrantPermissionResponse:
+      type: object
+      description: Response from a role permission grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserGetResponse:
+      type: object
+      description: Response from a user get operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        roles:
+          type: array
+          description: List of roles assigned to the user
+          items:
+            type: string
+    AuthRoleAddRequest:
+      type: object
+      description: Request to add a new role
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Name for the new role
+    AuthUserDeleteResponse:
+      type: object
+      description: Response from a user delete operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserAddRequest:
+      type: object
+      description: Request to add a new user
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Username for the new user
+        password:
+          type: string
+          description: Plaintext password for the new user
+          format: password
+        hashedPassword:
+          type: string
+          description: Pre-hashed bcrypt password for the new user
+        options:
+          type: object
+          description: User creation options
+    AuthUserChangePasswordRequest:
+      type: object
+      description: Request to change a user's password
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Username whose password to change
+        password:
+          type: string
+          description: New plaintext password
+          format: password
+        hashedPassword:
+          type: string
+          description: New pre-hashed bcrypt password
+    AuthRoleGetResponse:
+      type: object
+      description: Response from a role get operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        perm:
+          type: array
+          description: List of permissions assigned to the role
+          items:
+            $ref: '#/components/schemas/Permission'
+    Permission:
+      type: object
+      description: A permission granting access to a key range
+      properties:
+        permType:
+          type: string
+          enum:
+          - READ
+          - WRITE
+          - READWRITE
+          description: Type of access granted by the permission
+        key:
+          type: string
+          description: The key or start of the key range in base64-encoded format
+        range_end:
+          type: string
+          description: The end of the key range in base64-encoded format (exclusive)
+    AuthRoleGrantPermissionRequest:
+      type: object
+      description: Request to grant a permission to a role
+      required:
+      - name
+      - perm
+      properties:
+        name:
+          type: string
+          description: Name of the role to grant the permission to
+        perm:
+          $ref: '#/components/schemas/Permission'
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    AuthRoleGetRequest:
+      type: object
+      description: Request to get role details
+      required:
+      - role
+      properties:
+        role:
+          type: string
+          description: Name of the role to retrieve
+    AuthEnableResponse:
+      type: object
+      description: Response from enabling authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthenticateRequest:
+      type: object
+      description: Request to authenticate a user
+      required:
+      - name
+      - password
+      properties:
+        name:
+          type: string
+          description: Username to authenticate
+        password:
+          type: string
+          description: Password for the user
+          format: password
+    AuthUserGrantRoleResponse:
+      type: object
+      description: Response from a user role grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserAddResponse:
+      type: object
+      description: Response from a user add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleDeleteRequest:
+      type: object
+      description: Request to delete a role
+      required:
+      - role
+      properties:
+        role:
+          type: string
+          description: Name of the role to delete
+    AuthUserRevokeRoleRequest:
+      type: object
+      description: Request to revoke a role from a user
+      required:
+      - name
+      - role
+      properties:
+        name:
+          type: string
+          description: Username to revoke the role from
+        role:
+          type: string
+          description: Name of the role to revoke
+    AuthUserListResponse:
+      type: object
+      description: Response from a user list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        users:
+          type: array
+          description: List of all usernames
+          items:
+            type: string
+    AuthRoleListResponse:
+      type: object
+      description: Response from a role list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        roles:
+          type: array
+          description: List of all role names
+          items:
+            type: string
+    AuthDisableResponse:
+      type: object
+      description: Response from disabling authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the /auth/authenticate endpoint. Include in the Authorization header as "Bearer {token}".
+externalDocs:
+  description: etcd gRPC Gateway Documentation
+  url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
