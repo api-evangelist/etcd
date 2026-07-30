@@ -6,7 +6,20 @@ description: >-
   lease-based TTLs, and atomic compare-and-swap transactions. etcd is designed for high availability and stores critical
   configuration data for distributed systems.
 url: https://etcd.io
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: free
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Free · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/etcd.png
 tags:
   - Cloud Native
   - Consensus
@@ -19,102 +32,163 @@ modified: '2026-05-19'
 specificationVersion: '0.19'
 type: Index
 apis:
-  - aid: etcd:etcd-grpc-api
-    name: etcd gRPC API
-    description: >-
-      The etcd v3 API is a gRPC-based interface providing key-value operations (put, get, delete, range), watch streams
-      for change notifications, lease management for TTL-based keys, cluster membership management, maintenance
-      operations including snapshots and defragmentation, and authentication and authorization controls.
-    humanURL: https://etcd.io/docs/v3.5/learning/api/
-    properties:
-      - type: Documentation
-        url: https://etcd.io/docs/v3.5/learning/api/
-      - type: Reference
-        url: https://etcd.io/docs/v3.5/learning/api_guarantees/
-      - type: Authentication
-        url: https://etcd.io/docs/v3.5/op-guide/authentication/
-      - type: GettingStarted
-        url: https://etcd.io/docs/v3.5/dev-guide/interacting_v3/
-      - type: Client Libraries
-        url: https://etcd.io/docs/v3.5/integrations/
-    tags:
-      - Cluster Management
-      - gRPC
-      - Key-Value
-      - Lease
-      - Watch
-  - aid: etcd:etcd-http-api
-    name: etcd HTTP Gateway API
-    description: >-
-      etcd provides an HTTP/JSON gateway that translates HTTP requests into gRPC calls, allowing clients without gRPC
-      support to interact with etcd. The gateway supports the same operations as the gRPC API including key-value
-      operations, watches, and cluster management through a RESTful interface.
-    humanURL: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
-    properties:
-      - type: Documentation
-        url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
-      - type: Reference
-        url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
-      - type: OpenAPI
-        url: openapi/etcd-http-gateway-openapi.yml
-    tags:
-      - Gateway
-      - gRPC
-      - HTTP
-      - REST
-  - aid: etcd:etcd-concurrency-api
-    name: etcd Concurrency API
-    description: >-
-      The etcd concurrency API provides distributed primitives built on top of the core key-value store, including
-      distributed mutexes (locks), leader election, and software transactional memory (STM). These primitives are used
-      to coordinate between distributed processes and implement consensus patterns in clustered applications.
-    humanURL: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
-    properties:
-      - type: Documentation
-        url: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
-      - type: Reference
-        url: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
-    tags:
-      - Concurrency
-      - Coordination
-      - Distributed Locking
-      - Leader Election
-  - aid: etcd:etcd-metrics-api
-    name: etcd Metrics API
-    description: >-
-      etcd exposes a Prometheus-compatible metrics endpoint that provides operational insights into the etcd cluster,
-      including request rates, latency histograms, disk I/O statistics, Raft state, and cluster health indicators. This
-      endpoint is used for monitoring and alerting in production etcd deployments.
-    humanURL: https://etcd.io/docs/v3.5/op-guide/monitoring/
-    properties:
-      - type: Documentation
-        url: https://etcd.io/docs/v3.5/op-guide/monitoring/
-      - type: Reference
-        url: https://etcd.io/docs/v3.5/metrics/
-    tags:
-      - Metrics
-      - Monitoring
-      - Observability
-      - Prometheus
-  - aid: etcd:etcd-v2-api
-    name: etcd v2 HTTP API
-    description: >-
-      The original etcd v2 API exposed a RESTful HTTP interface for key-value operations using a hierarchical directory
-      structure. This API has been deprecated in favor of the v3 gRPC API and was removed from the default etcd build in
-      later versions. Existing users should migrate to the v3 API.
-    humanURL: https://etcd.io/docs/v2.3/api/
-    properties:
-      - type: Documentation
-        url: https://etcd.io/docs/v2.3/api/
-      - type: Deprecation Notice
-        url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
-      - type: Migration Guide
-        url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
-    tags:
-      - Deprecated
-      - HTTP
-      - Key-Value
-      - REST
+- aid: etcd:etcd-grpc-api
+  name: etcd gRPC API
+  description: >-
+    The etcd v3 API is a gRPC-based interface providing key-value operations (put, get, delete, range),
+    watch streams for change notifications, lease management for TTL-based keys, cluster membership management,
+    maintenance operations including snapshots and defragmentation, and authentication and authorization
+    controls.
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/learning/api/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/learning/api_guarantees/
+  - type: Authentication
+    url: https://etcd.io/docs/v3.5/op-guide/authentication/
+  - type: GettingStarted
+    url: https://etcd.io/docs/v3.5/dev-guide/interacting_v3/
+  - type: Client Libraries
+    url: https://etcd.io/docs/v3.5/integrations/
+  tags:
+  - Cluster Management
+  - gRPC
+  - Key-Value
+  - Lease
+  - Watch
+- aid: etcd:etcd-concurrency-api
+  name: etcd Concurrency API
+  description: >-
+    The etcd concurrency API provides distributed primitives built on top of the core key-value store,
+    including distributed mutexes (locks), leader election, and software transactional memory (STM). These
+    primitives are used to coordinate between distributed processes and implement consensus patterns in
+    clustered applications.
+  humanURL: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
+  tags:
+  - Concurrency
+  - Coordination
+  - Distributed Locking
+  - Leader Election
+- aid: etcd:etcd-metrics-api
+  name: etcd Metrics API
+  description: >-
+    etcd exposes a Prometheus-compatible metrics endpoint that provides operational insights into the
+    etcd cluster, including request rates, latency histograms, disk I/O statistics, Raft state, and cluster
+    health indicators. This endpoint is used for monitoring and alerting in production etcd deployments.
+  humanURL: https://etcd.io/docs/v3.5/op-guide/monitoring/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/op-guide/monitoring/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/metrics/
+  tags:
+  - Metrics
+  - Monitoring
+  - Observability
+  - Prometheus
+- aid: etcd:etcd-v2-api
+  name: etcd v2 HTTP API
+  description: >-
+    The original etcd v2 API exposed a RESTful HTTP interface for key-value operations using a hierarchical
+    directory structure. This API has been deprecated in favor of the v3 gRPC API and was removed from
+    the default etcd build in later versions. Existing users should migrate to the v3 API.
+  humanURL: https://etcd.io/docs/v2.3/api/
+  properties:
+  - type: Documentation
+    url: https://etcd.io/docs/v2.3/api/
+  - type: Deprecation Notice
+    url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
+  - type: Migration Guide
+    url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
+  tags:
+  - Deprecated
+  - HTTP
+  - Key-Value
+  - REST
+- aid: etcd:etcd-auth-api
+  name: Etcd Auth API
+  description: Authentication and authorization management for users and roles
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/etcd-auth-api-openapi.yml
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+- aid: etcd:etcd-cluster-api
+  name: Etcd Cluster API
+  description: Cluster membership management including member add, remove, and list
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - Cluster
+  properties:
+  - type: OpenAPI
+    url: openapi/etcd-cluster-api-openapi.yml
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+- aid: etcd:etcd-kv-api
+  name: Etcd KV API
+  description: Key-value store operations including put, get, delete, and range queries
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - KV
+  properties:
+  - type: OpenAPI
+    url: openapi/etcd-kv-api-openapi.yml
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+- aid: etcd:etcd-lease-api
+  name: Etcd Lease API
+  description: Lease management for TTL-based key expiration
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - Lease
+  properties:
+  - type: OpenAPI
+    url: openapi/etcd-lease-api-openapi.yml
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+- aid: etcd:etcd-maintenance-api
+  name: Etcd Maintenance API
+  description: Maintenance operations including snapshots, defragmentation, and status
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - Maintenance
+  properties:
+  - type: OpenAPI
+    url: openapi/etcd-maintenance-api-openapi.yml
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+- aid: etcd:etcd-watch-api
+  name: Etcd Watch API
+  description: Watch operations for streaming key change notifications
+  humanURL: https://etcd.io/docs/v3.5/learning/api/
+  tags:
+  - Watch
+  properties:
+  - type: OpenAPI
+    url: openapi/etcd-watch-api-openapi.yml
+  - type: Documentation
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
+  - type: Reference
+    url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
 common:
   - type: AgenticAccess
     url: agentic-access/etcd-agentic-access.yml
