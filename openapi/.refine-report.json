@@ -1,0 +1,24 @@
+{
+  "provider": "etcd",
+  "sources": [
+    "etcd-auth-api-openapi.yml",
+    "etcd-cluster-api-openapi.yml",
+    "etcd-kv-api-openapi.yml",
+    "etcd-lease-api-openapi.yml",
+    "etcd-maintenance-api-openapi.yml",
+    "etcd-watch-api-openapi.yml"
+  ],
+  "outputs": [
+    "etcd-auth-api-openapi.yml",
+    "etcd-cluster-api-openapi.yml",
+    "etcd-kv-api-openapi.yml",
+    "etcd-lease-api-openapi.yml",
+    "etcd-maintenance-api-openapi.yml",
+    "etcd-watch-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
