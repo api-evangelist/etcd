@@ -190,6 +190,19 @@ apis:
   - type: Reference
     url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
 common:
+  - type: IssueTracker
+    url: https://github.com/etcd-io/etcd/issues
+  - type: Releases
+    url: https://github.com/etcd-io/etcd/releases
+  - type: SecurityPolicy
+    url: https://github.com/etcd-io/etcd/blob/main/.github/SECURITY.md
+  - type: CodeOfConduct
+    url: https://github.com/etcd-io/etcd/blob/main/code-of-conduct.md
+  - type: ContributionGuide
+    url: https://github.com/etcd-io/etcd/blob/main/CONTRIBUTING.md
+  - type: License
+    name: Apache-2.0
+    url: https://github.com/etcd-io/etcd/blob/main/LICENSE
   - type: AgenticAccess
     url: agentic-access/etcd-agentic-access.yml
   - type: DomainSecurity
