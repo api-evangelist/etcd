@@ -1,0 +1,98 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway Auth Maintenance API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Maintenance",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Stream a database snapshot",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/snapshot"
+          },
+          "docs": "Streams a point-in-time snapshot of the etcd database as a binary blob. The snapshot can be used to create a backup of the etcd data or to restore a cluster to a previous state. The snapshot is streamed in chunks to support large database sizes. This operation should be performed on a healthy cluster member to ensure consistency."
+        },
+        {
+          "info": {
+            "name": "Etcd Defragment a member's backend",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/defragment"
+          },
+          "docs": "Defragments the storage backend of the etcd member that receives the request, reclaiming disk space from deleted keys. Defragmentation is an expensive operation that blocks the member from serving requests during the process. It should be performed during maintenance windows on individual members rather than on all cluster members simultaneously."
+        },
+        {
+          "info": {
+            "name": "Etcd Get member status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/status"
+          },
+          "docs": "Returns the status of the etcd member that receives the request, including the cluster ID, member ID, Raft index, Raft term, Raft applied index, and whether the member is a learner. The leader field contains the member ID of the current cluster leader. This endpoint is useful for monitoring the health and state of individual cluster members."
+        },
+        {
+          "info": {
+            "name": "Etcd Manage cluster alarms",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/alarm",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Manages cluster-level alarms that indicate error conditions such as insufficient storage space (NOSPACE). Supports activating alarms, deactivating (disarming) alarms, and listing all active alarms. When a NOSPACE alarm is active, the cluster becomes read-only to prevent data loss. After addressing the underlying issue, the alarm must be explicitly deactivated to restore write access."
+        },
+        {
+          "info": {
+            "name": "Etcd Get member backend hash",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/hash"
+          },
+          "docs": "Returns a hash of the etcd member's backend database. This hash can be used to verify data consistency across cluster members. If members report different hashes, it may indicate a data corruption issue. This endpoint is primarily used for debugging and consistency verification."
+        },
+        {
+          "info": {
+            "name": "Etcd Transfer cluster leadership",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/maintenance/transfer-leadership",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Transfers the Raft leadership from the current leader to the specified target member. This operation is useful during maintenance to gracefully move leadership away from a member that needs to be taken offline. The target member must be a healthy voting member of the cluster for the transfer to succeed."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

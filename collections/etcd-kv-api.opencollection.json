@@ -1,0 +1,99 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway Auth KV API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "KV",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Put a key-value pair",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/put",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Stores a key-value pair in the etcd cluster. If the key already exists, the value is updated. Supports setting a lease ID to associate the key with a TTL-based lease that will delete the key when it expires. The prev_kv option returns the previous key-value pair before the update."
+        },
+        {
+          "info": {
+            "name": "Etcd Get a range of key-value pairs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/range",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves key-value pairs from the etcd cluster. A single key can be fetched by specifying only the key field. A range of keys can be fetched by specifying both key and range_end. Setting range_end to the key plus one byte fetches all keys with the given prefix. The limit parameter controls the maximum number of results returned, and the revision parameter enables point-in-time queries against a specific store revision."
+        },
+        {
+          "info": {
+            "name": "Etcd Delete a range of key-value pairs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/deleterange",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes one or more key-value pairs from the etcd cluster. A single key can be deleted by specifying only the key field. A range of keys is deleted by specifying both key and range_end. The prev_kv option returns the deleted key-value pairs before deletion. The count-only option returns only the count of deleted keys without performing the actual deletion."
+        },
+        {
+          "info": {
+            "name": "Etcd Execute a transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/txn",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes an atomic compare-and-swap transaction against the etcd key-value store. A transaction consists of a set of compare conditions, a success branch of operations executed if all conditions are true, and a failure branch executed if any condition is false. Transactions are atomic and isolated, providing strong consistency guarantees within the etcd cluster."
+        },
+        {
+          "info": {
+            "name": "Etcd Compact the event history",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/kv/compaction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Compacts the etcd event history up to the given revision. All superseded keys with revisions less than the compaction revision are removed from the store, and watch operations cannot be made against compacted revisions. The physical option triggers a physical deletion of compacted keys immediately rather than deferring to the next compaction cycle."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway Auth Watch API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Watch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Watch for key change events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/watch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Opens a streaming watch connection to receive notifications of key-value changes in the etcd cluster. Clients send WatchCreateRequest messages to subscribe to key ranges and WatchCancelRequest messages to unsubscribe. The server streams WatchResponse messages containing events that describe each key change including the event type (PUT or DELETE) and the updated key-value pair. Watches can be started from a specific revision to receive historical events."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

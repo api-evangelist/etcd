@@ -1,0 +1,95 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway Auth Lease API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Lease",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Grant a lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/grant",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new lease with the specified TTL in seconds. The returned lease ID can be attached to key-value pairs so they are automatically deleted when the lease expires. Clients must periodically renew the lease using the keepalive endpoint to prevent expiration. The ID field can be set to 0 to allow etcd to assign a lease ID automatically."
+        },
+        {
+          "info": {
+            "name": "Etcd Revoke a lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/revoke",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Revokes an existing lease identified by its lease ID. When a lease is revoked, all keys attached to that lease are automatically deleted from the etcd cluster. This is useful for releasing distributed locks or invalidating all session-scoped keys at once."
+        },
+        {
+          "info": {
+            "name": "Etcd Renew a lease",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/keepalive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Renews an existing lease to prevent it from expiring. Clients must call this endpoint periodically with an interval shorter than the lease TTL to maintain the lease. The response returns the remaining TTL of the lease after the renewal. If the lease has already expired, an error is returned and a new lease must be granted."
+        },
+        {
+          "info": {
+            "name": "Etcd Get lease time to live",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/timetolive",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the remaining time-to-live and other information about a lease identified by its lease ID. When the keys option is set to true, the response also includes all keys attached to the lease. This endpoint is useful for monitoring lease health and understanding which keys will be deleted when the lease expires."
+        },
+        {
+          "info": {
+            "name": "Etcd List all leases",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/lease/leases"
+          },
+          "docs": "Returns a list of all active leases in the etcd cluster. The response includes the lease IDs of all leases but does not include detailed information such as TTL or attached keys. Use the timetolive endpoint to retrieve detailed information about a specific lease."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

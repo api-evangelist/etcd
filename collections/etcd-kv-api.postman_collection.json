@@ -1,0 +1,1393 @@
+{
+  "item": [
+    {
+      "id": "2813e301-896c-47af-b893-a7d92f00eda2",
+      "name": "KV",
+      "description": {
+        "content": "Key-value store operations including put, get, delete, and range queries",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "61c0487f-071d-423f-9cea-298a12318dcd",
+          "name": "Etcd Put a key-value pair",
+          "request": {
+            "name": "Etcd Put a key-value pair",
+            "description": {
+              "content": "Stores a key-value pair in the etcd cluster. If the key already exists, the value is updated. Supports setting a lease ID to associate the key with a TTL-based lease that will delete the key when it expires. The prev_kv option returns the previous key-value pair before the update.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "kv",
+                "put"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{host}}",
+                  "key": "host"
+                },
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{port}}",
+                  "key": "port"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"<string>\",\n  \"value\": \"<string>\",\n  \"lease\": \"<string>\",\n  \"prev_kv\": \"<boolean>\",\n  \"ignore_value\": \"<boolean>\",\n  \"ignore_lease\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "dd5f6b6e-902f-4009-9f56-88f7efb3add1",
+              "name": "Key-value pair stored successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "put"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"value\": \"<string>\",\n  \"lease\": \"<string>\",\n  \"prev_kv\": \"<boolean>\",\n  \"ignore_value\": \"<boolean>\",\n  \"ignore_lease\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"header\": {\n    \"cluster_id\": \"string\",\n    \"member_id\": \"string\",\n    \"revision\": \"string\",\n    \"raft_term\": \"string\"\n  },\n  \"prev_kv\": {\n    \"key\": \"string\",\n    \"create_revision\": \"string\",\n    \"mod_revision\": \"string\",\n    \"version\": \"string\",\n    \"value\": \"string\",\n    \"lease\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b2f035c-80b0-416b-ba53-5d4d27ed2fc0",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "put"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"value\": \"<string>\",\n  \"lease\": \"<string>\",\n  \"prev_kv\": \"<boolean>\",\n  \"ignore_value\": \"<boolean>\",\n  \"ignore_lease\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ace528b2-88c3-4fcc-bd0c-05e17fa60549",
+              "name": "Unauthorized - authentication required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "put"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"value\": \"<string>\",\n  \"lease\": \"<string>\",\n  \"prev_kv\": \"<boolean>\",\n  \"ignore_value\": \"<boolean>\",\n  \"ignore_lease\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "439fecd4-7190-4cfa-abe7-da258599798f",
+          "name": "Etcd Get a range of key-value pairs",
+          "request": {
+            "name": "Etcd Get a range of key-value pairs",
+            "description": {
+              "content": "Retrieves key-value pairs from the etcd cluster. A single key can be fetched by specifying only the key field. A range of keys can be fetched by specifying both key and range_end. Setting range_end to the key plus one byte fetches all keys with the given prefix. The limit parameter controls the maximum number of results returned, and the revision parameter enables point-in-time queries against a specific store revision.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "kv",
+                "range"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{host}}",
+                  "key": "host"
+                },
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{port}}",
+                  "key": "port"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"limit\": \"<string>\",\n  \"revision\": \"<string>\",\n  \"sort_order\": \"<string>\",\n  \"sort_target\": \"<string>\",\n  \"serializable\": \"<boolean>\",\n  \"keys_only\": \"<boolean>\",\n  \"count_only\": \"<boolean>\",\n  \"min_mod_revision\": \"<string>\",\n  \"max_mod_revision\": \"<string>\",\n  \"min_create_revision\": \"<string>\",\n  \"max_create_revision\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a665f554-4bfa-4e0a-a964-a7bb5544ab21",
+              "name": "Key-value pairs retrieved successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "range"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"limit\": \"<string>\",\n  \"revision\": \"<string>\",\n  \"sort_order\": \"<string>\",\n  \"sort_target\": \"<string>\",\n  \"serializable\": \"<boolean>\",\n  \"keys_only\": \"<boolean>\",\n  \"count_only\": \"<boolean>\",\n  \"min_mod_revision\": \"<string>\",\n  \"max_mod_revision\": \"<string>\",\n  \"min_create_revision\": \"<string>\",\n  \"max_create_revision\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"header\": {\n    \"cluster_id\": \"string\",\n    \"member_id\": \"string\",\n    \"revision\": \"string\",\n    \"raft_term\": \"string\"\n  },\n  \"kvs\": [\n    {\n      \"key\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"version\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    },\n    {\n      \"key\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"version\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    }\n  ],\n  \"more\": true,\n  \"count\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d92af145-e209-4e16-9a26-f38196037704",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "range"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"limit\": \"<string>\",\n  \"revision\": \"<string>\",\n  \"sort_order\": \"<string>\",\n  \"sort_target\": \"<string>\",\n  \"serializable\": \"<boolean>\",\n  \"keys_only\": \"<boolean>\",\n  \"count_only\": \"<boolean>\",\n  \"min_mod_revision\": \"<string>\",\n  \"max_mod_revision\": \"<string>\",\n  \"min_create_revision\": \"<string>\",\n  \"max_create_revision\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "56a5f5f0-fb29-48a3-95ca-70889281dc4f",
+              "name": "Unauthorized - authentication required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "range"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"limit\": \"<string>\",\n  \"revision\": \"<string>\",\n  \"sort_order\": \"<string>\",\n  \"sort_target\": \"<string>\",\n  \"serializable\": \"<boolean>\",\n  \"keys_only\": \"<boolean>\",\n  \"count_only\": \"<boolean>\",\n  \"min_mod_revision\": \"<string>\",\n  \"max_mod_revision\": \"<string>\",\n  \"min_create_revision\": \"<string>\",\n  \"max_create_revision\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1d3838a1-a533-4cac-ade6-7590e7a6ca15",
+          "name": "Etcd Delete a range of key-value pairs",
+          "request": {
+            "name": "Etcd Delete a range of key-value pairs",
+            "description": {
+              "content": "Deletes one or more key-value pairs from the etcd cluster. A single key can be deleted by specifying only the key field. A range of keys is deleted by specifying both key and range_end. The prev_kv option returns the deleted key-value pairs before deletion. The count-only option returns only the count of deleted keys without performing the actual deletion.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "kv",
+                "deleterange"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{host}}",
+                  "key": "host"
+                },
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{port}}",
+                  "key": "port"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"prev_kv\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3d10b43c-bb34-4e9b-8caa-9e81136cd9f6",
+              "name": "Key-value pairs deleted successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "deleterange"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"prev_kv\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"header\": {\n    \"cluster_id\": \"string\",\n    \"member_id\": \"string\",\n    \"revision\": \"string\",\n    \"raft_term\": \"string\"\n  },\n  \"deleted\": \"string\",\n  \"prev_kvs\": [\n    {\n      \"key\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"version\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    },\n    {\n      \"key\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"version\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "457b2ed5-4901-49d1-a715-a09f93cb9caf",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "deleterange"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"prev_kv\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f0ec9c90-7d21-455d-82c9-5704286c687d",
+              "name": "Unauthorized - authentication required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "deleterange"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"<string>\",\n  \"range_end\": \"<string>\",\n  \"prev_kv\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3e0b7be2-5353-4d8e-a28b-0971ddf7dec4",
+          "name": "Etcd Execute a transaction",
+          "request": {
+            "name": "Etcd Execute a transaction",
+            "description": {
+              "content": "Executes an atomic compare-and-swap transaction against the etcd key-value store. A transaction consists of a set of compare conditions, a success branch of operations executed if all conditions are true, and a failure branch executed if any condition is false. Transactions are atomic and isolated, providing strong consistency guarantees within the etcd cluster.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "kv",
+                "txn"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{host}}",
+                  "key": "host"
+                },
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{port}}",
+                  "key": "port"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"compare\": [\n    {\n      \"result\": \"<string>\",\n      \"target\": \"<string>\",\n      \"key\": \"<string>\",\n      \"range_end\": \"<string>\",\n      \"version\": \"<string>\",\n      \"create_revision\": \"<string>\",\n      \"mod_revision\": \"<string>\",\n      \"value\": \"<string>\",\n      \"lease\": \"<string>\"\n    },\n    {\n      \"result\": \"<string>\",\n      \"target\": \"<string>\",\n      \"key\": \"<string>\",\n      \"range_end\": \"<string>\",\n      \"version\": \"<string>\",\n      \"create_revision\": \"<string>\",\n      \"mod_revision\": \"<string>\",\n      \"value\": \"<string>\",\n      \"lease\": \"<string>\"\n    }\n  ],\n  \"success\": [\n    {\n      \"request_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"limit\": \"<string>\",\n        \"revision\": \"<string>\",\n        \"sort_order\": \"<string>\",\n        \"sort_target\": \"<string>\",\n        \"serializable\": \"<boolean>\",\n        \"keys_only\": \"<boolean>\",\n        \"count_only\": \"<boolean>\",\n        \"min_mod_revision\": \"<string>\",\n        \"max_mod_revision\": \"<string>\",\n        \"min_create_revision\": \"<string>\",\n        \"max_create_revision\": \"<string>\"\n      },\n      \"request_put\": {\n        \"key\": \"<string>\",\n        \"value\": \"<string>\",\n        \"lease\": \"<string>\",\n        \"prev_kv\": \"<boolean>\",\n        \"ignore_value\": \"<boolean>\",\n        \"ignore_lease\": \"<boolean>\"\n      },\n      \"request_delete_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"prev_kv\": \"<boolean>\"\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          },\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"limit\": \"<string>\",\n        \"revision\": \"<string>\",\n        \"sort_order\": \"<string>\",\n        \"sort_target\": \"<string>\",\n        \"serializable\": \"<boolean>\",\n        \"keys_only\": \"<boolean>\",\n        \"count_only\": \"<boolean>\",\n        \"min_mod_revision\": \"<string>\",\n        \"max_mod_revision\": \"<string>\",\n        \"min_create_revision\": \"<string>\",\n        \"max_create_revision\": \"<string>\"\n      },\n      \"request_put\": {\n        \"key\": \"<string>\",\n        \"value\": \"<string>\",\n        \"lease\": \"<string>\",\n        \"prev_kv\": \"<boolean>\",\n        \"ignore_value\": \"<boolean>\",\n        \"ignore_lease\": \"<boolean>\"\n      },\n      \"request_delete_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"prev_kv\": \"<boolean>\"\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          },\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ],\n  \"failure\": [\n    {\n      \"request_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"limit\": \"<string>\",\n        \"revision\": \"<string>\",\n        \"sort_order\": \"<string>\",\n        \"sort_target\": \"<string>\",\n        \"serializable\": \"<boolean>\",\n        \"keys_only\": \"<boolean>\",\n        \"count_only\": \"<boolean>\",\n        \"min_mod_revision\": \"<string>\",\n        \"max_mod_revision\": \"<string>\",\n        \"min_create_revision\": \"<string>\",\n        \"max_create_revision\": \"<string>\"\n      },\n      \"request_put\": {\n        \"key\": \"<string>\",\n        \"value\": \"<string>\",\n        \"lease\": \"<string>\",\n        \"prev_kv\": \"<boolean>\",\n        \"ignore_value\": \"<boolean>\",\n        \"ignore_lease\": \"<boolean>\"\n      },\n      \"request_delete_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"prev_kv\": \"<boolean>\"\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          },\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"limit\": \"<string>\",\n        \"revision\": \"<string>\",\n        \"sort_order\": \"<string>\",\n        \"sort_target\": \"<string>\",\n        \"serializable\": \"<boolean>\",\n        \"keys_only\": \"<boolean>\",\n        \"count_only\": \"<boolean>\",\n        \"min_mod_revision\": \"<string>\",\n        \"max_mod_revision\": \"<string>\",\n        \"min_create_revision\": \"<string>\",\n        \"max_create_revision\": \"<string>\"\n      },\n      \"request_put\": {\n        \"key\": \"<string>\",\n        \"value\": \"<string>\",\n        \"lease\": \"<string>\",\n        \"prev_kv\": \"<boolean>\",\n        \"ignore_value\": \"<boolean>\",\n        \"ignore_lease\": \"<boolean>\"\n      },\n      \"request_delete_range\": {\n        \"key\": \"<string>\",\n        \"range_end\": \"<string>\",\n        \"prev_kv\": \"<boolean>\"\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          },\n          {\n            \"result\": \"<string>\",\n            \"target\": \"<string>\",\n            \"key\": \"<string>\",\n            \"range_end\": \"<string>\",\n            \"version\": \"<string>\",\n            \"create_revision\": \"<string>\",\n            \"mod_revision\": \"<string>\",\n            \"value\": \"<string>\",\n            \"lease\": \"<string>\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fbfcee44-5aeb-4bb5-9d58-60c09479e108",
+              "name": "Transaction executed successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "txn"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"compare\": [\n    {\n      \"result\": \"LESS\",\n      \"target\": \"LEASE\",\n      \"key\": \"string\",\n      \"range_end\": \"string\",\n      \"version\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    },\n    {\n      \"result\": \"LESS\",\n      \"target\": \"MOD\",\n      \"key\": \"string\",\n      \"range_end\": \"string\",\n      \"version\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    }\n  ],\n  \"success\": [\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"ASCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": true,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": true,\n        \"ignore_value\": true,\n        \"ignore_lease\": true\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": true\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"LESS\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"DESCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": true,\n        \"count_only\": true,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": true,\n        \"ignore_lease\": false\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"LESS\",\n            \"target\": \"CREATE\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"GREATER\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ],\n  \"failure\": [\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"DESCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": false,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": false,\n        \"ignore_lease\": false\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"GREATER\",\n            \"target\": \"MOD\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"EQUAL\",\n            \"target\": \"LEASE\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"ASCEND\",\n        \"sort_target\": \"VERSION\",\n        \"serializable\": true,\n        \"keys_only\": true,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": true,\n        \"ignore_lease\": true\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"MOD\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"header\": {\n    \"cluster_id\": \"string\",\n    \"member_id\": \"string\",\n    \"revision\": \"string\",\n    \"raft_term\": \"string\"\n  },\n  \"succeeded\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "297d059b-77e1-4535-b183-961e2f1599c4",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "txn"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"compare\": [\n    {\n      \"result\": \"LESS\",\n      \"target\": \"LEASE\",\n      \"key\": \"string\",\n      \"range_end\": \"string\",\n      \"version\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    },\n    {\n      \"result\": \"LESS\",\n      \"target\": \"MOD\",\n      \"key\": \"string\",\n      \"range_end\": \"string\",\n      \"version\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    }\n  ],\n  \"success\": [\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"ASCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": true,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": true,\n        \"ignore_value\": true,\n        \"ignore_lease\": true\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": true\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"LESS\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"DESCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": true,\n        \"count_only\": true,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": true,\n        \"ignore_lease\": false\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"LESS\",\n            \"target\": \"CREATE\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"GREATER\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ],\n  \"failure\": [\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"DESCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": false,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": false,\n        \"ignore_lease\": false\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"GREATER\",\n            \"target\": \"MOD\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"EQUAL\",\n            \"target\": \"LEASE\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"ASCEND\",\n        \"sort_target\": \"VERSION\",\n        \"serializable\": true,\n        \"keys_only\": true,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": true,\n        \"ignore_lease\": true\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"MOD\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8426b787-5a9a-4140-93c6-95bee8f8b2a1",
+              "name": "Unauthorized - authentication required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "txn"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"compare\": [\n    {\n      \"result\": \"LESS\",\n      \"target\": \"LEASE\",\n      \"key\": \"string\",\n      \"range_end\": \"string\",\n      \"version\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    },\n    {\n      \"result\": \"LESS\",\n      \"target\": \"MOD\",\n      \"key\": \"string\",\n      \"range_end\": \"string\",\n      \"version\": \"string\",\n      \"create_revision\": \"string\",\n      \"mod_revision\": \"string\",\n      \"value\": \"string\",\n      \"lease\": \"string\"\n    }\n  ],\n  \"success\": [\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"ASCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": true,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": true,\n        \"ignore_value\": true,\n        \"ignore_lease\": true\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": true\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"LESS\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"DESCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": true,\n        \"count_only\": true,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": true,\n        \"ignore_lease\": false\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"LESS\",\n            \"target\": \"CREATE\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"GREATER\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ],\n  \"failure\": [\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"DESCEND\",\n        \"sort_target\": \"MOD\",\n        \"serializable\": false,\n        \"keys_only\": false,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": false,\n        \"ignore_lease\": false\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"GREATER\",\n            \"target\": \"MOD\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"EQUAL\",\n            \"target\": \"LEASE\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    },\n    {\n      \"request_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"limit\": \"string\",\n        \"revision\": \"string\",\n        \"sort_order\": \"ASCEND\",\n        \"sort_target\": \"VERSION\",\n        \"serializable\": true,\n        \"keys_only\": true,\n        \"count_only\": false,\n        \"min_mod_revision\": \"string\",\n        \"max_mod_revision\": \"string\",\n        \"min_create_revision\": \"string\",\n        \"max_create_revision\": \"string\"\n      },\n      \"request_put\": {\n        \"key\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\",\n        \"prev_kv\": false,\n        \"ignore_value\": true,\n        \"ignore_lease\": true\n      },\n      \"request_delete_range\": {\n        \"key\": \"string\",\n        \"range_end\": \"string\",\n        \"prev_kv\": false\n      },\n      \"request_txn\": {\n        \"compare\": [\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"VERSION\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          },\n          {\n            \"result\": \"NOT_EQUAL\",\n            \"target\": \"MOD\",\n            \"key\": \"string\",\n            \"range_end\": \"string\",\n            \"version\": \"string\",\n            \"create_revision\": \"string\",\n            \"mod_revision\": \"string\",\n            \"value\": \"string\",\n            \"lease\": \"string\"\n          }\n        ],\n        \"success\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ],\n        \"failure\": [\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          },\n          {\n            \"value\": \"<Circular reference to #/components/schemas/RequestOp detected>\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6113e162-a93e-4a16-ac22-97f6751f856a",
+          "name": "Etcd Compact the event history",
+          "request": {
+            "name": "Etcd Compact the event history",
+            "description": {
+              "content": "Compacts the etcd event history up to the given revision. All superseded keys with revisions less than the compaction revision are removed from the store, and watch operations cannot be made against compacted revisions. The physical option triggers a physical deletion of compacted keys immediately rather than deferring to the next compaction cycle.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "kv",
+                "compaction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{host}}",
+                  "key": "host"
+                },
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{port}}",
+                  "key": "port"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"revision\": \"<string>\",\n  \"physical\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "505e0a3b-a1ea-4148-aae1-d72774dfc793",
+              "name": "Compaction completed successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "compaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"revision\": \"<string>\",\n  \"physical\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"header\": {\n    \"cluster_id\": \"string\",\n    \"member_id\": \"string\",\n    \"revision\": \"string\",\n    \"raft_term\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b84e393-056e-40df-98c1-8697eddd2da1",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "kv",
+                    "compaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"revision\": \"<string>\",\n  \"physical\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 3065,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "localhost",
+      "key": "host"
+    },
+    {
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "2379",
+      "key": "port"
+    },
+    {
+      "type": "string",
+      "value": "http://{{host}}:{{port}}/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "6dbf7d79-7a20-4ced-a33f-f137d641590f",
+    "name": "etcd HTTP Gateway Auth KV API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.\n\nContact Support:\n Name: etcd Community",
+      "type": "text/plain"
+    }
+  }
+}

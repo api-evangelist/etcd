@@ -1,0 +1,248 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway Auth API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Enable authentication",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/enable"
+          },
+          "docs": "Enables authentication on the etcd cluster. Before enabling authentication, a root user with root role must be created. Once authentication is enabled, all requests must include valid credentials. The root user has full access to all resources and can manage users and roles."
+        },
+        {
+          "info": {
+            "name": "Etcd Disable authentication",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/disable"
+          },
+          "docs": "Disables authentication on the etcd cluster, allowing all clients to access the cluster without credentials. This operation requires root user authentication when auth is currently enabled. Disabling authentication removes all access controls and should only be performed in trusted network environments."
+        },
+        {
+          "info": {
+            "name": "Etcd Authenticate a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/authenticate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticates a user with their username and password and returns a JWT token that can be used for subsequent authenticated requests. The token must be included in the Authorization header as a Bearer token. Tokens expire based on the cluster's configured token TTL and must be refreshed by calling this endpoint again."
+        },
+        {
+          "info": {
+            "name": "Etcd Add a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/add",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new user in the etcd authentication system with the specified username and password. Users can be assigned to roles which grant them permissions to access specific key ranges. The hashedPassword field can be used to provide a pre-hashed bcrypt password instead of a plaintext password."
+        },
+        {
+          "info": {
+            "name": "Etcd Get user details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns details about a specific user including their assigned roles. This endpoint requires root or appropriate administrative privileges. The password hash is not returned for security reasons."
+        },
+        {
+          "info": {
+            "name": "Etcd Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes a user from the etcd authentication system. Deleting a user removes all of their role assignments. The root user cannot be deleted while authentication is enabled."
+        },
+        {
+          "info": {
+            "name": "Etcd List all users",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/list"
+          },
+          "docs": "Returns a list of all usernames registered in the etcd authentication system. This endpoint requires root or administrative privileges. Use the user/get endpoint to retrieve detailed information including role assignments for a specific user."
+        },
+        {
+          "info": {
+            "name": "Etcd Change a user's password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/changepw",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Changes the password of an existing user in the etcd authentication system. Non-root users can change their own password. Root or administrative users can change the password of any user. The hashedPassword field can be used to provide a pre-hashed bcrypt password."
+        },
+        {
+          "info": {
+            "name": "Etcd Grant a role to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/grant",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns a role to a user in the etcd authentication system. The user inherits all key-range permissions defined on the granted role. A user can be assigned multiple roles. The role must exist before it can be granted to a user."
+        },
+        {
+          "info": {
+            "name": "Etcd Revoke a role from a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/user/revoke",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes a role assignment from a user in the etcd authentication system. After revocation, the user loses all permissions granted by that role. Other role assignments remain intact."
+        },
+        {
+          "info": {
+            "name": "Etcd Add a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/add",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new role in the etcd authentication system. Roles define sets of permissions over key ranges. Each permission specifies a key range (single key or range using key and range_end) and the allowed operations (read, write, or readwrite). Roles are assigned to users to grant them access."
+        },
+        {
+          "info": {
+            "name": "Etcd Get role details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/get",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns details about a specific role including all key-range permissions assigned to the role. This endpoint is used to inspect role configurations for auditing and debugging purposes."
+        },
+        {
+          "info": {
+            "name": "Etcd Delete a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes a role from the etcd authentication system. When a role is deleted, it is automatically revoked from all users that had been assigned the role. The root role cannot be deleted while authentication is enabled."
+        },
+        {
+          "info": {
+            "name": "Etcd List all roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/list"
+          },
+          "docs": "Returns a list of all role names defined in the etcd authentication system. Use the role/get endpoint to retrieve detailed information including permissions for a specific role."
+        },
+        {
+          "info": {
+            "name": "Etcd Grant a permission to a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/grant",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns a key-range permission to a role. The permission specifies a key range (single key or range using key and range_end) and the allowed operations (read, write, or readwrite). All users assigned the role will gain the new permission immediately."
+        },
+        {
+          "info": {
+            "name": "Etcd Revoke a permission from a role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/auth/role/revoke",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes a key-range permission from a role. All users assigned the role will immediately lose the revoked permission. The key and range_end fields must match an existing permission on the role exactly."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

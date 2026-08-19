@@ -1,0 +1,336 @@
+{
+  "item": [
+    {
+      "id": "8c2f42f2-da03-451e-802c-ce5c3a26de10",
+      "name": "Watch",
+      "description": {
+        "content": "Watch operations for streaming key change notifications",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "51f9da4f-9cb8-4610-ba84-ab0e4ca9dbf1",
+          "name": "Etcd Watch for key change events",
+          "request": {
+            "name": "Etcd Watch for key change events",
+            "description": {
+              "content": "Opens a streaming watch connection to receive notifications of key-value changes in the etcd cluster. Clients send WatchCreateRequest messages to subscribe to key ranges and WatchCancelRequest messages to unsubscribe. The server streams WatchResponse messages containing events that describe each key change including the event type (PUT or DELETE) and the updated key-value pair. Watches can be started from a specific revision to receive historical events.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "watch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{host}}",
+                  "key": "host"
+                },
+                {
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "{{port}}",
+                  "key": "port"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"create_request\": {\n    \"key\": \"<string>\",\n    \"range_end\": \"<string>\",\n    \"start_revision\": \"<string>\",\n    \"progress_notify\": \"<boolean>\",\n    \"filters\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"prev_kv\": \"<boolean>\",\n    \"watch_id\": \"<string>\",\n    \"fragment\": \"<boolean>\"\n  },\n  \"cancel_request\": {\n    \"watch_id\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9a1ab1e5-f4fb-429a-9eca-e4dbfd8525be",
+              "name": "Watch stream established",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "watch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"create_request\": {\n    \"key\": \"string\",\n    \"range_end\": \"string\",\n    \"start_revision\": \"string\",\n    \"progress_notify\": true,\n    \"filters\": [\n      \"NODELETE\",\n      \"NODELETE\"\n    ],\n    \"prev_kv\": true,\n    \"watch_id\": \"string\",\n    \"fragment\": false\n  },\n  \"cancel_request\": {\n    \"watch_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"header\": {\n    \"cluster_id\": \"string\",\n    \"member_id\": \"string\",\n    \"revision\": \"string\",\n    \"raft_term\": \"string\"\n  },\n  \"watch_id\": \"string\",\n  \"created\": false,\n  \"canceled\": false,\n  \"compact_revision\": \"string\",\n  \"cancel_reason\": \"string\",\n  \"fragment\": true,\n  \"events\": [\n    {\n      \"type\": \"PUT\",\n      \"kv\": {\n        \"key\": \"string\",\n        \"create_revision\": \"string\",\n        \"mod_revision\": \"string\",\n        \"version\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\"\n      },\n      \"prev_kv\": {\n        \"key\": \"string\",\n        \"create_revision\": \"string\",\n        \"mod_revision\": \"string\",\n        \"version\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\"\n      }\n    },\n    {\n      \"type\": \"PUT\",\n      \"kv\": {\n        \"key\": \"string\",\n        \"create_revision\": \"string\",\n        \"mod_revision\": \"string\",\n        \"version\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\"\n      },\n      \"prev_kv\": {\n        \"key\": \"string\",\n        \"create_revision\": \"string\",\n        \"mod_revision\": \"string\",\n        \"version\": \"string\",\n        \"value\": \"string\",\n        \"lease\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1ff20664-3a7a-4c56-9687-582b2cff6c46",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "watch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"create_request\": {\n    \"key\": \"string\",\n    \"range_end\": \"string\",\n    \"start_revision\": \"string\",\n    \"progress_notify\": true,\n    \"filters\": [\n      \"NODELETE\",\n      \"NODELETE\"\n    ],\n    \"prev_kv\": true,\n    \"watch_id\": \"string\",\n    \"fragment\": false\n  },\n  \"cancel_request\": {\n    \"watch_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 884,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5da9c38f-036b-4ee2-9755-9c030e7fe854",
+              "name": "Unauthorized - authentication required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "watch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{host}}",
+                      "key": "host"
+                    },
+                    {
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "{{port}}",
+                      "key": "port"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"create_request\": {\n    \"key\": \"string\",\n    \"range_end\": \"string\",\n    \"start_revision\": \"string\",\n    \"progress_notify\": true,\n    \"filters\": [\n      \"NODELETE\",\n      \"NODELETE\"\n    ],\n    \"prev_kv\": true,\n    \"watch_id\": \"string\",\n    \"fragment\": false\n  },\n  \"cancel_request\": {\n    \"watch_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 884,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "localhost",
+      "key": "host"
+    },
+    {
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "2379",
+      "key": "port"
+    },
+    {
+      "type": "string",
+      "value": "http://{{host}}:{{port}}/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "21de794c-e198-4825-accb-8d8b35f7c425",
+    "name": "etcd HTTP Gateway Auth Watch API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.\n\nContact Support:\n Name: etcd Community",
+      "type": "text/plain"
+    }
+  }
+}

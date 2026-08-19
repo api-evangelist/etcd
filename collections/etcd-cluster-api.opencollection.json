@@ -1,0 +1,95 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "etcd HTTP Gateway Auth Cluster API",
+    "version": "3.5"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cluster",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Etcd Add a member to the cluster",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/add",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a new member to the etcd cluster. The peer URLs of the new member must be provided. The new member starts in an unstarted state and is considered a learner until it catches up with the cluster's Raft log. The isLearner field can be set to true to explicitly add the member as a non-voting learner member."
+        },
+        {
+          "info": {
+            "name": "Etcd Remove a member from the cluster",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/remove",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Removes an existing member from the etcd cluster identified by its member ID. The removed member is immediately excluded from the cluster's Raft quorum. Removing a member that holds the leadership will trigger a new leader election. Care must be taken to maintain quorum when removing members from small clusters."
+        },
+        {
+          "info": {
+            "name": "Etcd Update a cluster member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/update",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the peer URLs of an existing cluster member identified by its member ID. This is used when a cluster member's network address changes. The member must be reachable at the new URLs for the update to succeed. All other member properties are read-only and cannot be updated through this endpoint."
+        },
+        {
+          "info": {
+            "name": "Etcd List cluster members",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/list"
+          },
+          "docs": "Returns a list of all members in the etcd cluster including their member IDs, names, peer URLs, client URLs, and whether they are learner members. The linearizable option controls whether the response is read from the cluster leader for the most up-to-date view of membership."
+        },
+        {
+          "info": {
+            "name": "Etcd Promote a learner member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://{host}:{port}/v3/cluster/member/promote",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Promotes a learner (non-voting) member to a full voting member of the etcd cluster. The learner must be caught up with the cluster's Raft log before it can be promoted. This two-phase approach (add as learner, then promote) provides a safer way to grow clusters without temporarily reducing quorum availability."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
