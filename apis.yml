@@ -21,6 +21,13 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/etcd.png
 tags:
+  - Cloud-Native
+  - Consensus
+  - Distributed Systems
+  - Graduated
+  - Key-Value Store
+  - Kubernetes
+tags_raw:
   - Cloud Native
   - Consensus
   - Distributed Systems
@@ -116,6 +123,8 @@ apis:
   description: Authentication and authorization management for users and roles
   humanURL: https://etcd.io/docs/v3.5/learning/api/
   tags:
+  - Authentication
+  tags_raw:
   - Auth
   properties:
   - type: OpenAPI
