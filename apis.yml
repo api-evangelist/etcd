@@ -6,6 +6,19 @@ description: >-
   lease-based TTLs, and atomic compare-and-swap transactions. etcd is designed for high availability and stores critical
   configuration data for distributed systems.
 url: https://etcd.io
+deliveryModel:
+  model: self-hosted
+  license: Apache-2.0
+  open_source: true
+  commercial: false
+  callable_host: false
+  label: Self-hosted open source · you run it yourself
+  confidence: high
+  source:
+  - license
+  - openapi
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: self-serve
