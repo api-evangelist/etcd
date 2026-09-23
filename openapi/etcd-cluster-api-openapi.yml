@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: etcd HTTP Gateway Auth Cluster API
-  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  title: etcd HTTP Gateway Cluster API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store.
   version: '3.5'
   contact:
     name: etcd Community
@@ -147,6 +147,28 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    MemberRemoveRequest:
+      type: object
+      description: Request to remove a member from the cluster
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the member to remove
     MemberPromoteRequest:
       type: object
       description: Request to promote a learner member to a voting member
@@ -167,6 +189,93 @@ components:
           description: Updated list of all cluster members after the promotion
           items:
             $ref: '#/components/schemas/Member'
+    MemberUpdateRequest:
+      type: object
+      description: Request to update a cluster member's peer URLs
+      required:
+      - ID
+      - peerURLs
+      properties:
+        ID:
+          type: string
+          description: ID of the member to update
+        peerURLs:
+          type: array
+          description: New peer URLs for the member
+          items:
+            type: string
+    MemberListResponse:
+      type: object
+      description: Response from a member list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: List of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberUpdateResponse:
+      type: object
+      description: Response from a member update operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberRemoveResponse:
+      type: object
+      description: Response from a member remove operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the removal
+          items:
+            $ref: '#/components/schemas/Member'
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    Member:
+      type: object
+      description: A member of the etcd cluster
+      properties:
+        ID:
+          type: string
+          description: Unique identifier for the cluster member
+        name:
+          type: string
+          description: Human-readable name of the cluster member
+        peerURLs:
+          type: array
+          description: URLs used for peer-to-peer communication within the cluster
+          items:
+            type: string
+        clientURLs:
+          type: array
+          description: URLs that clients use to communicate with this member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: True if this member is a non-voting learner member
     MemberAddResponse:
       type: object
       description: Response from a member add operation
@@ -194,115 +303,6 @@ components:
         isLearner:
           type: boolean
           description: When true, adds the member as a non-voting learner
-    MemberListResponse:
-      type: object
-      description: Response from a member list operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: List of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberUpdateRequest:
-      type: object
-      description: Request to update a cluster member's peer URLs
-      required:
-      - ID
-      - peerURLs
-      properties:
-        ID:
-          type: string
-          description: ID of the member to update
-        peerURLs:
-          type: array
-          description: New peer URLs for the member
-          items:
-            type: string
-    Member:
-      type: object
-      description: A member of the etcd cluster
-      properties:
-        ID:
-          type: string
-          description: Unique identifier for the cluster member
-        name:
-          type: string
-          description: Human-readable name of the cluster member
-        peerURLs:
-          type: array
-          description: URLs used for peer-to-peer communication within the cluster
-          items:
-            type: string
-        clientURLs:
-          type: array
-          description: URLs that clients use to communicate with this member
-          items:
-            type: string
-        isLearner:
-          type: boolean
-          description: True if this member is a non-voting learner member
-    MemberRemoveRequest:
-      type: object
-      description: Request to remove a member from the cluster
-      required:
-      - ID
-      properties:
-        ID:
-          type: string
-          description: ID of the member to remove
-    Error:
-      type: object
-      description: Error response from the etcd API
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: integer
-          description: gRPC status code for the error
-        message:
-          type: string
-          description: Detailed error message
-    ResponseHeader:
-      type: object
-      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
-      properties:
-        cluster_id:
-          type: string
-          description: ID of the etcd cluster
-        member_id:
-          type: string
-          description: ID of the member that generated the response
-        revision:
-          type: string
-          description: Key-value store revision at the time of the response
-        raft_term:
-          type: string
-          description: Raft term at the time of the response
-    MemberRemoveResponse:
-      type: object
-      description: Response from a member remove operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members after the removal
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberUpdateResponse:
-      type: object
-      description: Response from a member update operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
   securitySchemes:
     bearerAuth:
       type: http

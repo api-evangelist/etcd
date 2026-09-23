@@ -1,12 +1,7 @@
 {
   "provider": "etcd",
   "sources": [
-    "etcd-auth-api-openapi.yml",
-    "etcd-cluster-api-openapi.yml",
-    "etcd-kv-api-openapi.yml",
-    "etcd-lease-api-openapi.yml",
-    "etcd-maintenance-api-openapi.yml",
-    "etcd-watch-api-openapi.yml"
+    "_original/etcd-http-gateway-openapi.yml"
   ],
   "outputs": [
     "etcd-auth-api-openapi.yml",
@@ -19,6 +14,17 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "etcd-http-gateway-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "etcd-auth-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "etcd-cluster-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "etcd-kv-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "etcd-lease-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "etcd-maintenance-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "etcd-watch-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

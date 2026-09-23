@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: etcd HTTP Gateway Auth API
-  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store.
   version: '3.5'
   contact:
     name: etcd Community
@@ -391,89 +391,15 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    AuthUserRevokeRoleResponse:
+    AuthRoleDeleteRequest:
       type: object
-      description: Response from a user role revoke operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AuthRoleAddResponse:
-      type: object
-      description: Response from a role add operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AuthUserChangePasswordResponse:
-      type: object
-      description: Response from a password change operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AuthUserDeleteRequest:
-      type: object
-      description: Request to delete a user
+      description: Request to delete a role
       required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Username to delete
-    Error:
-      type: object
-      description: Error response from the etcd API
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: integer
-          description: gRPC status code for the error
-        message:
-          type: string
-          description: Detailed error message
-    AuthenticateResponse:
-      type: object
-      description: Response from a successful authentication
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        token:
-          type: string
-          description: JWT token to use for subsequent authenticated requests
-    AuthUserGrantRoleRequest:
-      type: object
-      description: Request to grant a role to a user
-      required:
-      - user
       - role
       properties:
-        user:
-          type: string
-          description: Username to grant the role to
         role:
           type: string
-          description: Name of the role to grant
-    AuthUserGetRequest:
-      type: object
-      description: Request to get user details
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Username to retrieve
-    AuthRoleDeleteResponse:
-      type: object
-      description: Response from a role delete operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AuthRoleRevokePermissionResponse:
-      type: object
-      description: Response from a role permission revoke operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
+          description: Name of the role to delete
     AuthRoleRevokePermissionRequest:
       type: object
       description: Request to revoke a permission from a role
@@ -490,38 +416,29 @@ components:
         range_end:
           type: string
           description: The range end of the permission to revoke in base64-encoded format
-    AuthRoleGrantPermissionResponse:
-      type: object
-      description: Response from a role permission grant operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AuthUserGetResponse:
-      type: object
-      description: Response from a user get operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        roles:
-          type: array
-          description: List of roles assigned to the user
-          items:
-            type: string
-    AuthRoleAddRequest:
-      type: object
-      description: Request to add a new role
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Name for the new role
     AuthUserDeleteResponse:
       type: object
       description: Response from a user delete operation
       properties:
         header:
           $ref: '#/components/schemas/ResponseHeader'
+    Permission:
+      type: object
+      description: A permission granting access to a key range
+      properties:
+        permType:
+          type: string
+          enum:
+          - READ
+          - WRITE
+          - READWRITE
+          description: Type of access granted by the permission
+        key:
+          type: string
+          description: The key or start of the key range in base64-encoded format
+        range_end:
+          type: string
+          description: The end of the key range in base64-encoded format (exclusive)
     AuthUserAddRequest:
       type: object
       description: Request to add a new user
@@ -541,6 +458,44 @@ components:
         options:
           type: object
           description: User creation options
+    AuthUserListResponse:
+      type: object
+      description: Response from a user list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        users:
+          type: array
+          description: List of all usernames
+          items:
+            type: string
+    AuthUserAddResponse:
+      type: object
+      description: Response from a user add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleDeleteResponse:
+      type: object
+      description: Response from a role delete operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserChangePasswordResponse:
+      type: object
+      description: Response from a password change operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleGetRequest:
+      type: object
+      description: Request to get role details
+      required:
+      - role
+      properties:
+        role:
+          type: string
+          description: Name of the role to retrieve
     AuthUserChangePasswordRequest:
       type: object
       description: Request to change a user's password
@@ -557,34 +512,96 @@ components:
         hashedPassword:
           type: string
           description: New pre-hashed bcrypt password
-    AuthRoleGetResponse:
+    AuthUserGetResponse:
       type: object
-      description: Response from a role get operation
+      description: Response from a user get operation
       properties:
         header:
           $ref: '#/components/schemas/ResponseHeader'
-        perm:
+        roles:
           type: array
-          description: List of permissions assigned to the role
+          description: List of roles assigned to the user
           items:
-            $ref: '#/components/schemas/Permission'
-    Permission:
+            type: string
+    AuthRoleRevokePermissionResponse:
       type: object
-      description: A permission granting access to a key range
+      description: Response from a role permission revoke operation
       properties:
-        permType:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleAddRequest:
+      type: object
+      description: Request to add a new role
+      required:
+      - name
+      properties:
+        name:
           type: string
-          enum:
-          - READ
-          - WRITE
-          - READWRITE
-          description: Type of access granted by the permission
-        key:
+          description: Name for the new role
+    AuthUserGrantRoleRequest:
+      type: object
+      description: Request to grant a role to a user
+      required:
+      - user
+      - role
+      properties:
+        user:
           type: string
-          description: The key or start of the key range in base64-encoded format
-        range_end:
+          description: Username to grant the role to
+        role:
           type: string
-          description: The end of the key range in base64-encoded format (exclusive)
+          description: Name of the role to grant
+    AuthenticateRequest:
+      type: object
+      description: Request to authenticate a user
+      required:
+      - name
+      - password
+      properties:
+        name:
+          type: string
+          description: Username to authenticate
+        password:
+          type: string
+          description: Password for the user
+          format: password
+    AuthUserRevokeRoleRequest:
+      type: object
+      description: Request to revoke a role from a user
+      required:
+      - name
+      - role
+      properties:
+        name:
+          type: string
+          description: Username to revoke the role from
+        role:
+          type: string
+          description: Name of the role to revoke
+    AuthUserRevokeRoleResponse:
+      type: object
+      description: Response from a user role revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthUserDeleteRequest:
+      type: object
+      description: Request to delete a user
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Username to delete
+    AuthUserGetRequest:
+      type: object
+      description: Request to get user details
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Username to retrieve
     AuthRoleGrantPermissionRequest:
       type: object
       description: Request to grant a permission to a role
@@ -597,6 +614,41 @@ components:
           description: Name of the role to grant the permission to
         perm:
           $ref: '#/components/schemas/Permission'
+    AuthRoleGetResponse:
+      type: object
+      description: Response from a role get operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        perm:
+          type: array
+          description: List of permissions assigned to the role
+          items:
+            $ref: '#/components/schemas/Permission'
+    AuthEnableResponse:
+      type: object
+      description: Response from enabling authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleGrantPermissionResponse:
+      type: object
+      description: Response from a role permission grant operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthDisableResponse:
+      type: object
+      description: Response from disabling authentication
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AuthRoleAddResponse:
+      type: object
+      description: Response from a role add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
     ResponseHeader:
       type: object
       description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
@@ -613,80 +665,34 @@ components:
         raft_term:
           type: string
           description: Raft term at the time of the response
-    AuthRoleGetRequest:
+    AuthenticateResponse:
       type: object
-      description: Request to get role details
-      required:
-      - role
-      properties:
-        role:
-          type: string
-          description: Name of the role to retrieve
-    AuthEnableResponse:
-      type: object
-      description: Response from enabling authentication
+      description: Response from a successful authentication
       properties:
         header:
           $ref: '#/components/schemas/ResponseHeader'
-    AuthenticateRequest:
+        token:
+          type: string
+          description: JWT token to use for subsequent authenticated requests
+    Error:
       type: object
-      description: Request to authenticate a user
-      required:
-      - name
-      - password
+      description: Error response from the etcd API
       properties:
-        name:
+        error:
           type: string
-          description: Username to authenticate
-        password:
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
           type: string
-          description: Password for the user
-          format: password
+          description: Detailed error message
     AuthUserGrantRoleResponse:
       type: object
       description: Response from a user role grant operation
       properties:
         header:
           $ref: '#/components/schemas/ResponseHeader'
-    AuthUserAddResponse:
-      type: object
-      description: Response from a user add operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AuthRoleDeleteRequest:
-      type: object
-      description: Request to delete a role
-      required:
-      - role
-      properties:
-        role:
-          type: string
-          description: Name of the role to delete
-    AuthUserRevokeRoleRequest:
-      type: object
-      description: Request to revoke a role from a user
-      required:
-      - name
-      - role
-      properties:
-        name:
-          type: string
-          description: Username to revoke the role from
-        role:
-          type: string
-          description: Name of the role to revoke
-    AuthUserListResponse:
-      type: object
-      description: Response from a user list operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        users:
-          type: array
-          description: List of all usernames
-          items:
-            type: string
     AuthRoleListResponse:
       type: object
       description: Response from a role list operation
@@ -698,12 +704,6 @@ components:
           description: List of all role names
           items:
             type: string
-    AuthDisableResponse:
-      type: object
-      description: Response from disabling authentication
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
   securitySchemes:
     bearerAuth:
       type: http

@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: etcd HTTP Gateway Auth Maintenance API
-  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store. The gateway exposes the full etcd v3 API surface including key-value operations (put, get, delete, range queries), watch streams for change notifications, lease management for TTL-based key expiration, cluster membership management, maintenance operations such as snapshots and defragmentation, and authentication and authorization controls. The gateway is served on port 2379 by default and accepts JSON-encoded request bodies that mirror the protobuf message structures of the underlying gRPC API.
+  title: etcd HTTP Gateway Maintenance API
+  description: The etcd HTTP/JSON gateway translates HTTP requests into gRPC calls, enabling clients without gRPC support to interact with the etcd v3 key-value store.
   version: '3.5'
   contact:
     name: etcd Community
@@ -144,21 +144,6 @@ paths:
                 $ref: '#/components/schemas/MoveLeaderResponse'
 components:
   schemas:
-    DefragmentResponse:
-      type: object
-      description: Response from a defragmentation operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    MoveLeaderRequest:
-      type: object
-      description: Request to transfer cluster leadership
-      required:
-      - targetID
-      properties:
-        targetID:
-          type: string
-          description: Member ID of the target leader
     AlarmMember:
       type: object
       description: An alarm associated with a cluster member
@@ -173,6 +158,18 @@ components:
           - NOSPACE
           - CORRUPT
           description: Type of alarm
+    MoveLeaderResponse:
+      type: object
+      description: Response from a leadership transfer operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    DefragmentResponse:
+      type: object
+      description: Response from a defragmentation operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
     AlarmRequest:
       type: object
       description: Request to manage cluster alarms
@@ -194,61 +191,6 @@ components:
           - NOSPACE
           - CORRUPT
           description: Type of alarm to activate or deactivate
-    AlarmResponse:
-      type: object
-      description: Response from an alarm operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        alarms:
-          type: array
-          description: List of active alarms in the cluster
-          items:
-            $ref: '#/components/schemas/AlarmMember'
-    Error:
-      type: object
-      description: Error response from the etcd API
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: integer
-          description: gRPC status code for the error
-        message:
-          type: string
-          description: Detailed error message
-    HashResponse:
-      type: object
-      description: Response from a backend hash query
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        hash:
-          type: integer
-          description: Hash of the backend database
-    MoveLeaderResponse:
-      type: object
-      description: Response from a leadership transfer operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    ResponseHeader:
-      type: object
-      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
-      properties:
-        cluster_id:
-          type: string
-          description: ID of the etcd cluster
-        member_id:
-          type: string
-          description: ID of the member that generated the response
-        revision:
-          type: string
-          description: Key-value store revision at the time of the response
-        raft_term:
-          type: string
-          description: Raft term at the time of the response
     StatusResponse:
       type: object
       description: Response from a member status query
@@ -284,6 +226,64 @@ components:
         isLearner:
           type: boolean
           description: True if this member is a non-voting learner
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    AlarmResponse:
+      type: object
+      description: Response from an alarm operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        alarms:
+          type: array
+          description: List of active alarms in the cluster
+          items:
+            $ref: '#/components/schemas/AlarmMember'
+    HashResponse:
+      type: object
+      description: Response from a backend hash query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        hash:
+          type: integer
+          description: Hash of the backend database
+    MoveLeaderRequest:
+      type: object
+      description: Request to transfer cluster leadership
+      required:
+      - targetID
+      properties:
+        targetID:
+          type: string
+          description: Member ID of the target leader
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
   securitySchemes:
     bearerAuth:
       type: http
