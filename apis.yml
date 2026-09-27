@@ -75,6 +75,12 @@ apis:
   tags:
   - Cluster Management
   - gRPC
+  - Key-Value Store
+  - Lease
+  - Watch
+  tags_raw:
+  - Cluster Management
+  - gRPC
   - Key-Value
   - Lease
   - Watch
@@ -128,6 +134,11 @@ apis:
   - type: Migration Guide
     url: https://etcd.io/docs/v3.5/op-guide/v2-migration/
   tags:
+  - Deprecated
+  - HTTP
+  - Key-Value Store
+  - REST
+  tags_raw:
   - Deprecated
   - HTTP
   - Key-Value

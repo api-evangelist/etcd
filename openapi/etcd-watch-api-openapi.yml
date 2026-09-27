@@ -55,6 +55,20 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    WatchEvent:
+      type: object
+      description: An event describing a change to a key in the etcd cluster
+      properties:
+        type:
+          type: string
+          enum:
+          - PUT
+          - DELETE
+          description: Type of the event - PUT for creates/updates, DELETE for deletions
+        kv:
+          $ref: '#/components/schemas/KeyValue'
+        prev_kv:
+          $ref: '#/components/schemas/KeyValue'
     WatchResponse:
       type: object
       description: A streaming response from the watch endpoint
@@ -84,49 +98,6 @@ components:
           description: List of events in this watch response
           items:
             $ref: '#/components/schemas/WatchEvent'
-    ResponseHeader:
-      type: object
-      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
-      properties:
-        cluster_id:
-          type: string
-          description: ID of the etcd cluster
-        member_id:
-          type: string
-          description: ID of the member that generated the response
-        revision:
-          type: string
-          description: Key-value store revision at the time of the response
-        raft_term:
-          type: string
-          description: Raft term at the time of the response
-    WatchEvent:
-      type: object
-      description: An event describing a change to a key in the etcd cluster
-      properties:
-        type:
-          type: string
-          enum:
-          - PUT
-          - DELETE
-          description: Type of the event - PUT for creates/updates, DELETE for deletions
-        kv:
-          $ref: '#/components/schemas/KeyValue'
-        prev_kv:
-          $ref: '#/components/schemas/KeyValue'
-    WatchRequest:
-      type: object
-      description: A watch stream request that can create or cancel watches
-      properties:
-        create_request:
-          $ref: '#/components/schemas/WatchCreateRequest'
-        cancel_request:
-          type: object
-          description: Request to cancel an existing watch
-          properties:
-            watch_id:
-              type: string
-              description: ID of the watch to cancel
     Error:
       type: object
       description: Error response from the etcd API
@@ -195,6 +166,35 @@ components:
         fragment:
           type: boolean
           description: When true, splits large watch responses into smaller fragments
+    WatchRequest:
+      type: object
+      description: A watch stream request that can create or cancel watches
+      properties:
+        create_request:
+          $ref: '#/components/schemas/WatchCreateRequest'
+        cancel_request:
+          type: object
+          description: Request to cancel an existing watch
+          properties:
+            watch_id:
+              type: string
+              description: ID of the watch to cancel
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
   securitySchemes:
     bearerAuth:
       type: http
