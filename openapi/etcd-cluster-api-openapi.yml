@@ -147,20 +147,72 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    MemberAddRequest:
+    MemberPromoteResponse:
       type: object
-      description: Request to add a new member to the cluster
-      required:
-      - peerURLs
+      description: Response from a member promote operation
       properties:
-        peerURLs:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
           type: array
-          description: Peer URLs of the new member
+          description: Updated list of all cluster members after the promotion
           items:
-            type: string
-        isLearner:
-          type: boolean
-          description: When true, adds the member as a non-voting learner
+            $ref: '#/components/schemas/Member'
+    MemberListResponse:
+      type: object
+      description: Response from a member list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: List of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberRemoveResponse:
+      type: object
+      description: Response from a member remove operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the removal
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberPromoteRequest:
+      type: object
+      description: Request to promote a learner member to a voting member
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the learner member to promote
+    MemberAddResponse:
+      type: object
+      description: Response from a member add operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        member:
+          $ref: '#/components/schemas/Member'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberUpdateResponse:
+      type: object
+      description: Response from a member update operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
     MemberUpdateRequest:
       type: object
       description: Request to update a cluster member's peer URLs
@@ -176,70 +228,6 @@ components:
           description: New peer URLs for the member
           items:
             type: string
-    MemberRemoveRequest:
-      type: object
-      description: Request to remove a member from the cluster
-      required:
-      - ID
-      properties:
-        ID:
-          type: string
-          description: ID of the member to remove
-    MemberAddResponse:
-      type: object
-      description: Response from a member add operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        member:
-          $ref: '#/components/schemas/Member'
-        members:
-          type: array
-          description: Updated list of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberListResponse:
-      type: object
-      description: Response from a member list operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: List of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberPromoteResponse:
-      type: object
-      description: Response from a member promote operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members after the promotion
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberPromoteRequest:
-      type: object
-      description: Request to promote a learner member to a voting member
-      required:
-      - ID
-      properties:
-        ID:
-          type: string
-          description: ID of the learner member to promote
-    MemberUpdateResponse:
-      type: object
-      description: Response from a member update operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
     Error:
       type: object
       description: Error response from the etcd API
@@ -253,17 +241,6 @@ components:
         message:
           type: string
           description: Detailed error message
-    MemberRemoveResponse:
-      type: object
-      description: Response from a member remove operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members after the removal
-          items:
-            $ref: '#/components/schemas/Member'
     Member:
       type: object
       description: A member of the etcd cluster
@@ -287,6 +264,20 @@ components:
         isLearner:
           type: boolean
           description: True if this member is a non-voting learner member
+    MemberAddRequest:
+      type: object
+      description: Request to add a new member to the cluster
+      required:
+      - peerURLs
+      properties:
+        peerURLs:
+          type: array
+          description: Peer URLs of the new member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: When true, adds the member as a non-voting learner
     ResponseHeader:
       type: object
       description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
@@ -303,6 +294,15 @@ components:
         raft_term:
           type: string
           description: Raft term at the time of the response
+    MemberRemoveRequest:
+      type: object
+      description: Request to remove a member from the cluster
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the member to remove
   securitySchemes:
     bearerAuth:
       type: http

@@ -153,6 +153,39 @@ components:
         hash:
           type: integer
           description: Hash of the backend database
+    AlarmResponse:
+      type: object
+      description: Response from an alarm operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        alarms:
+          type: array
+          description: List of active alarms in the cluster
+          items:
+            $ref: '#/components/schemas/AlarmMember'
+    MoveLeaderRequest:
+      type: object
+      description: Request to transfer cluster leadership
+      required:
+      - targetID
+      properties:
+        targetID:
+          type: string
+          description: Member ID of the target leader
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
     StatusResponse:
       type: object
       description: Response from a member status query
@@ -188,6 +221,18 @@ components:
         isLearner:
           type: boolean
           description: True if this member is a non-voting learner
+    DefragmentResponse:
+      type: object
+      description: Response from a defragmentation operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    MoveLeaderResponse:
+      type: object
+      description: Response from a leadership transfer operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
     AlarmMember:
       type: object
       description: An alarm associated with a cluster member
@@ -202,51 +247,6 @@ components:
           - NOSPACE
           - CORRUPT
           description: Type of alarm
-    Error:
-      type: object
-      description: Error response from the etcd API
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: integer
-          description: gRPC status code for the error
-        message:
-          type: string
-          description: Detailed error message
-    AlarmResponse:
-      type: object
-      description: Response from an alarm operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        alarms:
-          type: array
-          description: List of active alarms in the cluster
-          items:
-            $ref: '#/components/schemas/AlarmMember'
-    DefragmentResponse:
-      type: object
-      description: Response from a defragmentation operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    MoveLeaderResponse:
-      type: object
-      description: Response from a leadership transfer operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    MoveLeaderRequest:
-      type: object
-      description: Request to transfer cluster leadership
-      required:
-      - targetID
-      properties:
-        targetID:
-          type: string
-          description: Member ID of the target leader
     AlarmRequest:
       type: object
       description: Request to manage cluster alarms

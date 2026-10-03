@@ -159,25 +159,22 @@ components:
         TTL:
           type: string
           description: Remaining TTL in seconds after the renewal
-    LeaseRevokeResponse:
+    LeaseLeasesResponse:
       type: object
-      description: Response from a lease revoke operation
+      description: Response from a list leases operation
       properties:
         header:
           $ref: '#/components/schemas/ResponseHeader'
-    Error:
-      type: object
-      description: Error response from the etcd API
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: integer
-          description: gRPC status code for the error
-        message:
-          type: string
-          description: Detailed error message
+        leases:
+          type: array
+          description: List of active leases
+          items:
+            type: object
+            description: A lease status entry
+            properties:
+              ID:
+                type: string
+                description: Lease ID
     LeaseTimeToLiveResponse:
       type: object
       description: Response from a lease TTL query
@@ -198,34 +195,6 @@ components:
           description: Keys attached to the lease when the keys option was requested
           items:
             type: string
-    LeaseGrantRequest:
-      type: object
-      description: Request to create a new lease
-      required:
-      - TTL
-      properties:
-        TTL:
-          type: string
-          description: Time-to-live in seconds for the lease
-        ID:
-          type: string
-          description: User-specified lease ID. Set to 0 to let etcd assign the ID automatically.
-    LeaseLeasesResponse:
-      type: object
-      description: Response from a list leases operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        leases:
-          type: array
-          description: List of active leases
-          items:
-            type: object
-            description: A lease status entry
-            properties:
-              ID:
-                type: string
-                description: Lease ID
     LeaseGrantResponse:
       type: object
       description: Response from a lease grant operation
@@ -241,6 +210,43 @@ components:
         error:
           type: string
           description: Error message if the lease grant failed
+    LeaseKeepAliveRequest:
+      type: object
+      description: Request to renew a lease
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to renew
+    Error:
+      type: object
+      description: Error response from the etcd API
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: integer
+          description: gRPC status code for the error
+        message:
+          type: string
+          description: Detailed error message
+    LeaseRevokeRequest:
+      type: object
+      description: Request to revoke an existing lease
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the lease to revoke
+    LeaseRevokeResponse:
+      type: object
+      description: Response from a lease revoke operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
     LeaseTimeToLiveRequest:
       type: object
       description: Request to get the TTL of a lease
@@ -253,24 +259,18 @@ components:
         keys:
           type: boolean
           description: When true, returns all keys attached to the lease
-    LeaseKeepAliveRequest:
+    LeaseGrantRequest:
       type: object
-      description: Request to renew a lease
+      description: Request to create a new lease
       required:
-      - ID
+      - TTL
       properties:
+        TTL:
+          type: string
+          description: Time-to-live in seconds for the lease
         ID:
           type: string
-          description: ID of the lease to renew
-    LeaseRevokeRequest:
-      type: object
-      description: Request to revoke an existing lease
-      required:
-      - ID
-      properties:
-        ID:
-          type: string
-          description: ID of the lease to revoke
+          description: User-specified lease ID. Set to 0 to let etcd assign the ID automatically.
     ResponseHeader:
       type: object
       description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
