@@ -224,6 +224,9 @@ apis:
   - type: Reference
     url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
 common:
+  - type: CapabilityMap
+    url: capabilities/etcd-capability-edges.yml
+    name: Etcd Business Capability Map
   - type: IssueTracker
     url: https://github.com/etcd-io/etcd/issues
   - type: Releases

@@ -1,0 +1,27 @@
+slug: etcd
+provider: Etcd
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: Maintenance
+  spec_file: etcd-maintenance-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: POST /maintenance/defragment  Defragment a member's backend; POST /maintenance/status  Get
+    member status; Manage cluster alarms
+  reason: Operational maintenance of a datastore cluster — defragmentation, member status, alarms, leadership
+    transfer. This is day-to-day IT operations/monitoring of infrastructure, not a business capability.
+    Mapped conservatively to IT Operations Management; snapshot/backup also hints at resilience but operations
+    dominate.
