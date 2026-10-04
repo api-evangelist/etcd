@@ -147,48 +147,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    MemberPromoteResponse:
-      type: object
-      description: Response from a member promote operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members after the promotion
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberListResponse:
-      type: object
-      description: Response from a member list operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: List of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberRemoveResponse:
-      type: object
-      description: Response from a member remove operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members after the removal
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberPromoteRequest:
-      type: object
-      description: Request to promote a learner member to a voting member
-      required:
-      - ID
-      properties:
-        ID:
-          type: string
-          description: ID of the learner member to promote
     MemberAddResponse:
       type: object
       description: Response from a member add operation
@@ -202,32 +160,6 @@ components:
           description: Updated list of all cluster members
           items:
             $ref: '#/components/schemas/Member'
-    MemberUpdateResponse:
-      type: object
-      description: Response from a member update operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        members:
-          type: array
-          description: Updated list of all cluster members
-          items:
-            $ref: '#/components/schemas/Member'
-    MemberUpdateRequest:
-      type: object
-      description: Request to update a cluster member's peer URLs
-      required:
-      - ID
-      - peerURLs
-      properties:
-        ID:
-          type: string
-          description: ID of the member to update
-        peerURLs:
-          type: array
-          description: New peer URLs for the member
-          items:
-            type: string
     Error:
       type: object
       description: Error response from the etcd API
@@ -241,6 +173,67 @@ components:
         message:
           type: string
           description: Detailed error message
+    MemberPromoteRequest:
+      type: object
+      description: Request to promote a learner member to a voting member
+      required:
+      - ID
+      properties:
+        ID:
+          type: string
+          description: ID of the learner member to promote
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    MemberRemoveResponse:
+      type: object
+      description: Response from a member remove operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the removal
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberAddRequest:
+      type: object
+      description: Request to add a new member to the cluster
+      required:
+      - peerURLs
+      properties:
+        peerURLs:
+          type: array
+          description: Peer URLs of the new member
+          items:
+            type: string
+        isLearner:
+          type: boolean
+          description: When true, adds the member as a non-voting learner
+    MemberListResponse:
+      type: object
+      description: Response from a member list operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: List of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
     Member:
       type: object
       description: A member of the etcd cluster
@@ -264,36 +257,43 @@ components:
         isLearner:
           type: boolean
           description: True if this member is a non-voting learner member
-    MemberAddRequest:
+    MemberUpdateRequest:
       type: object
-      description: Request to add a new member to the cluster
+      description: Request to update a cluster member's peer URLs
       required:
+      - ID
       - peerURLs
       properties:
+        ID:
+          type: string
+          description: ID of the member to update
         peerURLs:
           type: array
-          description: Peer URLs of the new member
+          description: New peer URLs for the member
           items:
             type: string
-        isLearner:
-          type: boolean
-          description: When true, adds the member as a non-voting learner
-    ResponseHeader:
+    MemberPromoteResponse:
       type: object
-      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      description: Response from a member promote operation
       properties:
-        cluster_id:
-          type: string
-          description: ID of the etcd cluster
-        member_id:
-          type: string
-          description: ID of the member that generated the response
-        revision:
-          type: string
-          description: Key-value store revision at the time of the response
-        raft_term:
-          type: string
-          description: Raft term at the time of the response
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members after the promotion
+          items:
+            $ref: '#/components/schemas/Member'
+    MemberUpdateResponse:
+      type: object
+      description: Response from a member update operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        members:
+          type: array
+          description: Updated list of all cluster members
+          items:
+            $ref: '#/components/schemas/Member'
     MemberRemoveRequest:
       type: object
       description: Request to remove a member from the cluster

@@ -144,35 +144,6 @@ paths:
                 $ref: '#/components/schemas/MoveLeaderResponse'
 components:
   schemas:
-    HashResponse:
-      type: object
-      description: Response from a backend hash query
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        hash:
-          type: integer
-          description: Hash of the backend database
-    AlarmResponse:
-      type: object
-      description: Response from an alarm operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        alarms:
-          type: array
-          description: List of active alarms in the cluster
-          items:
-            $ref: '#/components/schemas/AlarmMember'
-    MoveLeaderRequest:
-      type: object
-      description: Request to transfer cluster leadership
-      required:
-      - targetID
-      properties:
-        targetID:
-          type: string
-          description: Member ID of the target leader
     Error:
       type: object
       description: Error response from the etcd API
@@ -186,6 +157,89 @@ components:
         message:
           type: string
           description: Detailed error message
+    MoveLeaderResponse:
+      type: object
+      description: Response from a leadership transfer operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AlarmMember:
+      type: object
+      description: An alarm associated with a cluster member
+      properties:
+        memberID:
+          type: string
+          description: Member ID that has the alarm
+        alarm:
+          type: string
+          enum:
+          - NONE
+          - NOSPACE
+          - CORRUPT
+          description: Type of alarm
+    ResponseHeader:
+      type: object
+      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
+      properties:
+        cluster_id:
+          type: string
+          description: ID of the etcd cluster
+        member_id:
+          type: string
+          description: ID of the member that generated the response
+        revision:
+          type: string
+          description: Key-value store revision at the time of the response
+        raft_term:
+          type: string
+          description: Raft term at the time of the response
+    AlarmResponse:
+      type: object
+      description: Response from an alarm operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        alarms:
+          type: array
+          description: List of active alarms in the cluster
+          items:
+            $ref: '#/components/schemas/AlarmMember'
+    DefragmentResponse:
+      type: object
+      description: Response from a defragmentation operation
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+    AlarmRequest:
+      type: object
+      description: Request to manage cluster alarms
+      properties:
+        action:
+          type: string
+          enum:
+          - GET
+          - ACTIVATE
+          - DEACTIVATE
+          description: Action to perform on alarms
+        memberID:
+          type: string
+          description: Member ID for the alarm. Set to 0 for all members.
+        alarm:
+          type: string
+          enum:
+          - NONE
+          - NOSPACE
+          - CORRUPT
+          description: Type of alarm to activate or deactivate
+    HashResponse:
+      type: object
+      description: Response from a backend hash query
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        hash:
+          type: integer
+          description: Hash of the backend database
     StatusResponse:
       type: object
       description: Response from a member status query
@@ -221,69 +275,15 @@ components:
         isLearner:
           type: boolean
           description: True if this member is a non-voting learner
-    DefragmentResponse:
+    MoveLeaderRequest:
       type: object
-      description: Response from a defragmentation operation
+      description: Request to transfer cluster leadership
+      required:
+      - targetID
       properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    MoveLeaderResponse:
-      type: object
-      description: Response from a leadership transfer operation
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-    AlarmMember:
-      type: object
-      description: An alarm associated with a cluster member
-      properties:
-        memberID:
+        targetID:
           type: string
-          description: Member ID that has the alarm
-        alarm:
-          type: string
-          enum:
-          - NONE
-          - NOSPACE
-          - CORRUPT
-          description: Type of alarm
-    AlarmRequest:
-      type: object
-      description: Request to manage cluster alarms
-      properties:
-        action:
-          type: string
-          enum:
-          - GET
-          - ACTIVATE
-          - DEACTIVATE
-          description: Action to perform on alarms
-        memberID:
-          type: string
-          description: Member ID for the alarm. Set to 0 for all members.
-        alarm:
-          type: string
-          enum:
-          - NONE
-          - NOSPACE
-          - CORRUPT
-          description: Type of alarm to activate or deactivate
-    ResponseHeader:
-      type: object
-      description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
-      properties:
-        cluster_id:
-          type: string
-          description: ID of the etcd cluster
-        member_id:
-          type: string
-          description: ID of the member that generated the response
-        revision:
-          type: string
-          description: Key-value store revision at the time of the response
-        raft_term:
-          type: string
-          description: Raft term at the time of the response
+          description: Member ID of the target leader
   securitySchemes:
     bearerAuth:
       type: http

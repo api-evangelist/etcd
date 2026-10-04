@@ -68,28 +68,6 @@ components:
         message:
           type: string
           description: Detailed error message
-    KeyValue:
-      type: object
-      description: A key-value pair stored in the etcd cluster. Keys and values are base64-encoded byte strings. The version field is the version of the key, the create_revision is the cluster revision when the key was created, and the mod_revision is the cluster revision when the key was last modified.
-      properties:
-        key:
-          type: string
-          description: The key in base64-encoded format
-        create_revision:
-          type: string
-          description: Revision of the etcd cluster when the key was created
-        mod_revision:
-          type: string
-          description: Revision of the etcd cluster when the key was last modified
-        version:
-          type: string
-          description: Version of the key, monotonically increasing for each put on the key
-        value:
-          type: string
-          description: The value in base64-encoded format
-        lease:
-          type: string
-          description: Lease ID attached to the key, or 0 if no lease is attached
     WatchRequest:
       type: object
       description: A watch stream request that can create or cancel watches
@@ -103,49 +81,6 @@ components:
             watch_id:
               type: string
               description: ID of the watch to cancel
-    WatchEvent:
-      type: object
-      description: An event describing a change to a key in the etcd cluster
-      properties:
-        type:
-          type: string
-          enum:
-          - PUT
-          - DELETE
-          description: Type of the event - PUT for creates/updates, DELETE for deletions
-        kv:
-          $ref: '#/components/schemas/KeyValue'
-        prev_kv:
-          $ref: '#/components/schemas/KeyValue'
-    WatchResponse:
-      type: object
-      description: A streaming response from the watch endpoint
-      properties:
-        header:
-          $ref: '#/components/schemas/ResponseHeader'
-        watch_id:
-          type: string
-          description: ID of the watch that generated this response
-        created:
-          type: boolean
-          description: True if this response confirms the creation of a new watch
-        canceled:
-          type: boolean
-          description: True if this response confirms the cancellation of a watch
-        compact_revision:
-          type: string
-          description: Set when a watch is canceled because the requested start revision has been compacted
-        cancel_reason:
-          type: string
-          description: Reason the watch was canceled
-        fragment:
-          type: boolean
-          description: True if this is a fragment of a larger watch response
-        events:
-          type: array
-          description: List of events in this watch response
-          items:
-            $ref: '#/components/schemas/WatchEvent'
     ResponseHeader:
       type: object
       description: Header included in every etcd response containing cluster metadata and the revision at which the response was generated.
@@ -195,6 +130,71 @@ components:
         fragment:
           type: boolean
           description: When true, splits large watch responses into smaller fragments
+    WatchEvent:
+      type: object
+      description: An event describing a change to a key in the etcd cluster
+      properties:
+        type:
+          type: string
+          enum:
+          - PUT
+          - DELETE
+          description: Type of the event - PUT for creates/updates, DELETE for deletions
+        kv:
+          $ref: '#/components/schemas/KeyValue'
+        prev_kv:
+          $ref: '#/components/schemas/KeyValue'
+    WatchResponse:
+      type: object
+      description: A streaming response from the watch endpoint
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        watch_id:
+          type: string
+          description: ID of the watch that generated this response
+        created:
+          type: boolean
+          description: True if this response confirms the creation of a new watch
+        canceled:
+          type: boolean
+          description: True if this response confirms the cancellation of a watch
+        compact_revision:
+          type: string
+          description: Set when a watch is canceled because the requested start revision has been compacted
+        cancel_reason:
+          type: string
+          description: Reason the watch was canceled
+        fragment:
+          type: boolean
+          description: True if this is a fragment of a larger watch response
+        events:
+          type: array
+          description: List of events in this watch response
+          items:
+            $ref: '#/components/schemas/WatchEvent'
+    KeyValue:
+      type: object
+      description: A key-value pair stored in the etcd cluster. Keys and values are base64-encoded byte strings. The version field is the version of the key, the create_revision is the cluster revision when the key was created, and the mod_revision is the cluster revision when the key was last modified.
+      properties:
+        key:
+          type: string
+          description: The key in base64-encoded format
+        create_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was created
+        mod_revision:
+          type: string
+          description: Revision of the etcd cluster when the key was last modified
+        version:
+          type: string
+          description: Version of the key, monotonically increasing for each put on the key
+        value:
+          type: string
+          description: The value in base64-encoded format
+        lease:
+          type: string
+          description: Lease ID attached to the key, or 0 if no lease is attached
   securitySchemes:
     bearerAuth:
       type: http
