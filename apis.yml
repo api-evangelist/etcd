@@ -224,6 +224,12 @@ apis:
   - type: Reference
     url: https://etcd.io/docs/v3.5/dev-guide/api_grpc_gateway/
 common:
+  - type: Plans
+    url: plans/etcd-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/etcd-rate-limits.yml
+  - type: FinOps
+    url: finops/etcd-finops.yml
   - type: CapabilityMap
     url: capabilities/etcd-capability-edges.yml
     name: Etcd Business Capability Map
